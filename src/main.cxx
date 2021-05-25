@@ -8,11 +8,11 @@
 #include "date/tz.h"
 
 namespace {
-    using namespace date::literals;
+    using namespace date;
     using namespace std::chrono_literals;
 
-    constexpr auto expo_day = date::local_days{6_d/date::June/2021} + 10h;
-    const auto expo_time = date::make_zoned("Asia/Tokyo", expo_day).get_sys_time();
+    constexpr auto expo_local_time = date::local_days{June/6/2021} + 10h;
+    const auto expo_sys_time = date::make_zoned("Asia/Tokyo", expo_local_time).get_sys_time();
 }
 
 class CountdownWindow : public Gtk::Window
@@ -34,7 +34,7 @@ bool CountdownWindow::update() const
     using namespace date;
     using namespace std::chrono;
 
-    auto diff_secs = floor<seconds>(expo_time - system_clock::now());
+    auto diff_secs = floor<seconds>(expo_sys_time - system_clock::now());
     auto diff_days = floor<std::chrono::days>(diff_secs);
 
     if (diff_days.count() > 0) {
