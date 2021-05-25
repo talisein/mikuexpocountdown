@@ -31,22 +31,23 @@ public:
 
 bool CountdownWindow::update() const
 {
-    auto now = std::chrono::system_clock::now();
-    auto diff = expo_time - now;
-    auto secs = std::chrono::duration_cast<std::chrono::seconds>(diff).count();
-    auto mins = secs / 60;
-    auto hours = mins / 60;
-    auto days = hours / 24;
+    using namespace date;
+    using namespace std::chrono;
 
-    if (days > 0) {
+    auto diff_secs = floor<seconds>(expo_time - system_clock::now());
+    auto diff_days = floor<std::chrono::days>(diff_secs);
+
+    if (diff_days.count() > 0) {
         std::stringstream ss;
-        ss << days << " day";
-        if (days > 1) {
-            ss << 's';
+        ss << diff_days.count() << " ";
+        if (diff_days.count() > 1) {
+            ss << "days";
+        } else {
+            ss << "day";
         }
         m_days->set_label(ss.str());
     } else {
-        if (secs > 0) {
+        if (diff_secs.count() > 0) {
             m_days->set_line_wrap(true);
             m_days->set_line_wrap_mode(Pango::WRAP_WORD);
             m_days->set_label("Soon");
@@ -62,21 +63,8 @@ bool CountdownWindow::update() const
     }
 
     std::stringstream ss;
-    if (hours > 0) {
-        ss << std::setw(1) << std::setfill('0') << hours % 24 << ":";
-    }
-    if (mins > 0) {
-        ss << std::setw(2) << std::setfill('0') << mins % 60 << ":";
-    }
-    if (secs > 0) {
-        if (secs > 10) {
-            ss << std::setw(2);
-        } else {
-            ss << std::setw(1);
-        }
-        ss << std::setfill('0') << secs % 60;
-        m_hours->set_label(ss.str());
-    }
+    ss << make_time(diff_secs - diff_days);
+    m_hours->set_label(ss.str());
 
     return true;
 }
