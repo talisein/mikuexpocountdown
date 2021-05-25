@@ -1,10 +1,12 @@
 
 
-src = ['main.cxx', 'tz.cpp']
+src = ['main.cxx']
+
+date_deps = [date_proj.get_variable('date_dep'), date_proj.get_variable('tz_dep')]
 
 exe = executable('mikuexpo_countdown', src, res,
-                 dependencies : [gtkmm_dep],
+                 dependencies : [gtkmm_dep, date_deps],
                  install : true,
                  gui_app : true,
-                 cpp_args : ['-D_GNU_SOURCE', '-DG_ENABLE_DEBUG=true', '-DUSE_OS_TZDB', '-DAUTO_DOWNLOAD=0'],
+                 cpp_args : ['-D_GNU_SOURCE', '-DG_ENABLE_DEBUG=true']
                  )

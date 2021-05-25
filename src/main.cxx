@@ -2,6 +2,8 @@
 #include <iostream>
 #include <iomanip>
 #include <gtkmm.h>
+
+// until __cpp_lib_chrono >= 201907
 #include "date/date.h"
 #include "date/tz.h"
 
@@ -47,7 +49,7 @@ bool CountdownWindow::update() const
         if (secs > 0) {
             m_days->set_line_wrap(true);
             m_days->set_line_wrap_mode(Pango::WRAP_WORD);
-            m_days->set_label("Less than a day!");
+            m_days->set_label("Soon");
         } else {
             m_days->set_label("Miku Miku Miku Miku Miku Miku Miku Miku Miku Miku");
             m_days->set_line_wrap(true);
@@ -116,8 +118,8 @@ int main (int argc, char *argv[])
       auto provider = Gtk::CssProvider::create();
       provider->load_from_resource("/org/talinet/mikuexpocountdown/style.css");
       Gtk::StyleContext::add_provider_for_screen(win->get_screen(),
-                                                  provider,
-                                                  GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+                                                 provider,
+                                                 GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 });
 
 

@@ -8,5 +8,7 @@ project('mikuexpocountdown', ['c', 'cpp'],
 cpp_compiler = meson.get_compiler('cpp')
 gtkmm_dep  = dependency('gtkmm-3.0',   version : '>=3.24.0')
 
+date_proj = subproject('hinnant-date')
+
 subdir('res')
 subdir('src')
