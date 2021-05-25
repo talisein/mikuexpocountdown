@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/talinet/mikuexpocountdown">
+    <file>hero_miku.png</file>
+    <file>style.css</file>
+  </gresource>
+</gresources>
