@@ -1,23 +1,24 @@
 #mainwin {
     background-image: url("resource:///org/talinet/mikuexpocountdown/hero_miku.png");
     background-size: contain;
-	background-repeat: no-repeat;
+	background-repeat: space;
     background-origin: content-box;
     padding: 10px;
     background-color: rgb(124, 139, 173);
 }
 
 grid {
-  color: #595e70;
+    color: rgb(225,40,133);
 }
 
 #days {
-  font-size: 80px;
+    font-family: "Nanum Pen Script";
+    font-size: 200px;
 }
 
 #hours {
-    font-size: 40px;
+    font-family: "Free mono";
     font-weight: 900;
-    font-family: monospaced;
     letter-spacing: 5px;
+    font-size: 50px;
 }
