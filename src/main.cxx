@@ -11,7 +11,7 @@ namespace {
     using namespace date;
     using namespace std::chrono_literals;
 
-    constexpr auto expo_local_time = date::local_days{June/6/2021} + 10h;
+    constexpr auto expo_local_time = date::local_days{August/29/2021} + 16h;
     const auto expo_sys_time = date::make_zoned("Asia/Tokyo", expo_local_time).get_sys_time();
 }
 
@@ -74,7 +74,7 @@ CountdownWindow::CountdownWindow() :
     m_days(Gtk::manage(new Gtk::Label())),
     m_hours(Gtk::manage(new Gtk::Label()))
 {
-    set_title("Miku Expo Online Countdown");
+    set_title("Digital Stars Countdown");
     set_default_size(400, 500);
 
     m_days->set_name("days");

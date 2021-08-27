@@ -3,5 +3,7 @@
   <gresource prefix="/org/talinet/mikuexpocountdown">
     <file>hero_miku.png</file>
     <file>style.css</file>
+    <file>bg.svg</file>
+    <file>digistars_august_2021.png</file>
   </gresource>
 </gresources>
