@@ -11,30 +11,37 @@ namespace {
     using namespace date;
     using namespace std::chrono_literals;
 
-    constexpr auto expo_local_time = date::local_days{August/29/2021} + 16h;
-    const auto expo_sys_time = date::make_zoned("Asia/Tokyo", expo_local_time).get_sys_time();
+    struct event {
+        std::string_view name;
+        date::local_seconds date;
+        std::chrono::minutes duration;
+    };
+
+    constinit std::array<const event, 1> events {{
+            {"Miku x GUMI Digital Stars", local_days{November/21/2021} + 14h, 5h},
+        }};
 
     struct offset {
         std::string_view DJ;
         std::chrono::minutes offset;
     };
 
-    constexpr std::array<offset, 11> offsets = {{
-        {"Balynsus", 0min},
-        {"Osanzi", 30min},
-        {"Ocelot", 60min},
-        {"Camellia", 90min},
-        {"Hommarju", 125min},
-        {"Fellsius", 155min},
-        {"Reno", 185min},
-        {"coa white", 215min},
-        {"KOTONOHOUSE", 250min},
-        {"gaburyu & nyankobrq", 280min},
-        {"kz(livetune)", 320min}
+    constexpr std::array<offset, 9> offsets = {{
+        {"Opening Act", 0min},
+        {"Jamie Paige", 50min},
+        {"Mwk", 1h + 20min},
+        {"Dubscribe", 1h + 50min},
+        {"Amamori P", 2h + 25min},
+        {"Amenkensetsu", 2h + 55min},
+        {"DJ Shimamura", 3h + 30min},
+        {"Pedestrian", 4h},
+        {"monaca:factory", 4h + 30min},
     }};
 
     const std::array<const date::time_zone*, 5> zones = {
             date::locate_zone("America/Los_Angeles"),
+//            date::locate_zone("America/Denver"),
+//            date::locate_zone("America/Chicago"),
             date::locate_zone("America/New_York"),
             date::locate_zone("Europe/London"),
             date::locate_zone("Europe/Paris"),
@@ -42,24 +49,92 @@ namespace {
     };
 }
 
+std::string
+url_encode(const std::string_view sv) {
+    std::stringstream out;
+    for (auto c : sv) {
+        if (c == ' ')
+            out << "%20";
+        else
+            out << c;
+    }
+
+    return out.str();
+}
+
 int main() {
     auto joiner = std::experimental::make_ostream_joiner(std::cout, "|");
+//    auto radio_formatter = [](auto x){return date::format("%A %b %d, %I:%M %p", x);};
+    auto radio_formatter = [](auto x){return date::format("%I:%M&nbsp;%p", x);};
+    auto gcal_formatter = [](auto x){return date::format("%Y%m%dT%H%M00Z", x);};
 
-    joiner = "|DJ";
+    for (const auto & event : events) {
+        std::stringstream header;
+
+        const auto jp_time { date::make_zoned("Asia/Tokyo", event.date) };
+        const date::sys_seconds sys_time { jp_time.get_sys_time() };
+        header << event.name << " is " << jp_time << '\n';
+        header << "Google Calendar event: ";
+        header << "https://calendar.google.com/calendar/u/0/r/eventedit?text="
+               << url_encode(event.name)
+               << "&dates="
+               << gcal_formatter(sys_time)
+               << '/'
+               << gcal_formatter(sys_time + event.duration)
+               << "&ctz=Asia%2FTokyo"
+               << '\n';
+
+        header << '\n';
+
+        joiner = header.str();
+
+        for (auto zone : zones) {
+            joiner = zone->get_info(sys_time).abbrev;
+        }
+        joiner = "\n";
+        for (auto zone : zones) {
+            (void)zone;
+            joiner = " :---: ";
+        }
+        joiner = "\n";
+        for (auto zone : zones) {
+            joiner = radio_formatter(date::make_zoned(zone, sys_time));
+        }
+
+        std::stringstream ts;
+        ts << "\n\nThe discord timestamp for " << event.name << " is: <t:"
+           << sys_time.time_since_epoch().count()
+           << ":F>\n\n";
+        joiner = ts.str();
+    }
+
+
+    const auto sys_time { date::make_zoned("Asia/Tokyo", events[0].date).get_sys_time() };
+
+    joiner = "DJ";
     for (auto zone : zones) {
-        joiner = zone->get_info(expo_sys_time).abbrev;
+        joiner = zone->get_info(sys_time).abbrev;
     }
     joiner = "\n";
+
+    joiner = "---";
+    for (auto zone : zones) {
+        (void)zone;
+        joiner = " :---: ";
+    }
+    joiner = "\n";
+
+//    auto f = [](auto x){return date::format("%H:%M", x);};
 
     for (auto offset : offsets) {
         joiner = offset.DJ;
 
-        auto f = [](auto x){return date::format("%H:%M", x);};
         for (auto zone : zones) {
-            joiner = f(date::make_zoned(zone, expo_sys_time + offset.offset));
+            joiner = radio_formatter(date::make_zoned(zone, sys_time + offset.offset));
         }
         joiner = "\n";
     }
+
 
     return EXIT_SUCCESS;
 }
