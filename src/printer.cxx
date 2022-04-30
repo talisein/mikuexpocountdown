@@ -17,8 +17,9 @@ namespace {
         std::chrono::minutes duration;
     };
 
-    constinit std::array<const event, 1> events {{
-            {"Miku x GUMI Digital Stars", local_days{November/21/2021} + 14h, 5h},
+    constinit std::array<const event, 2> events {{
+            {"Miku Expo Rewind", local_days{June/5/2022} + 0h, 3h},
+            {"Digital Stars 2022", local_days{May/28/2022} + 14h, 6h},
         }};
 
     struct offset {
@@ -64,8 +65,8 @@ url_encode(const std::string_view sv) {
 
 int main() {
     auto joiner = std::experimental::make_ostream_joiner(std::cout, "|");
-//    auto radio_formatter = [](auto x){return date::format("%A %b %d, %I:%M %p", x);};
-    auto radio_formatter = [](auto x){return date::format("%I:%M&nbsp;%p", x);};
+    auto radio_formatter = [](auto x){return date::format("%A %b&nbsp;%d, %I:%M&nbsp;%p", x);};
+//    auto radio_formatter = [](auto x){return date::format("%I:%M&nbsp;%p", x);};
     auto gcal_formatter = [](auto x){return date::format("%Y%m%dT%H%M00Z", x);};
 
     for (const auto & event : events) {
@@ -126,7 +127,7 @@ int main() {
 
 //    auto f = [](auto x){return date::format("%H:%M", x);};
 
-    for (auto offset : offsets) {
+/*    for (auto offset : offsets) {
         joiner = offset.DJ;
 
         for (auto zone : zones) {
@@ -134,7 +135,7 @@ int main() {
         }
         joiner = "\n";
     }
-
+*/
 
     return EXIT_SUCCESS;
 }

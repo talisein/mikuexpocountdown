@@ -11,8 +11,10 @@ namespace {
     using namespace date;
     using namespace std::chrono_literals;
 
-    constexpr auto expo_local_time = date::local_days{August/29/2021} + 16h;
-    const auto expo_sys_time = date::make_zoned("Asia/Tokyo", expo_local_time).get_sys_time();
+//    constexpr auto ew_local_time = date::local_days{November/19/2021} + 1h;
+    constexpr auto mer_local_time = date::local_days{June/5/2022};
+    const auto mer_sys_time = date::make_zoned("Asia/Tokyo", mer_local_time).get_sys_time();
+//    const auto ew_sys_time = date::make_zoned("America/Los_Angeles", ew_local_time).get_sys_time();
 }
 
 class CountdownWindow : public Gtk::Window
@@ -34,7 +36,7 @@ bool CountdownWindow::update() const
     using namespace date;
     using namespace std::chrono;
 
-    auto diff_secs = floor<seconds>(expo_sys_time - system_clock::now());
+    auto diff_secs = floor<seconds>(mer_sys_time - system_clock::now());
     auto diff_days = floor<std::chrono::days>(diff_secs);
 
     if (diff_days.count() > 0) {
@@ -97,6 +99,16 @@ int main (int argc, char *argv[])
 {
   auto app = Gtk::Application::create("org.talinet.mikuexpo.countdown");
 
+  std::cout << "Sys time: " << mer_sys_time << std::endl;
+  std::cout << "Sys time: " << date::utc_clock::from_sys(mer_sys_time) << std::endl;
+  std::cout << "Tokyo: " << date::make_zoned("Asia/Tokyo", mer_sys_time) << std::endl;
+  std::cout << "LA: " << date::make_zoned("America/Los_Angeles", mer_sys_time) << std::endl;
+  std::cout << "LA Sleep time: " << date::make_zoned("America/Los_Angeles", mer_sys_time - 8h) << std::endl;
+  std::cout << "MST: " << date::make_zoned("America/Denver", mer_sys_time) << std::endl;
+  std::cout << "New York: " << date::make_zoned("America/New_York", mer_sys_time) << std::endl;
+  std::cout << "Mirai Unix Time: " << mer_sys_time.time_since_epoch() << std::endl;
+  std::cout << "Mirai UTC: " << date::utc_clock::from_sys(mer_sys_time).time_since_epoch() << std::endl;
+//  return 0;
   app->signal_activate().connect([app]() {
       auto win = new CountdownWindow();
       app->add_window(*win);
