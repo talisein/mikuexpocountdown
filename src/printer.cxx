@@ -48,19 +48,36 @@ namespace {
             date::locate_zone("Europe/Paris"),
             date::locate_zone("Asia/Tokyo")
     };
-}
 
-std::string
-url_encode(const std::string_view sv) {
-    std::stringstream out;
-    for (auto c : sv) {
-        if (c == ' ')
-            out << "%20";
-        else
-            out << c;
+    std::string
+    url_encode(const std::string_view sv) {
+        std::stringstream out;
+        for (auto c : sv) {
+            if (c == ' ')
+                out << "%20";
+            else
+                out << c;
+        }
+
+        return out.str();
     }
 
-    return out.str();
+    std::string
+    remove_underscores(const std::string_view sv) {
+        std::stringstream out;
+
+        std::replace_copy(sv.begin(), sv.end(),
+                          std::ostreambuf_iterator<char>(out),
+                          '_', ' ');
+
+        return out.str();
+    }
+
+    constexpr std::string_view
+    timezone_city(const std::string_view tz)
+    {
+        return tz.substr(tz.find_first_of('/') + 1);
+    }
 }
 
 int main() {
@@ -93,6 +110,12 @@ int main() {
             joiner = zone->get_info(sys_time).abbrev;
         }
         joiner = "\n";
+
+        for (auto zone : zones) {
+            joiner = remove_underscores(timezone_city(zone->name()));
+        }
+        joiner = "\n";
+
         for (auto zone : zones) {
             (void)zone;
             joiner = " :---: ";

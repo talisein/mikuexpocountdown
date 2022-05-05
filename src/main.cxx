@@ -98,7 +98,7 @@ CountdownWindow::CountdownWindow() :
 int main (int argc, char *argv[])
 {
   auto app = Gtk::Application::create("org.talinet.mikuexpo.countdown");
-
+/*
   std::cout << "Sys time: " << mer_sys_time << std::endl;
   std::cout << "Sys time: " << date::utc_clock::from_sys(mer_sys_time) << std::endl;
   std::cout << "Tokyo: " << date::make_zoned("Asia/Tokyo", mer_sys_time) << std::endl;
@@ -108,6 +108,7 @@ int main (int argc, char *argv[])
   std::cout << "New York: " << date::make_zoned("America/New_York", mer_sys_time) << std::endl;
   std::cout << "Mirai Unix Time: " << mer_sys_time.time_since_epoch() << std::endl;
   std::cout << "Mirai UTC: " << date::utc_clock::from_sys(mer_sys_time).time_since_epoch() << std::endl;
+*/
 //  return 0;
   app->signal_activate().connect([app]() {
       auto win = new CountdownWindow();
