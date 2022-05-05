@@ -12,7 +12,7 @@ namespace {
     using namespace std::chrono_literals;
 
 //    constexpr auto ew_local_time = date::local_days{November/19/2021} + 1h;
-    constexpr auto mer_local_time = date::local_days{June/5/2022};
+    constexpr auto mer_local_time = date::local_days{June/5/2022} + 14h;
     const auto mer_sys_time = date::make_zoned("Asia/Tokyo", mer_local_time).get_sys_time();
 //    const auto ew_sys_time = date::make_zoned("America/Los_Angeles", ew_local_time).get_sys_time();
 }
