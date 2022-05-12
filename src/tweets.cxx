@@ -17,32 +17,26 @@ namespace {
         std::chrono::minutes duration;
     };
 
-    constexpr int remaining_songs = 33;
     constinit std::array<const event, 2> events {{
-            {"Miku Expo Rewind", local_days{June/5/2022} + 14h, 3h},
-            {"33 tweet", local_days{May/2/2022} + 12h + 38min, 6h},
+            {"Miku Expo Rewind", local_days{June/5/2022} + 10h + 30min, 3h},
+            {"20 tweet", local_days{May/7/2022} + 10h + 49min, 6h},
         }};
 
     const date::time_zone* jst = date::locate_zone("Asia/Tokyo");
     const date::time_zone* pst = date::locate_zone("America/Los_Angeles");
 
-    constinit std::array<std::string_view, 33> songs = {
-        "Fragments of a Star",
-        "I'll Miku-Miku You♪ (For Reals)",
-        "Kimagure Mercy",
-        "Meltdown",
-        "Miku",
+    constinit std::array<std::string_view, 28> songs = {
         "ODDS&ENDS",
         "Pane dhiria",
         "Satisfaction",
         "Snowman",
         "Ten Thousand Stars",
-        "Change me",
+        "Change me", /* 5 times */
         "Glass Wall",
         "Last Night, Good Night",
         "The Disappearance of Hatsune Miku -DEAD END-",
         "Weekender Girl",
-        "39 (Thank You)",
+        "39 (Thank You)", /* 6 times */
         "Blue Star",
         "Melt",
         "Romeo and Cinderella",
@@ -52,15 +46,17 @@ namespace {
         "Two-Sided Lovers",
         "Unhappy Refrain",
         "World's End Dancehall",
-        "Luka Luka★Night Fever",
-        "Just Be Friends",
+        "Luka Luka★Night Fever", /* 7 times */
+        "Just Be Friends", /* 8 times */
         "Secret Police",
         "The Intense Voice of Hatsune Miku",
-        "Remote Controller",
-        "Butterfly on Your Right Shoulder",
-        "Tell Your World",
-        "World is Mine",
+        "Remote Controller", /* 9 times */
+        "Butterfly on Your Right Shoulder", /* 10 times */
+        "Tell Your World", /* 12 times */
+        "World is Mine", /* 12 times */
     };
+    constexpr int remaining_songs = songs.size();
+
 }
 
 int main()
@@ -74,7 +70,7 @@ int main()
 
     const auto intertweet_duration = span / remaining_songs;
 
-    size_t remaining = 33;
+    size_t remaining = songs.size();
     auto song = std::begin(songs);
     for (auto tt = tweettime.get_sys_time() + intertweet_duration;
          tt < showtime.get_sys_time() && song < std::end(songs);

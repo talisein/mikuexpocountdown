@@ -2,18 +2,22 @@
 #include <iostream>
 #include <iomanip>
 #include <gtkmm.h>
+#include <version>
 
-// until __cpp_lib_chrono >= 201907
+#if __cpp_lib_chrono < 201907
 #include "date/date.h"
 #include "date/tz.h"
+#endif
 
 namespace {
+#if __cpp_lib_chrono < 201907
     using namespace date;
+#endif
     using namespace std::chrono_literals;
 
 //    constexpr auto ew_local_time = date::local_days{November/19/2021} + 1h;
-    constexpr auto mer_local_time = date::local_days{June/5/2022} + 14h;
-    const auto mer_sys_time = date::make_zoned("Asia/Tokyo", mer_local_time).get_sys_time();
+    constexpr auto mer_local_time = local_days{June/5/2022} + 10h + 30min;
+    const auto mer_sys_time = make_zoned("Asia/Tokyo", mer_local_time).get_sys_time();
 //    const auto ew_sys_time = date::make_zoned("America/Los_Angeles", ew_local_time).get_sys_time();
 }
 
@@ -33,7 +37,9 @@ public:
 
 bool CountdownWindow::update() const
 {
+#if __cpp_lib_chrono < 201907
     using namespace date;
+#endif
     using namespace std::chrono;
 
     auto diff_secs = floor<seconds>(mer_sys_time - system_clock::now());
@@ -76,7 +82,7 @@ CountdownWindow::CountdownWindow() :
     m_days(Gtk::manage(new Gtk::Label())),
     m_hours(Gtk::manage(new Gtk::Label()))
 {
-    set_title("Digital Stars Countdown");
+    set_title("Miku Expo Countdown");
     set_default_size(400, 500);
 
     m_days->set_name("days");
@@ -97,7 +103,7 @@ CountdownWindow::CountdownWindow() :
 
 int main (int argc, char *argv[])
 {
-  auto app = Gtk::Application::create("org.talinet.mikuexpo.countdown");
+  auto app = Gtk::Application::create("dance._39music.MikuExpoCountdown");
 /*
   std::cout << "Sys time: " << mer_sys_time << std::endl;
   std::cout << "Sys time: " << date::utc_clock::from_sys(mer_sys_time) << std::endl;

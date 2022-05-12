@@ -1,9 +1,10 @@
-app-id: org.talinet.mikuexpo.countdown
+app-id: dance._39music.MikuExpoCountdown
+collection-id: dance._39music.Apps
 runtime: org.gnome.Platform
 runtime-version: '41'
 sdk: org.gnome.Sdk
 command: mikuexpo_countdown
-finish-args: ['--socket=fallback-x11','--socket=x11','--socket=wayland']
+finish-args: ['--socket=wayland']
 modules:
   - name: mm-common
     cleanup: '/'

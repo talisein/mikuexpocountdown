@@ -6,6 +6,9 @@ project('mikuexpocountdown', ['c', 'cpp'],
                            'buildtype=release'])
 
 cpp_compiler = meson.get_compiler('cpp')
+
+cpp_compiler.compute_int('__cpp_lib_chrono >= 201907', prefix: '#include <version>')
+
 gtkmm_dep  = dependency('gtkmm-3.0',   version : '>=3.24.0')
 
 is_not_windows = host_machine.system() != 'windows'
