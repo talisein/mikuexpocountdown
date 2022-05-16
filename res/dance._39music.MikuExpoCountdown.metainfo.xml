@@ -17,8 +17,30 @@
   <launchable type="desktop-id">dance._39music.MikuExpoCountdown.desktop</launchable>
   <screenshots>
     <screenshot type="default">
+      <caption>Main Window</caption>
       <image>https://github.com/talisein/mikuexpocountdown/raw/main/screenshots/screenshot.png</image>
     </screenshot>
   </screenshots>
   <url type="homepage">https://github.com/talisein/mikuexpocountdown</url>
+
+  <icon type="stock">dance._39music.MikuExpoCountdown</icon>
+
+  <categories>
+    <category>Utility</category>
+    <category>GTK</category>
+  </categories>
+
+  <provides>
+    <binary>mikuexpo-countdown</binary>
+  </provides>
+
+  <releases>
+    <release version="1.0" date="2022-05-16">
+      <description>
+        <p>
+          First release for Miku Expo Rewind
+        </p>
+      </description>
+    </release>
+  </releases>
 </component>
