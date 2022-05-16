@@ -17,7 +17,8 @@
   <launchable type="desktop-id">dance._39music.MikuExpoCountdown.desktop</launchable>
   <screenshots>
     <screenshot type="default">
-      <image>https://raw.githubusercontent.com/talisein/mikuexpocountdown/screenshots/screenshot.png</image>
+      <image>https://github.com/talisein/mikuexpocountdown/raw/main/screenshots/screenshot.png</image>
     </screenshot>
   </screenshots>
+  <url type="homepage">https://github.com/talisein/mikuexpocountdown</url>
 </component>
