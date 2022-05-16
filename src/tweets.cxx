@@ -82,13 +82,19 @@ int main()
         auto hours = std::chrono::floor<std::chrono::hours>(pure_dur - dur);
         auto min = std::chrono::round<std::chrono::minutes>(pure_dur - dur - hours);
 
-        std::cout << date::make_zoned(pst, tt) << ": " << remaining << " songs and " <<
-            std::chrono::round<std::chrono::days>(pure_dur) << " days (" <<
-            dur << " " << hours << " " << min <<
-            ") remaining. This song is " << *song++ << std::endl;
+        std::cout << date::make_zoned(pst, tt) << ": " << remaining << " songs and ";
+        date::operator<<(std::cout, std::chrono::floor<std::chrono::days>(pure_dur));
+        std::cout << " days (";
+        date::operator<<(std::cout, dur);
+        std::cout << " ";
+        date::operator<<(std::cout, hours);
+        std::cout << " ";
+        date::operator<<(std::cout, min);
+        std::cout << ") remaining. This song is " << *song++ << std::endl;
     }
 
-    std::cout << std::chrono::round<std::chrono::minutes>(intertweet_duration - 23h) << " min between tweets.\n";
+    date::operator<<(std::cout, std::chrono::floor<std::chrono::minutes>(intertweet_duration - 23h));
+    std::cout << " min between tweets.\n";
 
     return 0;
 }

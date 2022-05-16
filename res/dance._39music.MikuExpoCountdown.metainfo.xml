@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>dance._39music.MikuExpoCountdown</id>
+
+  <name>Miku Expo Countdown</name>
+  <summary>Countdown the days and hours to Miku Expo</summary>
+
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>AGPL-3.0-or-later</project_license>
+
+  <description>
+    <p>
+      A toy application that shows a simple second-by-second countdown to Miku Expo
+    </p>
+  </description>
+
+  <launchable type="desktop-id">dance._39music.MikuExpoCountdown.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/talisein/mikuexpocountdown/screenshots/screenshot.png</image>
+    </screenshot>
+  </screenshots>
+</component>

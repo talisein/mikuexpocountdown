@@ -2,21 +2,21 @@
 
 src = ['main.cxx']
 
-exe = executable('mikuexpo_countdown', src, res,
+exe = executable('mikuexpo-countdown', src, res,
                  dependencies : [gtkmm_dep, date_dep],
                  install : true,
                  gui_app : true,
                  cpp_args : ['-D_GNU_SOURCE', '-DG_ENABLE_DEBUG=true']
                 )
 
-printer_exe = executable('mikuexpo_printer', 'printer.cxx',
+printer_exe = executable('mikuexpo-printer', 'printer.cxx',
                  dependencies : [date_dep],
                  install : false,
                  gui_app : false,
                  cpp_args : ['-D_GNU_SOURCE', '-DG_ENABLE_DEBUG=true']
                  )
 
-printer_exe = executable('mikuexpo_tweets', 'tweets.cxx',
+printer_exe = executable('mikuexpo-tweets', 'tweets.cxx',
                  dependencies : [date_dep],
                  install : false,
                  gui_app : false,
