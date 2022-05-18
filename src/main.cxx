@@ -15,34 +15,103 @@ namespace {
 #endif
     using namespace std::chrono_literals;
 
-//    constexpr auto ew_local_time = date::local_days{November/19/2021} + 1h;
-    constexpr auto mer_local_time = local_days{June/5/2022} + 10h + 30min;
-    const auto mer_sys_time = make_zoned("Asia/Tokyo", mer_local_time).get_sys_time();
-//    const auto ew_sys_time = date::make_zoned("America/Los_Angeles", ew_local_time).get_sys_time();
+    constexpr auto mer_local_time = date::local_days{June/5/2022} + 10h + 30min;
+    const auto JST = date::locate_zone("Asia/Tokyo");
+
+    struct raw_event {
+        std::string_view name;
+        std::string_view style_class;
+        date::local_seconds time;
+        std::chrono::minutes duration;
+    };
+
+    constinit std::array<const raw_event, 5> events {{
+            {"Miku Expo", "expo", date::local_days{June/5/2022} + 10h + 30min, 2h + 90min},
+            {"Digital Stars", "digistars", local_days{May/28/2022} + 13h, 6h},
+            {"Mirai Osaka", "mirai", local_days{August/12/2022} + 12h, 48h + 12h},
+            {"Mirai Tokyo", "mirai", local_days{September/2/2022} + 12h, 48h + 12h},
+            {"Mirai Sapporo", "mirai", local_days{February/4/2023} + 12h, 48h},
+        }};
 }
 
-class CountdownWindow : public Gtk::Window
+
+
+class Event : public Glib::Object
+{
+private:
+    Event(const raw_event& event) :
+        Glib::ObjectBase("event"),
+        property_name(*this, "name", {std::begin(event.name), std::end(event.name)}),
+        m_style_class(std::begin(event.style_class), std::end(event.style_class)),
+        property_time(*this, "time", {JST, event.time}),
+        m_local_time(event.time)
+    {
+    }
+
+public:
+    static Glib::RefPtr<Event> create(const raw_event& event)
+    {
+        return Glib::RefPtr<Event>(new Event(event));
+    }
+    virtual ~Event() = default;
+
+    Glib::Property<Glib::ustring> property_name;
+    Glib::ustring m_style_class;
+    Glib::Property<date::zoned_seconds> property_time;
+
+private:
+    date::local_seconds m_local_time;
+};
+
+class CountdownGrid : public Gtk::Box
 {
 public:
-    CountdownWindow();
+    CountdownGrid(const Glib::RefPtr<Event> &event);
 
+    bool update();
+
+    Glib::RefPtr<Event> m_event;
+private:
     Gtk::Grid *m_grid;
     Gtk::Label *m_days;
     Gtk::Label *m_hours;
-
-    sigc::connection m_timeout;
-
-    bool update() const;
 };
 
-bool CountdownWindow::update() const
+CountdownGrid::CountdownGrid(const Glib::RefPtr<Event> &event) :
+    m_event(event),
+    m_grid(Gtk::manage(new Gtk::Grid())),
+    m_days(Gtk::manage(new Gtk::Label())),
+    m_hours(Gtk::manage(new Gtk::Label()))
+{
+    set_name("page");
+    m_days->set_name("days");
+    m_hours->set_name("hours");
+
+    m_grid->attach(*m_days, 0, 0);
+    m_grid->attach(*m_hours, 0, 1);
+    m_grid->set_halign(Gtk::ALIGN_CENTER);
+    m_grid->set_valign(Gtk::ALIGN_CENTER);
+    m_grid->set_hexpand(true);
+    m_grid->set_vexpand(true);
+    add(*m_grid);
+
+    auto context = get_style_context();
+    context->add_class(event->m_style_class);
+    context = m_grid->get_style_context();
+    context->add_class(event->m_style_class);
+    show_all();
+}
+
+bool CountdownGrid::update()
 {
 #if __cpp_lib_chrono < 201907
     using namespace date;
 #endif
     using namespace std::chrono;
 
-    auto diff_secs = floor<seconds>(mer_sys_time - system_clock::now());
+    auto time = m_event->property_time.get_value();
+    auto sys_time = time.get_sys_time();
+    auto diff_secs = floor<seconds>(sys_time - system_clock::now());
     auto diff_days = floor<std::chrono::days>(diff_secs);
 
     if (diff_days.count() > 0) {
@@ -77,45 +146,71 @@ bool CountdownWindow::update() const
     return true;
 }
 
-CountdownWindow::CountdownWindow() :
-    m_grid(Gtk::manage(new Gtk::Grid())),
-    m_days(Gtk::manage(new Gtk::Label())),
-    m_hours(Gtk::manage(new Gtk::Label()))
+class CountdownWindow : public Gtk::ApplicationWindow
 {
-    set_title("Miku Expo Countdown");
-    set_default_size(400, 500);
+public:
+    CountdownWindow();
+    virtual ~CountdownWindow() = default;
 
-    m_days->set_name("days");
-    m_hours->set_name("hours");
+private:
+    Gtk::Box *m_box;
+    Gtk::Stack *m_stack;
+    Gtk::StackSwitcher *m_stack_switcher;
 
-    m_grid->attach(*m_days, 0, 0);
-    m_grid->attach(*m_hours, 0, 1);
-    m_grid->set_halign(Gtk::ALIGN_CENTER);
-    m_grid->set_valign(Gtk::ALIGN_CENTER);
-    add(*m_grid);
+private:
+//    void on_event_change();
+};
 
-    m_grid->show_all();
+/*
+void
+CountdownWindow::on_event_change()
+{
+    auto event = property_event.get_value();
+    auto name = event->property_name.get_value();
 
     update();
+}
+*/
+CountdownWindow::CountdownWindow() :
+    Glib::ObjectBase("CountdownWindow"),
+    m_box(Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL))),
+    m_stack(Gtk::manage(new Gtk::Stack())),
+    m_stack_switcher(Gtk::manage(new Gtk::StackSwitcher()))
+{
+    set_default_size(800, 800);
+    m_box->add(*m_stack_switcher);
+    m_box->add(*m_stack);
+    m_stack_switcher->set_stack(*m_stack);
+    m_stack_switcher->set_halign(Gtk::ALIGN_CENTER);
+    add(*m_box);
+    m_box->show_all();
 
-    m_timeout = Glib::signal_timeout().connect_seconds([this] { return update(); }, 1);
+    m_stack->set_homogeneous(true);
+    m_stack->property_visible_child().signal_changed().connect(sigc::track_obj([this](){
+        auto event = static_cast<CountdownGrid*>(m_stack->property_visible_child().get_value())->m_event;
+        auto style_class = event->m_style_class;
+        auto context = m_box->get_style_context();
+        for (auto &e : events) {
+            context->remove_class(Glib::ustring(std::begin(e.style_class), std::end(e.style_class)));
+        }
+        context->add_class(style_class);
+        set_title(Glib::ustring::compose("%1 Countdown", event->property_name.get_value()));
+    }, *this));
+
+    for (auto &e : events) {
+        auto event = Event::create(e);
+        auto grid = Gtk::manage(new CountdownGrid(event));
+        m_stack->add(*grid, event->property_name.get_value(), event->property_name.get_value());
+        grid->update();
+        Glib::signal_timeout().connect_seconds(sigc::mem_fun(*grid, &CountdownGrid::update), 1);
+    }
+
 }
 
 int main (int argc, char *argv[])
 {
   auto app = Gtk::Application::create("dance._39music.MikuExpoCountdown");
-/*
-  std::cout << "Sys time: " << mer_sys_time << std::endl;
-  std::cout << "Sys time: " << date::utc_clock::from_sys(mer_sys_time) << std::endl;
-  std::cout << "Tokyo: " << date::make_zoned("Asia/Tokyo", mer_sys_time) << std::endl;
-  std::cout << "LA: " << date::make_zoned("America/Los_Angeles", mer_sys_time) << std::endl;
-  std::cout << "LA Sleep time: " << date::make_zoned("America/Los_Angeles", mer_sys_time - 8h) << std::endl;
-  std::cout << "MST: " << date::make_zoned("America/Denver", mer_sys_time) << std::endl;
-  std::cout << "New York: " << date::make_zoned("America/New_York", mer_sys_time) << std::endl;
-  std::cout << "Mirai Unix Time: " << mer_sys_time.time_since_epoch() << std::endl;
-  std::cout << "Mirai UTC: " << date::utc_clock::from_sys(mer_sys_time).time_since_epoch() << std::endl;
-*/
-//  return 0;
+
   app->signal_activate().connect([app]() {
       auto win = new CountdownWindow();
       app->add_window(*win);
@@ -127,7 +222,7 @@ int main (int argc, char *argv[])
       Gtk::StyleContext::add_provider_for_screen(win->get_screen(),
                                                  provider,
                                                  GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-});
+  });
 
 
   return app->run(argc, argv);

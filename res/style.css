@@ -1,18 +1,56 @@
-#mainwin {
-    background-image: url("resource:///org/talinet/mikuexpocountdown/hero_miku.png");
+#page {
     background-size: contain;
-	background-repeat: space;
+	background-repeat: no-repeat;
     background-origin: content-box;
+    background-position: center;
+}
+
+#page.expo {
+    background-image: url("resource:///org/talinet/mikuexpocountdown/hero_miku.png");
     padding: 10px;
+}
+
+#page.mirai {
+    background-image: url("resource:///org/talinet/mikuexpocountdown/hero_mirai_2022.png");
+    padding: 10px;
+}
+
+#page.digistars {
+    background-image: url("resource:///org/talinet/mikuexpocountdown/hero_digital_stars_2022.png");
+    background-position: 0;
+    padding: 0px;
+}
+
+box.expo {
     background-color: rgb(30,0,105);
+}
+box.mirai {
+    background-color: #1b3073;
+}
+box.digistars {
+    background-color: #364153;
 }
 
 grid {
+    font-family: "Nanum Pen Script";
+}
+
+grid.expo {
     color: rgb(213,25,118);
+    padding: 10px;
+}
+
+grid.digistars {
+    color: rgb(113,25,18);
+    padding: 0px;
+}
+
+grid.mirai {
+    color: #935efc;
+    padding: 10px;
 }
 
 #days {
-    font-family: "Nanum Pen Script";
     font-size: 200px;
 }
 
