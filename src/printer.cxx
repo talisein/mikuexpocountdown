@@ -4,6 +4,7 @@
 #include <array>
 #include <ranges>
 #include <experimental/iterator>
+#include <string_view>
 #include "date/date.h"
 #include "date/tz.h"
 
@@ -19,18 +20,18 @@ namespace {
         bool main_event;
     };
 
-    constinit std::array<const event, 11> events {{
-            {"Digital Stars 2022", "Open", local_days{May/28/2022} + 13h, 6h, false},
-            {"Miku Expo Preshow 1", "Preshow 1", local_days{June/5/2022} + 10h + 30min, 55min, false},
-            {"Miku Expo Rewind Digistars yanagamiyuki / coralmines", "DJ yanagamiyuki / coralmines", local_days{June/5/2022} + 11h + 25min, 60min, false},
-            {"Miku Expo Rewind Concert 1", "Concert 1", local_days{June/5/2022} + 12h + 30min, 90min, true},
-            {"Miku Expo Rewind Digistars Radio", "Digistars Radio", local_days{June/5/2022} + 15h, 60min, false},
-            {"Miku Expo Rewind Preshow 2", "Preshow 2", local_days{June/5/2022} + 17h + 30min, 55min, false},
-            {"Miku Expo Rewind Digistars FOXSKY / android52", "DJ FOXSKY / android52", local_days{June/5/2022} + 18h + 25min, 60min, false},
-            {"Miku Expo Rewind Concert 2", "Concert 2", local_days{June/5/2022} + 19h + 30min, 90min, true},
-            {"Miku Expo Rewind Preshow 3", "Preshow 3", local_days{June/5/2022} + 21h + 30min, 55min, false},
-            {"Miku Expo Rewind Digistars snarewaves / KIRA", "DJ snarewaves / KIRA", local_days{June/5/2022} + 22h + 25min, 60min, false},
-            {"Miku Expo Rewind Concert 3", "Concert 3", local_days{June/5/2022} + 23h + 30min, 90min, true},
+    constinit std::array<const event, 10> events {{
+//            {"Digital Stars 2022", "Open", local_days{May/28/2022} + 13h, 6h, false},
+            {"Miku Expo Preshow 1"                                  , "Preshow 1", local_days{June/5/2022} + 10h + 30min, 55min, false},
+            {"Miku Expo Rewind Digistars yanagamiyuki / coralmines" , "Digistar1", local_days{June/5/2022} + 11h + 25min, 60min, false},
+            {"Miku Expo Rewind Concert 1"                           , "Concert 1", local_days{June/5/2022} + 12h + 30min, 90min, true},
+            {"Miku Expo Rewind Digistars Radio"                     , "DigiRadio", local_days{June/5/2022} + 15h, 60min, false},
+            {"Miku Expo Rewind Preshow 2"                           , "Preshow 2", local_days{June/5/2022} + 17h + 30min, 55min, false},
+            {"Miku Expo Rewind Digistars FOXSKY / android52"        , "Digistar2", local_days{June/5/2022} + 18h + 25min, 60min, false},
+            {"Miku Expo Rewind Concert 2"                           , "Concert 2", local_days{June/5/2022} + 19h + 30min, 90min, true},
+            {"Miku Expo Rewind Preshow 3"                           , "Preshow 3", local_days{June/5/2022} + 21h + 30min, 55min, false},
+            {"Miku Expo Rewind Digistars snarewaves / KIRA"         , "DigiStar3", local_days{June/5/2022} + 22h + 25min, 60min, false},
+            {"Miku Expo Rewind Concert 3"                           , "Concert 3", local_days{June/5/2022} + 23h + 30min, 90min, true},
         }};
 
     struct offset {
@@ -53,13 +54,18 @@ namespace {
     }};
 
     const std::array<const date::time_zone*, 5> zones = {
-            date::locate_zone("America/Los_Angeles"),
+            date::locate_zone("Asia/Riyadh"),
+            date::locate_zone("Asia/Kolkata"),
+            date::locate_zone("Asia/Taipei"),
+            date::locate_zone("Australia/Sydney"),
+            date::locate_zone("Australia/Perth"),
+//            date::locate_zone("America/Los_Angeles"),
 //            date::locate_zone("America/Denver"),
 //            date::locate_zone("America/Chicago"),
-            date::locate_zone("America/New_York"),
-            date::locate_zone("Europe/London"),
-            date::locate_zone("Europe/Paris"),
-            date::locate_zone("Asia/Tokyo")
+//            date::locate_zone("America/New_York"),
+//            date::locate_zone("Europe/London"),
+//            date::locate_zone("Europe/Paris"),
+//            date::locate_zone("Asia/Tokyo")
     };
 
     std::string
@@ -116,6 +122,17 @@ namespace {
         if (event.main_event) ss << "**";
         ss << '[' << event.short_name << "](" << gcal_link(event) << ')';
         if (event.main_event) ss << "**";
+        return ss.str();
+    }
+
+    std::string
+    bold_main_event(const event& event)
+    {
+        if (!event.main_event)
+            return std::string{event.short_name};
+
+        std::stringstream ss;
+        ss << "**" << event.short_name << "**";
         return ss.str();
     }
 
@@ -179,7 +196,8 @@ int main() {
          const auto jp_time { date::make_zoned("Asia/Tokyo", event.date) };
          const date::sys_seconds sys_time { jp_time.get_sys_time() };
 
-        joiner = gcal_linked_name(event);
+//         joiner = bold_main_event(event);//gcal_linked_name(event);
+         joiner = gcal_linked_name(event);
         for (auto zone : zones) {
             auto zone_time = date::make_zoned(zone, sys_time);
             if (event.main_event) {
@@ -196,21 +214,22 @@ int main() {
                 }
             }
         }
-        joiner = "\n\n";
+        joiner = "\n";
     }
 
+    std::cout << "\n\n";
 
     for (const auto & event : events) {
         const auto jp_time { date::make_zoned("Asia/Tokyo", event.date) };
         const date::sys_seconds sys_time { jp_time.get_sys_time() };
         joiner = event.short_name;
         std::stringstream ss;
-        ss << "<code>" << discord_timestamp(sys_time) << "</code>";
+//        ss << "<code>" << discord_timestamp(sys_time) << "</code>";
+        ss << discord_timestamp(sys_time);
         joiner = ss.str();
         joiner = "\n";
     }
     std::cout << "\n\n";
-
 
     joiner = "DJ";
     for (auto zone : zones) {

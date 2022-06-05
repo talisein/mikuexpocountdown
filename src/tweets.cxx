@@ -19,17 +19,13 @@ namespace {
 
     constinit std::array<const event, 2> events {{
             {"Miku Expo Rewind", local_days{June/5/2022} + 10h + 30min, 3h},
-            {"20 tweet", local_days{May/7/2022} + 10h + 49min, 6h},
+            {"25 tweet", local_days{May/10/2022} + 18h + 30min, 6h},
         }};
 
     const date::time_zone* jst = date::locate_zone("Asia/Tokyo");
     const date::time_zone* pst = date::locate_zone("America/Los_Angeles");
 
-    constinit std::array<std::string_view, 28> songs = {
-        "ODDS&ENDS",
-        "Pane dhiria",
-        "Satisfaction",
-        "Snowman",
+    constinit std::array<std::string_view, 24> songs = {
         "Ten Thousand Stars",
         "Change me", /* 5 times */
         "Glass Wall",
@@ -90,7 +86,7 @@ int main()
         date::operator<<(std::cout, hours);
         std::cout << " ";
         date::operator<<(std::cout, min);
-        std::cout << ") remaining. This song is " << *song++ << std::endl;
+        std::cout <<") remaining. This song is " << *song++ << std::endl;
     }
 
     date::operator<<(std::cout, std::chrono::floor<std::chrono::minutes>(intertweet_duration - 23h));

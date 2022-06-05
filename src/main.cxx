@@ -25,9 +25,7 @@ namespace {
         std::chrono::minutes duration;
     };
 
-    constinit std::array<const raw_event, 5> events {{
-            {"Miku Expo", "expo", date::local_days{June/5/2022} + 10h + 30min, 2h + 90min},
-            {"Digital Stars", "digistars", local_days{May/28/2022} + 13h, 6h},
+    constinit std::array<const raw_event, 3> events {{
             {"Mirai Osaka", "mirai", local_days{August/12/2022} + 12h, 48h + 12h},
             {"Mirai Tokyo", "mirai", local_days{September/2/2022} + 12h, 48h + 12h},
             {"Mirai Sapporo", "mirai", local_days{February/4/2023} + 12h, 48h},
@@ -129,9 +127,8 @@ bool CountdownGrid::update()
             m_days->set_line_wrap_mode(Pango::WRAP_WORD);
             m_days->set_label("Soon");
         } else {
-            m_days->set_label("Miku Miku Miku Miku Miku Miku Miku Miku Miku Miku");
+            m_days->set_label("Miku time now!");
             m_days->set_line_wrap(true);
-            m_days->set_lines(5);
             m_grid->set_valign(Gtk::ALIGN_START);
             m_grid->set_halign(Gtk::ALIGN_START);
             m_grid->remove_row(1);
