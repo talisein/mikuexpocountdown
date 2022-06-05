@@ -1,6 +1,6 @@
 # mikuexpo-countdown
 
-![screenshot](screenshots/screenshot_mirai.png)
+![screenshot](screenshots/screenshot.png)
 
 How long until Miku Expo? How long until Magical Mirai? The answer to these
 questions will be at your fingertips with this toy app.
