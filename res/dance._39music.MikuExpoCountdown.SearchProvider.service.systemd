@@ -1,0 +1,7 @@
+[Unit]
+Description=Miku Expo Countdown search provider for GNOME Shell daemon
+
+[Service]
+Type=dbus
+BusName=dance._39music.MikuExpoCountdown
+ExecStart=/usr/bin/mikuexpo-countdown --gapplication-service
