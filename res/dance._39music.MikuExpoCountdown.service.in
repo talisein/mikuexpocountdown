@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=dance._39music.MikuExpoCountdown
+Exec=@BIN_DIR@/mikuexpo-countdown --gapplication-service
