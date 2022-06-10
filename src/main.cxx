@@ -142,7 +142,7 @@ bool CountdownGrid::update()
 
     auto time = m_event->property_time.get_value();
     auto sys_time = time.get_sys_time();
-    auto diff_secs = floor<seconds>(sys_time - system_clock::now());
+    auto diff_secs = floor<std::chrono::seconds>(sys_time - system_clock::now());
     auto diff_days = floor<std::chrono::days>(diff_secs);
 
     if (diff_days.count() > 0) {
@@ -290,7 +290,55 @@ class SearchProvider : public org::gnome::Shell::SearchProvider2Stub
                 m.insert({"name", Glib::Variant<Glib::ustring>::create(Glib::ustring(std::begin(it->name), std::end(it->name)))});
                 m.insert({"gicon", Glib::Variant<Glib::ustring>::create("dance._39music.MikuExpoCountdown")});
                 auto jst_time = date::make_zoned(JST, it->time);
-                m.insert({"description", Glib::Variant<Glib::ustring>::create(date::format("%c %Z", date::make_zoned(date::current_zone(), jst_time)))});
+
+                auto sys_time = jst_time.get_sys_time();
+                auto diff_secs = floor<std::chrono::seconds>(sys_time - std::chrono::system_clock::now());
+                auto diff_days = floor<std::chrono::days>(diff_secs);
+
+                std::stringstream ss;
+                if (diff_days.count() > 0) {
+                    ss << "in about " << diff_days.count() << " day";
+                    if (diff_days.count() > 1)
+                        ss << 's';
+                } else {
+                    auto diff_hours = floor<std::chrono::hours>(diff_secs);
+                    if (diff_hours.count() > 0) {
+                        ss << "in about " << diff_hours.count() << " hour";
+                        if (diff_hours.count() > 1)
+                            ss << 's';
+                    } else {
+                        auto diff_minutes = floor<std::chrono::minutes>(diff_secs);
+                        if (diff_minutes.count() < 1) {
+                            if (diff_secs.count() <= 0) {
+                                if ((diff_secs + it->duration).count() > 0) {
+                                    ss << "Happening now";
+                                } else {
+                                    ss << "Event finished";
+                                }
+                            } else {
+                                ss << "in less than a minute!";
+                            }
+                        } else if (diff_minutes.count() == 1) {
+                            ss << "in a minute!";
+                        } else {
+                            ss << "in about " << diff_minutes.count() << " minutes";
+                        }
+                    }
+                }
+                Glib::ustring display_date;
+                if (diff_secs.count() <= 0) { // Event started
+                    auto end_time = date::make_zoned(JST, it->time + it->duration);
+                    if ((diff_secs + it->duration).count() > 0) // Event ongoing
+                        display_date = Glib::ustring::compose("until %1", date::format("%c %Z", date::make_zoned(date::current_zone(), end_time)));
+                    else // Event finished
+                        display_date = Glib::ustring::compose("ended %1", date::format("%c %Z", date::make_zoned(date::current_zone(), end_time)));
+                } else { // Event starts in the future
+                    display_date = date::format("%c %Z", date::make_zoned(date::current_zone(), jst_time));
+                }
+                auto description = Glib::ustring::compose("%1 \u2014 %2",
+                                                          ss.str(),
+                                                          display_date);
+                m.insert({"description", Glib::Variant<Glib::ustring>::create(description)});
                 v.push_back(m);
             }
         }
