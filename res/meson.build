@@ -57,5 +57,6 @@ install_data('dance._39music.MikuExpoCountdown.SearchProvider.service.systemd',
              rename: 'dance._39music.MikuExpoCountdown.SearchProvider.service')
 
 # gnome-shell search provider ini
-install_data('mikuexpo-search-provider.ini',
-             install_dir: get_option('datadir') / 'gnome-shell' / 'search-providers')
+install_data('search-provider.ini',
+             install_dir: get_option('datadir') / 'gnome-shell' / 'search-providers',
+             rename: 'dance._39music.MikuExpoCountdown.search-provider.ini')
