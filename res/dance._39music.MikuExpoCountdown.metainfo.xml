@@ -25,6 +25,10 @@
 
   <content_rating type="oars-1.1" />
 
+  <kudos>
+    <kudo>SearchProvider</kudo>
+  </kudos>
+
   <categories>
     <category>Utility</category>
     <category>GTK</category>

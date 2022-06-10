@@ -234,6 +234,7 @@ class SearchProvider : public org::gnome::Shell::SearchProvider2Stub
     GetInitialResultSet(const std::vector<Glib::ustring> & terms,
                         MethodInvocation &invocation) override final
     {
+        std::cout << "Miku is searching for " << terms.front() << std::endl;
         std::vector<Glib::ustring> results;
         for (auto &e : events) {
             results.emplace_back(std::begin(e.name), std::end(e.name));
@@ -247,6 +248,7 @@ class SearchProvider : public org::gnome::Shell::SearchProvider2Stub
                           const std::vector<Glib::ustring> & terms,
                           MethodInvocation &invocation) override final
     {
+        std::cout << "Miku is subsearching for " << terms.front() << std::endl;
         std::vector<Glib::ustring> results;
         for (auto &e : events) {
             results.emplace_back(std::begin(e.name), std::end(e.name));
