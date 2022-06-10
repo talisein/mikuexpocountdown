@@ -241,9 +241,9 @@ class SearchProvider : public org::gnome::Shell::SearchProvider2Stub
             const auto theme = Glib::ustring(e.style_class.begin(), e.style_class.end()).casefold();
             for (const auto &term : terms) {
                 auto folded = term.casefold();
-                if (Glib::ustring::npos != folded.find(event) ||
-                    Glib::ustring::npos != folded.find(theme) ||
-                    Glib::ustring::npos != folded.find(miku)) {
+                if (Glib::ustring::npos != event.find(folded) ||
+                    Glib::ustring::npos != theme.find(folded) ||
+                    Glib::ustring::npos != miku.find(folded)) {
                     results.emplace_back(event);
                     break;
                 }
@@ -265,9 +265,9 @@ class SearchProvider : public org::gnome::Shell::SearchProvider2Stub
             const auto theme = Glib::ustring(e.style_class.begin(), e.style_class.end()).casefold();
             for (const auto &term : terms) {
                 auto folded = term.casefold();
-                if (Glib::ustring::npos != folded.find(event) ||
-                    Glib::ustring::npos != folded.find(theme) ||
-                    Glib::ustring::npos != folded.find(miku)) {
+                if (Glib::ustring::npos != event.find(folded) ||
+                    Glib::ustring::npos != theme.find(folded) ||
+                    Glib::ustring::npos != miku.find(folded)) {
                     results.emplace_back(event);
                     break;
                 }
