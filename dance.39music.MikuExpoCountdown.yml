@@ -4,7 +4,7 @@ runtime: org.gnome.Platform
 runtime-version: '42'
 sdk: org.gnome.Sdk
 command: mikuexpo-countdown
-finish-args: ['--socket=wayland']
+finish-args: ['--socket=wayland', '--socket=session-bus']
 modules:
   - name: mm-common
     cleanup: '/'
