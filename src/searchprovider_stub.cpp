@@ -88,7 +88,7 @@ static const char interfaceXml0[] = R"XML_DELIMITER(<!DOCTYPE node PUBLIC
 </node>
 )XML_DELIMITER";
 
-#include "/home/agpotter/git/mikuexpocountdown/src/searchprovider_stub.h"
+#include "searchprovider_stub.h"
 
 template<class T>
 inline T specialGetter(Glib::Variant<T> variant)

@@ -6,7 +6,7 @@ sp_sources = gnome.gdbus_codegen(
   namespace : 'MikuExpoCountdown',
 )
 
-src = ['main.cxx', 'searchprovider_common.cpp', 'searchprovider_stub.cpp']
+src = ['main.cxx', 'searchprovider_stub.cpp']
 
 
 exe = executable('mikuexpo-countdown', src, res,

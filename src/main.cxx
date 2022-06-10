@@ -10,14 +10,14 @@
 #include "gtkmm/icontheme.h"
 #include "searchprovider_stub.h"
 #include <chrono>
-#include <glibmm-2.4/glibmm/objectbase.h>
-#include <gtkmm-3.0/gtkmm/enums.h>
-#include <gtkmm-3.0/gtkmm/stylecontext.h>
-#include <gtkmm-3.0/gtkmm/styleprovider.h>
+#include <glibmm/objectbase.h>
+#include <gtkmm/enums.h>
+#include <gtkmm/stylecontext.h>
+#include <gtkmm/styleprovider.h>
 #include <iostream>
 #include <iomanip>
 #include <gtkmm.h>
-#include <pangomm-1.4/pangomm/layout.h>
+#include <pangomm/layout.h>
 #include <version>
 
 #if __cpp_lib_chrono < 201907
