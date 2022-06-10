@@ -44,7 +44,7 @@ namespace {
 
     constinit std::array events {std::to_array<raw_event>({
             {"39roove", "roove39", local_days{June/12/2022} + 14h, 6h},
-            {"Mirai Tickets", "mirai", local_days{June/15/2022} + 12h, 24h * 5 + 12h},
+            {"Mirai Tix", "mirai", local_days{June/15/2022} + 12h, 24h * 5 + 12h},
             {"DJ Bar 39", "bar39", local_days{June/15/2022} + 18h, 4h},
             {"Dimension 39", "d39", local_days{July/9/2022} + 23h, 4h},
             {"Mirai Osaka", "mirai", local_days{August/12/2022} + 12h, 48h + 12h},
@@ -234,10 +234,20 @@ class SearchProvider : public org::gnome::Shell::SearchProvider2Stub
     GetInitialResultSet(const std::vector<Glib::ustring> & terms,
                         MethodInvocation &invocation) override final
     {
-        std::cout << "Miku is searching for " << terms.front() << std::endl;
+        const auto miku = Glib::ustring("miku").casefold();
         std::vector<Glib::ustring> results;
         for (auto &e : events) {
-            results.emplace_back(std::begin(e.name), std::end(e.name));
+            const auto event = Glib::ustring(e.name.begin(), e.name.end()).casefold();
+            const auto theme = Glib::ustring(e.style_class.begin(), e.style_class.end()).casefold();
+            for (const auto &term : terms) {
+                auto folded = term.casefold();
+                if (Glib::ustring::npos != folded.find(event) ||
+                    Glib::ustring::npos != folded.find(theme) ||
+                    Glib::ustring::npos != folded.find(miku)) {
+                    results.emplace_back(event);
+                    break;
+                }
+            }
         }
 
         invocation.ret(results);
@@ -248,10 +258,20 @@ class SearchProvider : public org::gnome::Shell::SearchProvider2Stub
                           const std::vector<Glib::ustring> & terms,
                           MethodInvocation &invocation) override final
     {
-        std::cout << "Miku is subsearching for " << terms.front() << std::endl;
+        const auto miku = Glib::ustring("miku").casefold();
         std::vector<Glib::ustring> results;
         for (auto &e : events) {
-            results.emplace_back(std::begin(e.name), std::end(e.name));
+            const auto event = Glib::ustring(e.name.begin(), e.name.end()).casefold();
+            const auto theme = Glib::ustring(e.style_class.begin(), e.style_class.end()).casefold();
+            for (const auto &term : terms) {
+                auto folded = term.casefold();
+                if (Glib::ustring::npos != folded.find(event) ||
+                    Glib::ustring::npos != folded.find(theme) ||
+                    Glib::ustring::npos != folded.find(miku)) {
+                    results.emplace_back(event);
+                    break;
+                }
+            }
         }
         invocation.ret(results);
     }
@@ -261,12 +281,12 @@ class SearchProvider : public org::gnome::Shell::SearchProvider2Stub
     {
         std::vector<std::map<Glib::ustring,Glib::VariantBase>> v;
         for (auto &id : identifiers) {
-            auto it = std::find_if(std::begin(events), std::end(events), [&id](auto event) {
-                return event.name == id.c_str();
+            auto it = std::find_if(std::begin(events), std::end(events), [&id](const raw_event& event) {
+                return Glib::ustring(event.name.begin(), event.name.end()).casefold().compare(id) == 0;
             });
             if (std::end(events) != it) {
                 std::map<Glib::ustring, Glib::VariantBase> m;
-                m.insert({"id", Glib::Variant<Glib::ustring>::create(Glib::ustring(std::begin(it->name), std::end(it->name)))});
+                m.insert({"id", Glib::Variant<Glib::ustring>::create(id)});
                 m.insert({"name", Glib::Variant<Glib::ustring>::create(Glib::ustring(std::begin(it->name), std::end(it->name)))});
                 m.insert({"gicon", Glib::Variant<Glib::ustring>::create("dance._39music.MikuExpoCountdown")});
                 auto jst_time = date::make_zoned(JST, it->time);
@@ -283,6 +303,7 @@ class SearchProvider : public org::gnome::Shell::SearchProvider2Stub
                    guint32 timestamp,
                    MethodInvocation &invocation) override final
     {
+        invocation.ret();
     }
 
     virtual void
@@ -290,6 +311,7 @@ class SearchProvider : public org::gnome::Shell::SearchProvider2Stub
                  guint32 timestamp,
                  MethodInvocation &invocation) override final
     {
+        invocation.ret();
     }
 };
 
