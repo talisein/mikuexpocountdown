@@ -2,10 +2,11 @@
 Name=Miku Expo Countdown
 Comment=Countdown the days and hours to Miku Expo
 Exec=mikuexpo-countdown
-#DBusActivatable=true
 Icon=dance._39music.MikuExpoCountdown
 Terminal=false
 Type=Application
+DBusActivatable=true
 StartupNotify=true
 Categories=GTK;Utility;
 Keywords=countdown;miku;
+X-Desktop-File-Install-Version=0.26

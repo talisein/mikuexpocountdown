@@ -3,22 +3,62 @@
 	background-repeat: no-repeat;
     background-origin: content-box;
     background-position: center;
+    font-family: "Nanum Pen Script";
+}
+
+#page.roove39 {
+    background-image: url("resource:///org/talinet/mikuexpocountdown/39roove.png");
+    padding: 10px;
+    color: #f75189;
+    padding: 10px;
+}
+
+#page.d39 {
+    background-image: url("resource:///org/talinet/mikuexpocountdown/dimension39.png");
+    padding: 10px;
+    color: #fe002b;
+    padding: 10px;
+}
+
+#page.bar39 {
+    background-image: url("resource:///org/talinet/mikuexpocountdown/bar39.jpg");
+    padding: 10px;
+    color: #5dc6fd;
+    padding: 10px;
 }
 
 #page.expo {
     background-image: url("resource:///org/talinet/mikuexpocountdown/hero_miku.png");
+    padding: 10px;
+    color: rgb(213,25,118);
     padding: 10px;
 }
 
 #page.mirai {
     background-image: url("resource:///org/talinet/mikuexpocountdown/hero_mirai_2022.png");
     padding: 10px;
+    color: #935efc;
+    padding: 10px;
 }
 
 #page.digistars {
     background-image: url("resource:///org/talinet/mikuexpocountdown/hero_digital_stars_2022.png");
-    background-position: 0;
+    background-position: bottom center;
     padding: 0px;
+    color: rgb(113,25,18);
+    padding: 0px;
+}
+
+box.roove39 {
+    background-color: #252525;
+}
+
+box.d39 {
+    background-image: linear-gradient(#8ae7c9,#8ae7c9,#8ae7c9,#8ae7c9, #8ae7c9,#8ae7c9,#8ae7c9, #fbf7a7, #fbf7a7, #fbf7a7, #fbf7a7, #fbf7a7,#fbf7a7,#fbf7a7,#fbf7a7);
+}
+
+box.bar39 {
+    background-color: #090909;
 }
 
 box.expo {
@@ -31,25 +71,6 @@ box.digistars {
     background-color: #364153;
 }
 
-grid {
-    font-family: "Nanum Pen Script";
-}
-
-grid.expo {
-    color: rgb(213,25,118);
-    padding: 10px;
-}
-
-grid.digistars {
-    color: rgb(113,25,18);
-    padding: 0px;
-}
-
-grid.mirai {
-    color: #935efc;
-    padding: 10px;
-}
-
 #days {
     font-size: 200px;
 }
@@ -59,4 +80,9 @@ grid.mirai {
     font-weight: 900;
     letter-spacing: 5px;
     font-size: 50px;
+}
+
+#date {
+    font-family: "Free mono";
+    font-weight: 900;
 }

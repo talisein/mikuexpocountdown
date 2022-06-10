@@ -23,14 +23,14 @@ namespace {
     constinit std::array<const event, 10> events {{
 //            {"Digital Stars 2022", "Open", local_days{May/28/2022} + 13h, 6h, false},
             {"Miku Expo Preshow 1"                                  , "Preshow 1", local_days{June/5/2022} + 10h + 30min, 55min, false},
-            {"Miku Expo Rewind Digistars yanagamiyuki / coralmines" , "Digistar1", local_days{June/5/2022} + 11h + 25min, 60min, false},
+            {"Miku Expo Rewind Digistars yanagamiyuki / coralmines" , "DJ Show 1", local_days{June/5/2022} + 11h + 25min, 60min, false},
             {"Miku Expo Rewind Concert 1"                           , "Concert 1", local_days{June/5/2022} + 12h + 30min, 90min, true},
             {"Miku Expo Rewind Digistars Radio"                     , "DigiRadio", local_days{June/5/2022} + 15h, 60min, false},
             {"Miku Expo Rewind Preshow 2"                           , "Preshow 2", local_days{June/5/2022} + 17h + 30min, 55min, false},
-            {"Miku Expo Rewind Digistars FOXSKY / android52"        , "Digistar2", local_days{June/5/2022} + 18h + 25min, 60min, false},
+            {"Miku Expo Rewind Digistars FOXSKY / android52"        , "DJ Show 2", local_days{June/5/2022} + 18h + 25min, 60min, false},
             {"Miku Expo Rewind Concert 2"                           , "Concert 2", local_days{June/5/2022} + 19h + 30min, 90min, true},
             {"Miku Expo Rewind Preshow 3"                           , "Preshow 3", local_days{June/5/2022} + 21h + 30min, 55min, false},
-            {"Miku Expo Rewind Digistars snarewaves / KIRA"         , "DigiStar3", local_days{June/5/2022} + 22h + 25min, 60min, false},
+            {"Miku Expo Rewind Digistars snarewaves / KIRA"         , "DJ Show 3", local_days{June/5/2022} + 22h + 25min, 60min, false},
             {"Miku Expo Rewind Concert 3"                           , "Concert 3", local_days{June/5/2022} + 23h + 30min, 90min, true},
         }};
 

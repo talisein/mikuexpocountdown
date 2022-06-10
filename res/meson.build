@@ -15,8 +15,7 @@ desktop_file = files('dance._39music.MikuExpoCountdown.desktop')
 desktop_utils = find_program('desktop-file-validate', required: false)
 if desktop_utils.found()
   test('Validate desktop file', desktop_utils,
-    args: [desktop_file]
-  )
+    args: [desktop_file])
 endif
 
 install_data(desktop_file,
@@ -42,3 +41,17 @@ endif
 
 install_data(metainfo_file,
              install_dir: get_option('datadir') / 'metainfo')
+
+# --- dbus service file ---
+dbus_conf = configuration_data()
+dbus_conf.set('BIN_DIR', get_option('prefix') / get_option('bindir'))
+dbus_service = configure_file(input: 'dance._39music.MikuExpoCountdown.service.in',
+                              output: 'dance._39music.MikuExpoCountdown.service',
+                              configuration: dbus_conf,
+                              install: true,
+                              install_dir: get_option('datadir') / 'dbus-1' / 'services')
+
+# -- systemd service ---
+install_data('dance._39music.MikuExpoCountdown.SearchProvider.service.systemd',
+             install_dir: get_option('prefix') / 'lib' / 'systemd' / 'user',
+             rename: 'dance._39music.MikuExpoCountdown.SearchProvider.service')

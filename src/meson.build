@@ -1,6 +1,13 @@
+gnome = import('gnome')
+sp_sources = gnome.gdbus_codegen(
+  'shell-search-provider-generated',
+  sources: '/usr/share/dbus-1/interfaces/org.gnome.ShellSearchProvider2.xml',
+  interface_prefix : 'dance.39music.',
+  namespace : 'MikuExpoCountdown',
+)
 
+src = ['main.cxx', 'searchprovider_common.cpp', 'searchprovider_stub.cpp']
 
-src = ['main.cxx']
 
 exe = executable('mikuexpo-countdown', src, res,
                  dependencies : [gtkmm_dep, date_dep],
