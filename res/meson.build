@@ -55,3 +55,7 @@ dbus_service = configure_file(input: 'dance._39music.MikuExpoCountdown.service.i
 install_data('dance._39music.MikuExpoCountdown.SearchProvider.service.systemd',
              install_dir: get_option('prefix') / 'lib' / 'systemd' / 'user',
              rename: 'dance._39music.MikuExpoCountdown.SearchProvider.service')
+
+# gnome-shell search provider ini
+install_data('mikuexpo-search-provider.ini',
+             install_dir: get_option('datadir') / 'gnome-shell' / 'search-providers')
