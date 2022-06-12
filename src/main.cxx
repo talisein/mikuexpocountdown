@@ -1,24 +1,9 @@
-#include "gdkmm/displaymanager.h"
-#include "giomm/application.h"
-#include "giomm/dbusconnection.h"
-#include "giomm/fileicon.h"
-#include "glibmm/refptr.h"
-#include "glibmm/variant.h"
-#include "gtkmm/application.h"
-#include "gtkmm/box.h"
-#include "gtkmm/enums.h"
-#include "gtkmm/icontheme.h"
-#include "searchprovider_stub.h"
+#include <version>
 #include <chrono>
-#include <glibmm/objectbase.h>
-#include <gtkmm/enums.h>
-#include <gtkmm/stylecontext.h>
-#include <gtkmm/styleprovider.h>
 #include <iostream>
 #include <iomanip>
 #include <gtkmm.h>
-#include <pangomm/layout.h>
-#include <version>
+#include "searchprovider_stub.h"
 
 #if __cpp_lib_chrono < 201907
 #include "date/date.h"
@@ -32,8 +17,7 @@ namespace {
 #endif
     using namespace std::chrono_literals;
 
-    constexpr auto mer_local_time = date::local_days{June/5/2022} + 10h + 30min;
-    const auto JST = date::locate_zone("Asia/Tokyo");
+     const auto JST = date::locate_zone("Asia/Tokyo");
 
     struct raw_event {
         std::string_view name;
@@ -63,6 +47,7 @@ private:
         property_name(*this, "name", {std::begin(event.name), std::end(event.name)}),
         m_style_class(std::begin(event.style_class), std::end(event.style_class)),
         property_time(*this, "time", {JST, event.time}),
+        m_duration(event.duration),
         m_local_time(event.time)
     {
     }
@@ -74,10 +59,22 @@ public:
     }
     virtual ~Event() = default;
 
+    bool is_live() const { return 0s > secs_to_live(); }
+
+    bool is_expired() const { return 0s > secs_to_expire(); }
+
+    std::chrono::seconds secs_to_live() const {
+        return floor<std::chrono::seconds>(property_time.get_value().get_sys_time()
+                                           - std::chrono::system_clock::now());
+    }
+    std::chrono::seconds secs_to_expire() const {
+        return secs_to_live() + m_duration;
+    }
+
     Glib::Property<Glib::ustring> property_name;
     Glib::ustring m_style_class;
     Glib::Property<date::zoned_seconds> property_time;
-
+    std::chrono::minutes m_duration;
 private:
     date::local_seconds m_local_time;
 };
@@ -88,7 +85,17 @@ public:
     CountdownGrid(const Glib::RefPtr<Event> &event);
 
     bool update();
-
+    bool remove_me() {
+        auto stack = dynamic_cast<Gtk::Stack*>(this->get_parent());
+        if (stack) {
+            auto visible_child = stack->get_visible_child();
+            stack->remove(*this);
+            if (static_cast<Gtk::Widget*>(this) == visible_child) {
+                stack->set_visible_child(*(stack->get_first_child()));
+            }
+        }
+        return false;
+    }
     Glib::RefPtr<Event> m_event;
 private:
     Gtk::Label *m_days;
@@ -120,55 +127,56 @@ CountdownGrid::CountdownGrid(const Glib::RefPtr<Event> &event) :
     m_bottom_box->set_end_widget(*m_date);
     m_date->set_valign(Gtk::Align::END);
 
+    m_days->set_max_width_chars(8); // '999 days'
+    m_days->set_wrap(true);
+    m_days->set_justify(Gtk::Justification::CENTER);
+    auto attrs = Pango::AttrList();
+    auto line_height = Pango::Attribute::create_attr_line_height(0.6);
+    attrs.insert(line_height);
+    m_days->set_attributes(attrs);
+
     auto context = get_style_context();
     context->add_class(event->m_style_class);
     context = get_style_context();
     context->add_class(event->m_style_class);
 
-    auto time = date::make_zoned(date::current_zone(), m_event->property_time.get_value());
-    auto timetext = date::format("%c %Z", time);
-    auto jsttext = date::format("%c %Z", date::make_zoned(JST, time));
-    std::stringstream ss;
-    ss << timetext << '\n' << jsttext;
-    m_date->set_text(ss.str());
+    auto localtime = date::make_zoned(date::current_zone(), m_event->property_time.get_value());
+    auto jsttime   = date::make_zoned(JST, localtime);
+    m_date->set_text(Glib::ustring::compose("%1\n%2",
+                                            date::format("%c %Z", localtime),
+                                            date::format("%c %Z", jsttime)));
+    update();
 }
 
 bool CountdownGrid::update()
 {
-#if __cpp_lib_chrono < 201907
-    using namespace date;
-#endif
-    using namespace std::chrono;
-
-    auto time = m_event->property_time.get_value();
-    auto sys_time = time.get_sys_time();
-    auto diff_secs = floor<std::chrono::seconds>(sys_time - system_clock::now());
+    auto diff_secs = m_event->secs_to_live();
     auto diff_days = floor<std::chrono::days>(diff_secs);
 
-    if (diff_days.count() > 0) {
-        std::stringstream ss;
-        ss << diff_days.count() << " ";
+    if (diff_days > 0s) {
+        m_hours->show();
         if (diff_days.count() > 1) {
-            ss << "days";
+            m_days->set_label(Glib::ustring::compose("%1 days", diff_days.count()));
         } else {
-            ss << "day";
+            m_days->set_label(Glib::ustring::compose("%1 day", diff_days.count()));
         }
-        m_days->set_label(ss.str());
+        m_hours->set_label(date::format("%T", diff_secs - diff_days));
     } else {
-        if (diff_secs.count() > 0) {
-            m_days->set_wrap(true);
-            m_days->set_wrap_mode(Pango::WrapMode::WORD);
+        if (diff_secs > 0s) {
             m_days->set_label("Soon");
+            m_hours->set_label(date::format("%T", diff_secs));
         } else {
+            m_hours->hide();
             m_days->set_label("Miku time now!");
-            m_days->set_wrap(true);
+            auto secs_to_end = m_event->secs_to_expire();
+            if (secs_to_end > 0s) {
+                Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &CountdownGrid::remove_me), secs_to_end.count());
+            } else {
+                remove_me();
+            }
             return false;
         }
     }
-
-    std::stringstream ss;
-    ss << make_time(diff_secs - diff_days);
-    m_hours->set_label(ss.str());
 
     return true;
 }
@@ -187,7 +195,6 @@ public:
         m_box->append(*m_stack);
         m_stack_switcher->set_stack(*m_stack);
         m_stack_switcher->set_halign(Gtk::Align::CENTER);
-
         auto provider = Gtk::CssProvider::create();
         provider->load_from_resource("/org/talinet/mikuexpocountdown/style.css");
         auto style_context = get_style_context();
@@ -201,9 +208,9 @@ public:
 
         for (auto &e : events) {
             auto event = Event::create(e);
+            if (event->is_expired()) continue;
             auto grid = Gtk::manage(new CountdownGrid(event));
             m_stack->add(*grid, event->property_name.get_value(), event->property_name.get_value());
-            grid->update();
             Glib::signal_timeout().connect_seconds(sigc::mem_fun(*grid, &CountdownGrid::update), 1);
         }
     }
@@ -244,7 +251,7 @@ class SearchProvider : public org::gnome::Shell::SearchProvider2Stub
                 if (Glib::ustring::npos != event.find(folded) ||
                     Glib::ustring::npos != theme.find(folded) ||
                     Glib::ustring::npos != miku.find(folded)) {
-                    results.emplace_back(event);
+                    results.push_back(std::move(event));
                     break;
                 }
             }
