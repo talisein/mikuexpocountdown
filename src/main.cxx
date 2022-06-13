@@ -29,7 +29,7 @@ int main (int argc, char *argv[])
                 app->add_window(*window);
                 window->set_application(app);
                 window->present();
-            } else {
+             } else {
                 m_run_window->present();
             }
         });

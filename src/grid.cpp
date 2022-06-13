@@ -4,10 +4,10 @@ CountdownGrid::CountdownGrid(const Glib::RefPtr<const Miku::Event> &event) :
     Glib::ObjectBase("CountdownGrid"),
     Gtk::CenterBox(),
     m_event(event),
-    m_days(Gtk::manage(new Gtk::Label())),
-    m_hours(Gtk::manage(new Gtk::Label())),
-    m_date(Gtk::manage(new Gtk::Label())),
-    m_bottom_box(Gtk::manage(new Gtk::CenterBox()))
+    m_days(Gtk::make_managed<Gtk::Label>()),
+    m_hours(Gtk::make_managed<Gtk::Label>()),
+    m_date(Gtk::make_managed<Gtk::Label>()),
+    m_bottom_box(Gtk::make_managed<Gtk::CenterBox>())
 {
     set_orientation(Gtk::Orientation::VERTICAL);
     set_name("page");
@@ -42,6 +42,7 @@ CountdownGrid::CountdownGrid(const Glib::RefPtr<const Miku::Event> &event) :
                                             date::format("%c %Z", localtime),
                                             date::format("%c %Z", jsttime)));
     update();
+    Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &CountdownGrid::update), 1);
 }
 
 bool
@@ -77,4 +78,18 @@ CountdownGrid::update()
     }
 
     return true;
+}
+
+bool
+CountdownGrid::remove_me()
+{
+    auto stack = dynamic_cast<Gtk::Stack*>(this->get_parent());
+    if (stack) {
+        auto visible_child = stack->get_visible_child();
+        stack->remove(*this);
+        if (static_cast<Gtk::Widget*>(this) == visible_child) {
+            stack->set_visible_child(*(stack->get_first_child()));
+        }
+    }
+    return false;
 }

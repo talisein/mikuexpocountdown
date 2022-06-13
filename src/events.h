@@ -19,9 +19,15 @@ namespace Miku
         Event(const raw_event& event);
 
     public:
-        static Glib::RefPtr<Event> create(const raw_event& event);
+        template <typename... Args>
+        static Glib::RefPtr<Event> create(Args&&... args) {
+            struct enabler : public Miku::Event {
+                enabler(Args&&... argz) : Miku::Event(std::forward<Args...>(argz...)) {};
+            };
+            return std::make_shared<enabler>(std::forward<Args...>(args...));
+        }
 
-        virtual ~Event() = default;
+        virtual ~Event() override = default;
 
         inline bool is_live() const { using namespace std::chrono_literals; return 0s > secs_to_live(); }
 
@@ -58,5 +64,6 @@ namespace Miku
         date::local_seconds m_local_time;
     };
 
-    const std::vector<Glib::RefPtr<const Miku::Event>>& get_events();
+    using events_view_t = std::ranges::ref_view<const std::vector<Glib::RefPtr<const Event>>>;
+    events_view_t get_events();
 }

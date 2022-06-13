@@ -2,16 +2,16 @@
 #include <gtkmm.h>
 #include "search_provider.h"
 
-class MikuApplication : public Gtk::Application
+class MikuApplication final : public Gtk::Application
 {
 public:
     MikuApplication(const Glib::ustring &application_id) : Glib::ObjectBase("MikuApplication"), Gtk::Application(application_id) {
     }
 
-    virtual ~MikuApplication() = default;
+    virtual ~MikuApplication() override final = default;
 
     template<typename... Args>
-    static Glib::RefPtr<MikuApplication> create(Args... args) { return Glib::make_refptr_for_instance<MikuApplication>(new MikuApplication(args...)); }
+    static Glib::RefPtr<MikuApplication> create(Args&&... args) { return std::make_shared<MikuApplication>(std::forward<Args&&...>(args...)); }
 
     protected:
 

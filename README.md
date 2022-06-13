@@ -10,11 +10,11 @@ If you'd like a Flatpak, you can click this button:
 <a href='https://flatpak.39music.dance/repo/stable/appstream/dance._39music.MikuExpoCountdown.flatpakref'><img height='51' alt='Download on 39music' src='https://flatpak.39music.dance/repo/stable/appstream/39music-badge.png'/></a>
 
 
-Otherwise, to build it yourself you'll need gtkmm-3.
+Otherwise, to build it yourself you'll need gtkmm-4 and a C++20 compiler.
 
-Fedora instructions:
+Fedora 36 instructions:
 ```
-# sudo dnf install gtkmm30-devel date-devel meson gcc-c++
+# sudo dnf install gtkmm4.0-devel date-devel meson gcc-c++
 # meson build/
 # ninja -C build
 # build/src/mikuexpo-countdown # (This runs the program)

@@ -27,23 +27,17 @@ namespace {
                 {"Mirai Sapporo", "miku Magical Mirai Sapporo Snow Miku", "mirai",   local_days{February/4/2023}  + 12h, 48h},
             })};
 
-    constinit auto events_view { std::views::transform(raw_events, &Miku::Event::create) };
-
     static date::time_zone const * const JST { date::locate_zone("Asia/Tokyo") };
 }
 
-
 namespace Miku
 {
-    const std::vector<Glib::RefPtr<const Miku::Event>>& get_events() {
-        static std::vector<Glib::RefPtr<const Miku::Event>> events {events_view.begin(), events_view.end()};
-        return events;
-    }
-
-    Glib::RefPtr<Event>
-    Event::create(const raw_event& event)
+    events_view_t get_events()
     {
-        return Glib::RefPtr<Miku::Event>(new Miku::Event(event));
+        static constinit auto events_view { std::views::transform(raw_events,
+                                                                  []<typename T>(T&& raw) { return Miku::Event::create(std::forward<T>(raw)); }) };
+        static const std::vector<Glib::RefPtr<const Miku::Event>> events {events_view.begin(), events_view.end()};
+        return std::ranges::views::all(events);
     }
 
     Event::Event(const raw_event &event) :
@@ -53,7 +47,8 @@ namespace Miku
         search_keys(Glib::ustring(event.search_terms.begin(), event.search_terms.end()).casefold()),
         start_time(JST, event.time),
         end_time(JST, event.time + event.duration),
-        m_duration(event.duration), m_local_time(event.time)
+        m_duration(event.duration),
+        m_local_time(event.time)
     {
     }
 }

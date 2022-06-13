@@ -6,15 +6,15 @@
 #include "grid.h"
 #include "events.h"
 
-class CountdownWindow : public Gtk::ApplicationWindow
+class CountdownWindow final : public Gtk::ApplicationWindow
 {
 public:
-    CountdownWindow(const Glib::RefPtr<Gtk::Application>& app) :
-        Glib::ObjectBase("CountdownWindow"),
+CountdownWindow(const Glib::RefPtr<Gtk::Application>& app) :
+    Glib::ObjectBase("CountdownWindow"),
         Gtk::ApplicationWindow(app),
-        m_box(Gtk::manage(new Gtk::Box(Gtk::Orientation::VERTICAL))),
-        m_stack(Gtk::manage(new Gtk::Stack())),
-        m_stack_switcher(Gtk::manage(new Gtk::StackSwitcher()))
+        m_box(Gtk::make_managed<Gtk::Box>(Gtk::Orientation::VERTICAL)),
+        m_stack(Gtk::make_managed<Gtk::Stack>()),
+        m_stack_switcher(Gtk::make_managed<Gtk::StackSwitcher>())
     {
         set_name("mainwin");
         m_box->append(*m_stack_switcher);
@@ -32,14 +32,14 @@ public:
         m_stack->set_expand(true);
         m_stack->property_visible_child().signal_changed().connect(sigc::mem_fun(*this, &CountdownWindow::on_switch));
 
-        for (const auto &e : Miku::get_events() | std::ranges::views::filter(&Miku::Event::is_unexpired)) {
+        using namespace std::ranges;
+        for (const auto &e : Miku::get_events() | views::filter(&Miku::Event::is_unexpired)) {
             auto grid = Gtk::make_managed<CountdownGrid>(e);
             m_stack->add(*grid, e->name, e->name);
-            Glib::signal_timeout().connect_seconds(sigc::mem_fun(*grid, &CountdownGrid::update), 1);
         }
     }
 
-    virtual ~CountdownWindow() = default;
+    virtual ~CountdownWindow() override final = default;
 
 private:
     Gtk::Box *m_box;

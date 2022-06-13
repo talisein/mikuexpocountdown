@@ -1,3 +1,4 @@
+#include <cassert>
 #include "sigc++/functors/mem_fun.h"
 static const char interfaceXml0[] = R"XML_DELIMITER(<!DOCTYPE node PUBLIC
 '-//freedesktop//DTD D-BUS Object Introspection 1.0//EN'
@@ -107,9 +108,22 @@ inline std::string specialGetter(Glib::Variant<std::string> variant)
     return std::string(data, n_elem);
 }
 
-org::gnome::Shell::SearchProvider2Stub::SearchProvider2Stub():
-    m_interfaceName("org.gnome.Shell.SearchProvider2")
+Gio::DBus::InterfaceVTable &
+org::gnome::Shell::SearchProvider2Stub::get_vtable(SearchProvider2Stub *stub)
 {
+    static SearchProvider2Stub *first = stub;
+    static Gio::DBus::InterfaceVTable vtable(sigc::mem_fun(*stub, &SearchProvider2Stub::on_method_call),
+                                             sigc::mem_fun(*stub, &SearchProvider2Stub::on_interface_get_property),
+                                             sigc::mem_fun(*stub, &SearchProvider2Stub::on_interface_set_property)
+        );
+    assert(stub == first);
+    return vtable;
+}
+
+org::gnome::Shell::SearchProvider2Stub::SearchProvider2Stub():
+               m_interfaceName("org.gnome.Shell.SearchProvider2")
+{
+
 }
 
 org::gnome::Shell::SearchProvider2Stub::~SearchProvider2Stub()
@@ -130,17 +144,11 @@ guint org::gnome::Shell::SearchProvider2Stub::register_object(
         }
     }
 
-    Gio::DBus::InterfaceVTable *interface_vtable =
-        new Gio::DBus::InterfaceVTable(
-            sigc::mem_fun(*this, &SearchProvider2Stub::on_method_call),
-            sigc::mem_fun(*this, &SearchProvider2Stub::on_interface_get_property),
-            sigc::mem_fun(*this, &SearchProvider2Stub::on_interface_set_property));
-
     guint registration_id;
     try {
         registration_id = connection->register_object(object_path,
             introspection_data->lookup_interface("org.gnome.Shell.SearchProvider2"),
-            *interface_vtable);
+            get_vtable(this));
     } catch(const Glib::Error &ex) {
         g_warning("Registration of object %s failed: %s", object_path.c_str(), ex.what());
         return 0;

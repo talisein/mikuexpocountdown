@@ -85,6 +85,8 @@ private:
     Glib::RefPtr<Gio::DBus::NodeInfo> introspection_data;
     std::vector<RegisteredObject> m_registered_objects;
     std::string m_interfaceName;
+
+    static Gio::DBus::InterfaceVTable& get_vtable(SearchProvider2Stub *stub);
 };
 
 class SearchProvider2Stub::MethodInvocation {
