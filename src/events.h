@@ -38,9 +38,14 @@ namespace Miku
             return secs_to_live() + m_duration;
         }
 
-        date::zoned_seconds get_expire_time() const;
-
-        bool match_search(const std::vector<Glib::ustring> &terms) const;
+        inline bool match_search(const std::vector<Glib::ustring> &terms) const {
+            using namespace std::ranges;
+            const auto match_keys = [this](const auto& term) -> bool
+            {
+                return Glib::ustring::npos != search_keys.find(term);
+            };
+            return all_of(views::transform(terms, &Glib::ustring::casefold), match_keys);
+        }
 
         Glib::ustring name;
         Glib::ustring m_style_class;

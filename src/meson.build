@@ -1,4 +1,4 @@
-src = ['main.cxx', 'searchprovider_stub.cpp', 'events.cpp', 'search_provider.cpp']
+src = ['main.cxx', 'searchprovider_stub.cpp', 'events.cpp', 'search_provider.cpp', 'grid.cpp']
 
 exe = executable('mikuexpo-countdown', src, res,
                  dependencies : [gtkmm_dep, date_dep],

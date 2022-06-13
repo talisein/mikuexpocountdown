@@ -56,20 +56,4 @@ namespace Miku
         m_duration(event.duration), m_local_time(event.time)
     {
     }
-
-    date::zoned_seconds
-    Event::get_expire_time() const
-    {
-        return end_time;
-    }
-
-    bool Event::match_search(const std::vector<Glib::ustring> &terms) const
-    {
-        using namespace std::ranges;
-        const auto match_keys = [this](const Glib::ustring &term) -> bool
-        {
-            return Glib::ustring::npos != search_keys.find(term);
-        };
-        return all_of(views::transform(terms, &Glib::ustring::casefold), match_keys);
-    }
 }
