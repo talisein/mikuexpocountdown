@@ -20,19 +20,15 @@ namespace {
         bool main_event;
     };
 
-    constinit std::array<const event, 10> events {{
-//            {"Digital Stars 2022", "Open", local_days{May/28/2022} + 13h, 6h, false},
-            {"Miku Expo Preshow 1"                                  , "Preshow 1", local_days{June/5/2022} + 10h + 30min, 55min, false},
-            {"Miku Expo Rewind Digistars yanagamiyuki / coralmines" , "DJ Show 1", local_days{June/5/2022} + 11h + 25min, 60min, false},
-            {"Miku Expo Rewind Concert 1"                           , "Concert 1", local_days{June/5/2022} + 12h + 30min, 90min, true},
-            {"Miku Expo Rewind Digistars Radio"                     , "DigiRadio", local_days{June/5/2022} + 15h, 60min, false},
-            {"Miku Expo Rewind Preshow 2"                           , "Preshow 2", local_days{June/5/2022} + 17h + 30min, 55min, false},
-            {"Miku Expo Rewind Digistars FOXSKY / android52"        , "DJ Show 2", local_days{June/5/2022} + 18h + 25min, 60min, false},
-            {"Miku Expo Rewind Concert 2"                           , "Concert 2", local_days{June/5/2022} + 19h + 30min, 90min, true},
-            {"Miku Expo Rewind Preshow 3"                           , "Preshow 3", local_days{June/5/2022} + 21h + 30min, 55min, false},
-            {"Miku Expo Rewind Digistars snarewaves / KIRA"         , "DJ Show 3", local_days{June/5/2022} + 22h + 25min, 60min, false},
-            {"Miku Expo Rewind Concert 3"                           , "Concert 3", local_days{June/5/2022} + 23h + 30min, 90min, true},
-        }};
+    constinit auto events = std::to_array<event>({
+            {"Show 1 Standby", "1st Standby", local_days{November/6/2022} + 9h, 25min, false},
+            {"CircusP / beat_shobon", "CircusP/beat_shobon", local_days{November/6/2022} + 9h + 25min, 60min, false},
+            {"1st Concert", "1st Concert", local_days{November/6/2022} + 10h + 30min, 90min, true},
+            {"Show 2 Standby", "2nd Standby", local_days{November/6/2022} + 16h, 25min, false},
+            {"AlexTrip Sands / Riki", "AlexTrip Sands/Riki", local_days{November/6/2022} + 16h + 25min, 60min, false},
+            {"2nd Concert", "2nd Concert", local_days{November/6/2022} + 17h + 30min, 90min, true},
+
+        });
 
     struct offset {
         std::string_view DJ;
@@ -54,18 +50,18 @@ namespace {
     }};
 
     const std::array<const date::time_zone*, 5> zones = {
-            date::locate_zone("Asia/Riyadh"),
-            date::locate_zone("Asia/Kolkata"),
-            date::locate_zone("Asia/Taipei"),
-            date::locate_zone("Australia/Sydney"),
-            date::locate_zone("Australia/Perth"),
-//            date::locate_zone("America/Los_Angeles"),
+//            date::locate_zone("Asia/Riyadh"),
+//            date::locate_zone("Asia/Kolkata"),
+//            date::locate_zone("Asia/Taipei"),
+//            date::locate_zone("Australia/Sydney"),
+//            date::locate_zone("Australia/Perth"),
+            date::locate_zone("America/Los_Angeles"),
 //            date::locate_zone("America/Denver"),
 //            date::locate_zone("America/Chicago"),
-//            date::locate_zone("America/New_York"),
-//            date::locate_zone("Europe/London"),
-//            date::locate_zone("Europe/Paris"),
-//            date::locate_zone("Asia/Tokyo")
+            date::locate_zone("America/New_York"),
+            date::locate_zone("Europe/London"),
+            date::locate_zone("Europe/Paris"),
+            date::locate_zone("Asia/Tokyo")
     };
 
     std::string
@@ -147,6 +143,16 @@ namespace {
     }
 
     std::string
+    discord_timestamp_relative(const date::sys_seconds sys_time)
+    {
+        std::stringstream ss;
+        ss << "<t:"
+           << sys_time.time_since_epoch().count()
+           << ":R>";
+        return ss.str();
+    }
+
+    std::string
     center(const std::string_view s, std::string::difference_type width)
     {
         auto remaining = width - s.size();
@@ -223,10 +229,8 @@ int main() {
         const auto jp_time { date::make_zoned("Asia/Tokyo", event.date) };
         const date::sys_seconds sys_time { jp_time.get_sys_time() };
         joiner = event.short_name;
-        std::stringstream ss;
-//        ss << "<code>" << discord_timestamp(sys_time) << "</code>";
-        ss << discord_timestamp(sys_time);
-        joiner = ss.str();
+        joiner = discord_timestamp(sys_time);
+        joiner = discord_timestamp_relative(sys_time);
         joiner = "\n";
     }
     std::cout << "\n\n";

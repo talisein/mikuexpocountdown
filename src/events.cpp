@@ -18,13 +18,11 @@ namespace {
 #endif
     using namespace std::chrono_literals;
 
-    constinit std::array raw_events {std::to_array<Miku::raw_event>({
-                {"Mirai Tix",     "miku Magical Mirai Tickets tix",       "mirai",   local_days{June/15/2022}     + 12h, 24h * 5 + 12h},
-                {"DJ Bar 39",     "miku DJ Bar 39 mogra",                 "bar39",   local_days{June/15/2022}     + 18h, 4h},
-                {"Dimension 39",  "miku Another Dimension 39",            "d39",     local_days{July/9/2022}      + 23h, 4h},
-                {"Mirai Osaka",   "miku Magical Mirai Osaka",             "mirai",   local_days{August/12/2022}   + 12h, 48h + 12h},
-                {"Mirai Tokyo",   "miku Magical Mirai Tokyo",             "mirai",   local_days{September/2/2022} + 12h, 48h + 12h},
-                {"Mirai Sapporo", "miku Magical Mirai Sapporo Snow Miku", "mirai",   local_days{February/4/2023}  + 12h, 48h},
+    constexpr std::array raw_events {std::to_array<Miku::raw_event>({
+                {"Thunderbolt Sapporo",     "miku Thunderbolt",       "thunderbolt",   local_days{March/25/2023}     + 18h, 2h},
+                {"Kodo Miku",   "miku Kodo NHK",             "kodo",   local_days{June/3/2023}   + 13h, 24h + 6h},
+                {"Mirai Osaka",   "miku Magical Mirai Osaka",             "mirai",   local_days{August/11/2023}   + 12h, 48h + 12h},
+                {"Mirai Tokyo",   "miku Magical Mirai Tokyo",             "mirai",   local_days{September/3/2023} + 12h, 48h + 12h},
             })};
 
     static date::time_zone const * const JST { date::locate_zone("Asia/Tokyo") };

@@ -35,9 +35,23 @@
 }
 
 #page.mirai {
-    background-image: url("resource:///org/talinet/mikuexpocountdown/hero_mirai_2022.png");
+    background-image: url("resource:///org/talinet/mikuexpocountdown/mirai_2023.png");
     padding: 10px;
-    color: #935efc;
+    color: #00c8bb;
+    padding: 10px;
+}
+
+#page.thunderbolt {
+    background-image: url("resource:///org/talinet/mikuexpocountdown/thunderbolt.png");
+    padding: 10px;
+    color: #dbdb00;
+    padding: 10px;
+}
+
+#page.kodo {
+    background-image: url("resource:///org/talinet/mikuexpocountdown/kodo_2023.png");
+    padding: 10px;
+    color: #ee0186;
     padding: 10px;
 }
 
@@ -65,8 +79,17 @@ box.expo {
     background-color: rgb(30,0,105);
 }
 box.mirai {
-    background-color: #1b3073;
+    background-color: #000000;
 }
+
+box.thunderbolt {
+    background-color: #000000;
+}
+
+box.kodo {
+    background-color: #000000;
+}
+
 box.digistars {
     background-color: #364153;
 }
