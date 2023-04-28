@@ -30,39 +30,39 @@ modules:
     build-dir: true
     sources:
       - type: archive
-        url: 'https://download.gnome.org/sources/glibmm/2.72/glibmm-2.72.1.tar.xz'
-        sha256: '2a7649a28ab5dc53ac4dabb76c9f61599fbc628923ab6a7dd74bf675d9155cd8'
+        url: 'https://download.gnome.org/sources/glibmm/2.76/glibmm-2.76.0.tar.xz'
+        sha256: '8637d80ceabd94fddd6e48970a082a264558d4ab82684e15ffc87e7ef3462ab2'
   - name: cairomm
     config-opts: ['-Dbuild-documentation=false','-Dbuild-examples=false']
     buildsystem: meson
     build-dir: true
     sources:
       - type: archive
-        url: 'https://www.cairographics.org/releases/cairomm-1.16.1.tar.xz'
-        sha1: 'a2de9b7fbfe8176cb555d94bb531ba1a07f31cc4'
+        url: 'https://www.cairographics.org/releases/cairomm-1.16.2.tar.xz'
+        sha1: 'c24339d5962e2bcbbea85b2fc66347e71fd3db8c'
   - name: pangomm
     config-opts: ['-Dbuild-documentation=false','-Dbuild-examples=false']
     buildsystem: meson
     build-dir: true
     sources:
       - type: archive
-        url: 'https://download.gnome.org/sources/pangomm/2.50/pangomm-2.50.0.tar.xz'
-        sha256: 'a27aa77e017b9afce9e751d85bd1cf890abbb3a58bf59d0fac917eef82db3b5b'
+        url: 'https://download.gnome.org/sources/pangomm/2.50/pangomm-2.50.1.tar.xz'
+        sha256: 'ccc9923413e408c2bff637df663248327d72822f11e394b423e1c5652b7d9214'
   - name: atkmm
-    config-opts: ['-Dbuild-documentation=false','-Dbuild-examples=false']
+    config-opts: ['-Dbuild-documentation=false']
     buildsystem: meson
     sources:
       - type: archive
-        url: 'https://download.gnome.org/sources/atkmm/2.36/atkmm-2.36.1.tar.xz'
-        sha256: 'e11324bfed1b6e330a02db25cecc145dca03fb0dff47f0710c85e317687da458'
+        url: 'https://download.gnome.org/sources/atkmm/2.36/atkmm-2.36.2.tar.xz'
+        sha256: '6f62dd99f746985e573605937577ccfc944368f606a71ca46342d70e1cdae079'
   - name: gtkmm
     config-opts: ['-Dbuild-documentation=false', '-Dbuild-atkmm-api=false', '-Dbuild-demos=false', '-Dbuild-tests=false']
     buildsystem: meson
     build-dir: true
     sources:
       - type: archive
-        url: 'https://download.gnome.org/sources/gtkmm/4.6/gtkmm-4.6.1.tar.xz'
-        sha256: '0d5efeca9ec64fdd530bb8226c6310ac99549b3dd9604d6e367639791af3d1e0'
+        url: 'https://download.gnome.org/sources/gtkmm/4.8/gtkmm-4.8.0.tar.xz'
+        sha256: 'c82786d46e2b07346b6397ca7f1929d952f4922fa5c9db3dee08498b9a136cf5'
   - name: mikuexpo-countdown
     buildsystem: meson
     build-dir: true
