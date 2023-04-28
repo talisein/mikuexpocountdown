@@ -12,8 +12,8 @@ modules:
     build-dir: true
     sources:
       - type: archive
-        url: 'http://ftp.gnome.org/pub/GNOME/sources/mm-common/1.0/mm-common-1.0.4.tar.xz'
-        sha256: 'e954c09b4309a7ef93e13b69260acdc5738c907477eb381b78bb1e414ee6dbd8'
+        url: 'http://ftp.gnome.org/pub/GNOME/sources/mm-common/1.0/mm-common-1.0.5.tar.xz'
+        sha256: '705c6d29f4116a29bde4e36cfc1b046c92b6ef8c6dae4eaec85018747e6da5aa'
     cleanup:
       - 'bin/mm-common-*'
   - name: sigc++
@@ -22,8 +22,8 @@ modules:
     build-dir: true
     sources:
       - type: archive
-        url: 'https://download.gnome.org/sources/libsigc++/3.2/libsigc++-3.2.0.tar.xz'
-        sha256: '8cdcb986e3f0a7c5b4474aa3c833d676e62469509f4899110ddf118f04082651'
+        url: 'https://download.gnome.org/sources/libsigc++/3.4/libsigc++-3.4.0.tar.xz'
+        sha256: '02e2630ffb5ce93cd52c38423521dfe7063328863a6e96d41d765a6116b8707e'
   - name: glibmm
     config-opts: ['-Dbuild-documentation=false','-Dbuild-examples=false']
     buildsystem: meson
@@ -41,7 +41,7 @@ modules:
         url: 'https://www.cairographics.org/releases/cairomm-1.16.2.tar.xz'
         sha1: 'c24339d5962e2bcbbea85b2fc66347e71fd3db8c'
   - name: pangomm
-    config-opts: ['-Dbuild-documentation=false','-Dbuild-examples=false']
+    config-opts: ['-Dbuild-documentation=false']
     buildsystem: meson
     build-dir: true
     sources:
@@ -49,7 +49,7 @@ modules:
         url: 'https://download.gnome.org/sources/pangomm/2.50/pangomm-2.50.1.tar.xz'
         sha256: 'ccc9923413e408c2bff637df663248327d72822f11e394b423e1c5652b7d9214'
   - name: atkmm
-    config-opts: ['-Dbuild-documentation=false']
+    config-opts: ['-Dbuild-documentation=false','-Dbuild-examples=false']
     buildsystem: meson
     sources:
       - type: archive
