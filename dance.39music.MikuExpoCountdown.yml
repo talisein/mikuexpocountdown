@@ -56,7 +56,7 @@ modules:
         url: 'https://download.gnome.org/sources/atkmm/2.36/atkmm-2.36.2.tar.xz'
         sha256: '6f62dd99f746985e573605937577ccfc944368f606a71ca46342d70e1cdae079'
   - name: gtkmm
-    config-opts: ['-Dbuild-documentation=false', '-Dbuild-atkmm-api=false', '-Dbuild-demos=false', '-Dbuild-tests=false']
+    config-opts: ['-Dbuild-documentation=false', '-Dbuild-demos=false', '-Dbuild-tests=false']
     buildsystem: meson
     build-dir: true
     sources:
