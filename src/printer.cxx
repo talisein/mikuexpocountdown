@@ -21,12 +21,17 @@ namespace {
     };
 
     constinit auto events = std::to_array<event>({
-            {"Show 1 Standby", "1st Standby", local_days{November/6/2022} + 9h, 25min, false},
-            {"CircusP / beat_shobon", "CircusP/beat_shobon", local_days{November/6/2022} + 9h + 25min, 60min, false},
-            {"1st Concert", "1st Concert", local_days{November/6/2022} + 10h + 30min, 90min, true},
-            {"Show 2 Standby", "2nd Standby", local_days{November/6/2022} + 16h, 25min, false},
-            {"AlexTrip Sands / Riki", "AlexTrip Sands/Riki", local_days{November/6/2022} + 16h + 25min, 60min, false},
-            {"2nd Concert", "2nd Concert", local_days{November/6/2022} + 17h + 30min, 90min, true},
+            {"Magical Mirai Osaka", "Friday",         local_days{August/11/2023} + 18h + 30min, 2h, true},
+            {"Magical Mirai Osaka", "Saturday Noon",       local_days{August/12/2023} + 12h + 30min, 2h, true},
+            {"Magical Mirai Osaka", "Saturday Night", local_days{August/12/2023} + 17h + 30min, 2h, true},
+            {"Magical Mirai Osaka", "Sunday Noon",         local_days{August/13/2023} + 12h + 30min, 2h, true},
+            {"Magical Mirai Osaka", "Sunday Night",   local_days{August/13/2023} + 17h + 30min, 2h, true},
+            {"Magical Mirai Tokyo", "Friday Noon",         local_days{September/1/2023} + 13h + 30min, 2h, true},
+            {"Magical Mirai Tokyo", "Friday Night",   local_days{September/1/2023} + 18h + 30min, 2h, true},
+            {"Magical Mirai Tokyo", "Saturday Noon",       local_days{September/2/2023} + 12h + 30min, 2h, true},
+            {"Magical Mirai Tokyo", "Saturday Night", local_days{September/2/2023} + 17h + 30min, 2h, true},
+            {"Magical Mirai Tokyo", "Sunday Noon",         local_days{September/3/2023} + 12h + 30min, 2h, true},
+            {"Magical Mirai Tokyo", "Sunday Night",   local_days{September/3/2023} + 17h + 30min, 2h, true},
 
         });
 

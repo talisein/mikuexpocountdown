@@ -1,7 +1,7 @@
 app-id: dance._39music.MikuExpoCountdown
 collection-id: dance._39music.Apps
 runtime: org.gnome.Platform
-runtime-version: '42'
+runtime-version: '44'
 sdk: org.gnome.Sdk
 command: mikuexpo-countdown
 finish-args: ['--socket=wayland', '--socket=session-bus', '--device=dri']
