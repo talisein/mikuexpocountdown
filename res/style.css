@@ -34,6 +34,13 @@
     padding: 10px;
 }
 
+#page.expo2024 {
+    background-image: url("resource:///org/talinet/mikuexpocountdown/expo2024.png"), url("resource:///org/talinet/mikuexpocountdown/hero_bg_2024.jpg");
+    padding: 10px;
+    color: rgb(255,255,255);
+    padding: 10px;
+}
+
 #page.mirai {
     background-image: url("resource:///org/talinet/mikuexpocountdown/mirai_2023.png");
     padding: 10px;
@@ -78,6 +85,11 @@ box.bar39 {
 box.expo {
     background-color: rgb(30,0,105);
 }
+
+box.expo2024 {
+    background-color: rgb(30,0,105);
+}
+
 box.mirai {
     background-color: #000000;
 }
@@ -96,6 +108,7 @@ box.digistars {
 
 #days {
     font-size: 200px;
+    text-shadow: 2px 2px 10px #000;
 }
 
 #hours {

@@ -1,7 +1,7 @@
 src = ['main.cxx', 'searchprovider_stub.cpp', 'events.cpp', 'search_provider.cpp', 'grid.cpp']
 
 exe = executable('mikuexpo-countdown', src, res,
-                 dependencies : [gtkmm_dep, date_dep],
+                 dependencies : [gtkmm_dep, date_dep, adw_dep],
                  install : true,
                  gui_app : true,
                  cpp_args : ['-D_GNU_SOURCE', '-DG_ENABLE_DEBUG=true']

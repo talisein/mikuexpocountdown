@@ -1,4 +1,5 @@
 #include "grid.h"
+#include "adwaita.h"
 
 CountdownGrid::CountdownGrid(const Glib::RefPtr<const Miku::Event> &event) :
     Glib::ObjectBase("CountdownGrid"),
@@ -83,13 +84,15 @@ CountdownGrid::update()
 bool
 CountdownGrid::remove_me()
 {
-    auto stack = dynamic_cast<Gtk::Stack*>(this->get_parent());
+    auto stack_widget = dynamic_cast<Gtk::Widget*>(this->get_parent());
+    AdwViewStack *stack = ADW_VIEW_STACK(stack_widget);
     if (stack) {
-        auto visible_child = stack->get_visible_child();
-        stack->remove(*this);
-        if (static_cast<Gtk::Widget*>(this) == visible_child) {
-            stack->set_visible_child(*(stack->get_first_child()));
-        }
+//        auto visible_child = adw_view_stack_get_visible_child(stack);
+        adw_view_stack_remove (stack, static_cast<Gtk::Widget*>(this)->gobj());
+//        if (static_cast<Gtk::Widget*>(this)->gobj() == visible_child) {
+//            adw_view_stack_set_visible_child(stack, adw_view_stack_get_first_child(stack));
+//            stack->set_visible_child(*(stack->get_first_child()));
+//        }
     }
     return false;
 }

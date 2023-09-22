@@ -2,51 +2,103 @@
 
 #include <ranges>
 #include <gtkmm.h>
+#include "adwaita.h"
 
 #include "grid.h"
 #include "events.h"
 
-class CountdownWindow final : public Gtk::ApplicationWindow
+namespace {
+    extern "C" {
+        void on_selected_page (GObject* self,
+                               GParamSpec*,
+                               gpointer user_data)
+        {
+            AdwTabView     *tabview   = ADW_TAB_VIEW(self);
+            AdwWindowTitle *title     = ADW_WINDOW_TITLE(user_data);
+            AdwTabPage     *page      = adw_tab_view_get_selected_page(tabview);
+            std::string s = "Miku Expo ";
+            s += adw_tab_page_get_title(page);
+            s += " Countdown";
+            adw_window_title_set_title(title, s.c_str());
+        }
+    }
+}
+class CountdownWindow : public sigc::trackable
 {
 public:
-CountdownWindow(const Glib::RefPtr<Gtk::Application>& app) :
-    Glib::ObjectBase("CountdownWindow"),
-        Gtk::ApplicationWindow(app),
-        m_box(Gtk::make_managed<Gtk::Box>(Gtk::Orientation::VERTICAL)),
-        m_stack(Gtk::make_managed<Gtk::Stack>()),
-        m_stack_switcher(Gtk::make_managed<Gtk::StackSwitcher>())
+    CountdownWindow(const Glib::RefPtr<Gtk::Application>& app) :
+    m_appwindow(Glib::wrap(GTK_APPLICATION_WINDOW(adw_application_window_new(app->gobj())))),
+    m_tab_overview(Glib::wrap(adw_tab_overview_new())),
+    m_header_bar(Glib::wrap(adw_header_bar_new())),
+    m_tab_button(Glib::wrap(adw_tab_button_new())),
+    m_tab_view(Glib::wrap(GTK_WIDGET(adw_tab_view_new()))),
+    m_box(Gtk::make_managed<Gtk::Box>(Gtk::Orientation::VERTICAL))
     {
-        set_name("mainwin");
-        m_box->append(*m_stack_switcher);
-        m_box->append(*m_stack);
-        m_stack_switcher->set_stack(*m_stack);
-        m_stack_switcher->set_halign(Gtk::Align::CENTER);
+        AdwApplicationWindow *appwindow = ADW_APPLICATION_WINDOW(m_appwindow->gobj());
+        AdwTabOverview *overview        = ADW_TAB_OVERVIEW(m_tab_overview->gobj());
+        AdwHeaderBar *headerbar         = ADW_HEADER_BAR(m_header_bar->gobj());
+        AdwTabButton *tabbutton         = ADW_TAB_BUTTON(m_tab_button->gobj());
+        AdwTabView *tabview             = ADW_TAB_VIEW(m_tab_view->gobj());
+
+        m_appwindow->set_name("mainwin");
+
+        auto window_title = adw_window_title_new(NULL, "Party With Miku");
+        adw_header_bar_set_title_widget(headerbar, window_title);
+        g_signal_connect(tabview, "notify::selected-page", G_CALLBACK(on_selected_page), window_title);
+        adw_header_bar_pack_end(headerbar, GTK_WIDGET(tabbutton));
+        adw_tab_button_set_view(tabbutton, tabview);
+        gtk_actionable_set_action_name(GTK_ACTIONABLE(tabbutton), "overview.open");
+        m_box->append(*m_header_bar);
+        m_box->append(*m_tab_view);
+
         auto provider = Gtk::CssProvider::create();
         provider->load_from_resource("/org/talinet/mikuexpocountdown/style.css");
-        auto style_context = get_style_context();
+        auto style_context = m_appwindow->get_style_context();
         for (auto &display : Gdk::DisplayManager::get()->list_displays()) {
             style_context->add_provider_for_display(display, provider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
         }
 
-        set_child(*m_box);
-        m_stack->set_expand(true);
-        m_stack->property_visible_child().signal_changed().connect(sigc::mem_fun(*this, &CountdownWindow::on_switch));
+        adw_application_window_set_content(appwindow, m_tab_overview->gobj());
+        adw_tab_overview_set_child(overview, static_cast<Gtk::Widget*>(m_box)->gobj());
+        adw_tab_overview_set_view(overview, tabview);
+        m_tab_view->set_expand(true);
+//        m_adw_stack->property_visible_child().signal_changed().connect(sigc::mem_fun(*this, &CountdownWindow::on_switch));
 
         using namespace std::ranges;
         for (const auto &e : Miku::get_events() | views::filter(&Miku::Event::is_unexpired)) {
             auto grid = Gtk::make_managed<CountdownGrid>(e);
-            m_stack->add(*grid, e->name, e->name);
+            AdwTabPage *page = adw_tab_view_append(tabview, static_cast<Gtk::Widget*>(grid)->gobj());
+            adw_tab_page_set_title(page, e->name.c_str());
         }
+        std::string s = "Miku Expo ";
+        s += (*std::ranges::begin(Miku::get_events()))->name;
+        s += " Countdown";
+        adw_window_title_set_title(ADW_WINDOW_TITLE(window_title), s.c_str());
     }
 
-    virtual ~CountdownWindow() override final = default;
+    void present() {
+        m_appwindow->present();
+    }
+
+    void destroy() {
+        m_appwindow->destroy();
+    }
+
+    Gtk::Window* get_window() const {
+        return static_cast<Gtk::Window*>(m_appwindow);
+    }
 
 private:
+    Gtk::ApplicationWindow *m_appwindow;
+    Gtk::Widget *m_tab_overview;
+    Gtk::Widget *m_header_bar;
+    Gtk::Widget *m_tab_button;
+    Gtk::Widget *m_tab_view;
     Gtk::Box *m_box;
-    Gtk::Stack *m_stack;
-    Gtk::StackSwitcher *m_stack_switcher;
 
     void on_switch() {
+/*        AdwViewStack *stack = ADW_VIEW_STACK(m_adw_stack->gobj());
+        AdwViewSwitcher *switcher = ADW_VIEW_SWITCHER(m_adw_stackswitcher->gobj());
         auto event = static_cast<CountdownGrid*>(m_stack->property_visible_child().get_value())->m_event;
         auto style_class = event->m_style_class;
         auto context = m_box->get_style_context();
@@ -55,5 +107,6 @@ private:
         }
         context->add_class(style_class);
         set_title(Glib::ustring::compose("%1 Countdown", event->name));
+*/
     }
 };

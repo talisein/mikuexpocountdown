@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/talinet/mikuexpocountdown">
+    <file>hero_bg_2024.jpg</file>
+    <file>expo2024.png</file>
     <file>hero_miku.png</file>
     <file>hero_digital_stars_2022.png</file>
     <file>hero_mirai_2022.png</file>
