@@ -78,15 +78,17 @@ SearchProvider::GetResultMetas(const std::vector<Glib::ustring> & identifiers,
                 }
             }
             Glib::ustring display_date;
+            constexpr char date_format[] { "%A %d %B %Y %X %Z" };
+
             if (diff_secs.count() <= 0) { // Event started
                 auto end_time = (*it)->end_time;
                 if (!(*it)->is_expired()) { // Event ongoing
-                    display_date = Glib::ustring::compose("until %1", date::format("%c %Z", date::make_zoned(date::current_zone(), end_time)));
+                    display_date = Glib::ustring::compose("until %1", date::format(date_format, date::make_zoned(date::current_zone(), end_time)));
                 } else { // Event finished
-                    display_date = Glib::ustring::compose("ended %1", date::format("%c %Z", date::make_zoned(date::current_zone(), end_time)));
+                    display_date = Glib::ustring::compose("ended %1", date::format(date_format, date::make_zoned(date::current_zone(), end_time)));
                 }
             } else { // Event starts in the future
-                display_date = date::format("%c %Z", date::make_zoned(date::current_zone(), (*it)->start_time));
+                display_date = date::format(date_format, date::make_zoned(date::current_zone(), (*it)->start_time));
             }
             auto description = Glib::ustring::compose("%1 \u2014 %2",
                                                       ss.str(),
