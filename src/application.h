@@ -1,11 +1,12 @@
 #pragma once
 #include <gtkmm.h>
 #include "search_provider.h"
+#include "adw_application.h"
 
-class MikuApplication final : public Gtk::Application
+class MikuApplication final : public Adw::Application
 {
 public:
-    MikuApplication(const Glib::ustring &application_id) : Glib::ObjectBase("MikuApplication"), Gtk::Application(application_id) {
+    MikuApplication(const Glib::ustring &application_id) : Glib::ObjectBase("MikuApplication"), Adw::Application(application_id) {
     }
 
     virtual ~MikuApplication() override final = default;

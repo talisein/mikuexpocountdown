@@ -7,7 +7,7 @@
 }
 
 #page.roove39 {
-    background-image: url("resource:///org/talinet/mikuexpocountdown/39roove.png");
+    background-image: url("resource:///dance/_39music/MikuExpoCountdown/39roove.png");
     padding: 10px;
     color: #f75189;
     background-color: #252525;
@@ -15,7 +15,7 @@
 }
 
 #page.d39 {
-    background-image: url("resource:///org/talinet/mikuexpocountdown/dimension39.png"), linear-gradient(#8ae7c9,#8ae7c9,#8ae7c9,#8ae7c9, #8ae7c9,#8ae7c9,#8ae7c9, #fbf7a7, #fbf7a7, #fbf7a7, #fbf7a7, #fbf7a7,#fbf7a7,#fbf7a7,#fbf7a7);
+    background-image: url("resource:///dance/_39music/MikuExpoCountdown/dimension39.png"), linear-gradient(#8ae7c9,#8ae7c9,#8ae7c9,#8ae7c9, #8ae7c9,#8ae7c9,#8ae7c9, #fbf7a7, #fbf7a7, #fbf7a7, #fbf7a7, #fbf7a7,#fbf7a7,#fbf7a7,#fbf7a7);
     padding: 10px;
     color: #fe002b;
     background-color: #090909;
@@ -23,14 +23,14 @@
 }
 
 #page.bar39 {
-    background-image: url("resource:///org/talinet/mikuexpocountdown/bar39.jpg");
+    background-image: url("resource:///dance/_39music/MikuExpoCountdown/bar39.jpg");
     padding: 10px;
     color: #5dc6fd;
     padding: 10px;
 }
 
 #page.expo {
-    background-image: url("resource:///org/talinet/mikuexpocountdown/hero_miku.png");
+    background-image: url("resource:///dance/_39music/MikuExpoCountdown/hero_miku.png");
     padding: 10px;
     color: rgb(213,25,118);
     background-color: rgb(30,0,105);
@@ -38,14 +38,14 @@
 }
 
 #page.expovr {
-    background-image: url("resource:///org/talinet/mikuexpocountdown/expovr_miku.png"), url("resource:///org/talinet/mikuexpocountdown/expovr_bg.jpg");
+    background-image: url("resource:///dance/_39music/MikuExpoCountdown/expovr_miku.png"), url("resource:///dance/_39music/MikuExpoCountdown/expovr_bg.jpg");
     color: #4340b0;
     background-color: #e05b90;
     background-repeat: no-repeat, repeat;
 }
 
 #page.expo2024 {
-    background-image: url("resource:///org/talinet/mikuexpocountdown/expo2024.png"), url("resource:///org/talinet/mikuexpocountdown/hero_bg_2024.jpg");
+    background-image: url("resource:///dance/_39music/MikuExpoCountdown/expo2024.png"), url("resource:///dance/_39music/MikuExpoCountdown/hero_bg_2024.jpg");
     padding: 10px;
     color: rgb(255,255,255);
     background-color: rgb(30,0,105);
@@ -54,7 +54,7 @@
 }
 
 #page.mirai {
-    background-image: url("resource:///org/talinet/mikuexpocountdown/mirai_2023.png");
+    background-image: url("resource:///dance/_39music/MikuExpoCountdown/mirai_2023.png");
     padding: 10px;
     color: #00c8bb;
     background-color: #000000;
@@ -62,7 +62,7 @@
 }
 
 #page.thunderbolt {
-    background-image: url("resource:///org/talinet/mikuexpocountdown/thunderbolt.png");
+    background-image: url("resource:///dance/_39music/MikuExpoCountdown/thunderbolt.png");
     padding: 10px;
     color: #dbdb00;
     background-color: #000000;
@@ -70,7 +70,7 @@
 }
 
 #page.kodo {
-    background-image: url("resource:///org/talinet/mikuexpocountdown/kodo_2023.png");
+    background-image: url("resource:///dance/_39music/MikuExpoCountdown/kodo_2023.png");
     padding: 10px;
     color: #ee0186;
     background-color: #000000;
@@ -78,7 +78,7 @@
 }
 
 #page.digistars {
-    background-image: url("resource:///org/talinet/mikuexpocountdown/hero_digital_stars_2022.png");
+    background-image: url("resource:///dance/_39music/MikuExpoCountdown/hero_digital_stars_2022.png");
     background-position: bottom center;
     padding: 0px;
     color: rgb(113,25,18);

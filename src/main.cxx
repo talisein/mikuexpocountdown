@@ -3,7 +3,6 @@
 #include <iostream>
 #include <iomanip>
 #include <gtkmm.h>
-#include "adwaita.h"
 
 #if __cpp_lib_chrono < 201907
 #include "date/date.h"
@@ -15,8 +14,6 @@
 
 int main (int argc, char *argv[])
 {
-    adw_init();
-
     auto app = MikuApplication::create("dance._39music.MikuExpoCountdown");
 
     CountdownWindow *m_run_window = nullptr;

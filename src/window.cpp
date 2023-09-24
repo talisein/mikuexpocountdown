@@ -1,7 +1,6 @@
 #include "window.h"
 #include "adwaita.h"
 
-
 namespace {
     extern "C" {
         static void on_selected_page (GObject* self,
@@ -52,13 +51,6 @@ CountdownWindow::CountdownWindow(const Glib::RefPtr<Gtk::Application>& app) :
     m_box->append(*m_header_bar);
     m_box->append(*m_tab_view);
 
-    auto provider = Gtk::CssProvider::create();
-    provider->load_from_resource("/org/talinet/mikuexpocountdown/style.css");
-    auto style_context = m_appwindow->get_style_context();
-    for (auto &display : Gdk::DisplayManager::get()->list_displays()) {
-        style_context->add_provider_for_display(display, provider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-    }
-
     adw_application_window_set_content(appwindow, m_tab_overview->gobj());
     adw_tab_overview_set_child(overview, static_cast<Gtk::Widget*>(m_box)->gobj());
     adw_tab_overview_set_view(overview, tabview);
@@ -70,8 +62,8 @@ CountdownWindow::CountdownWindow(const Glib::RefPtr<Gtk::Application>& app) :
         AdwTabPage *page = adw_tab_view_append(tabview, static_cast<Gtk::Widget*>(grid)->gobj());
         adw_tab_page_set_title(page, e->name.c_str());
 
-        grid->signal_expired().connect([tabview, page]() {
+        grid->signal_expired().connect(sigc::track_object([tabview, page]() {
             adw_tab_view_close_page(tabview, page);
-        });
+        }, *m_tab_view));
     }
 }
