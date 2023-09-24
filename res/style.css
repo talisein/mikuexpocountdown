@@ -10,13 +10,15 @@
     background-image: url("resource:///org/talinet/mikuexpocountdown/39roove.png");
     padding: 10px;
     color: #f75189;
+    background-color: #252525;
     padding: 10px;
 }
 
 #page.d39 {
-    background-image: url("resource:///org/talinet/mikuexpocountdown/dimension39.png");
+    background-image: url("resource:///org/talinet/mikuexpocountdown/dimension39.png"), linear-gradient(#8ae7c9,#8ae7c9,#8ae7c9,#8ae7c9, #8ae7c9,#8ae7c9,#8ae7c9, #fbf7a7, #fbf7a7, #fbf7a7, #fbf7a7, #fbf7a7,#fbf7a7,#fbf7a7,#fbf7a7);
     padding: 10px;
     color: #fe002b;
+    background-color: #090909;
     padding: 10px;
 }
 
@@ -31,13 +33,23 @@
     background-image: url("resource:///org/talinet/mikuexpocountdown/hero_miku.png");
     padding: 10px;
     color: rgb(213,25,118);
+    background-color: rgb(30,0,105);
     padding: 10px;
+}
+
+#page.expovr {
+    background-image: url("resource:///org/talinet/mikuexpocountdown/expovr_miku.png"), url("resource:///org/talinet/mikuexpocountdown/expovr_bg.jpg");
+    color: #4340b0;
+    background-color: #e05b90;
+    background-repeat: no-repeat, repeat;
 }
 
 #page.expo2024 {
     background-image: url("resource:///org/talinet/mikuexpocountdown/expo2024.png"), url("resource:///org/talinet/mikuexpocountdown/hero_bg_2024.jpg");
     padding: 10px;
     color: rgb(255,255,255);
+    background-color: rgb(30,0,105);
+    background-repeat: no-repeat;
     padding: 10px;
 }
 
@@ -45,6 +57,7 @@
     background-image: url("resource:///org/talinet/mikuexpocountdown/mirai_2023.png");
     padding: 10px;
     color: #00c8bb;
+    background-color: #000000;
     padding: 10px;
 }
 
@@ -52,6 +65,7 @@
     background-image: url("resource:///org/talinet/mikuexpocountdown/thunderbolt.png");
     padding: 10px;
     color: #dbdb00;
+    background-color: #000000;
     padding: 10px;
 }
 
@@ -59,6 +73,7 @@
     background-image: url("resource:///org/talinet/mikuexpocountdown/kodo_2023.png");
     padding: 10px;
     color: #ee0186;
+    background-color: #000000;
     padding: 10px;
 }
 
@@ -67,43 +82,8 @@
     background-position: bottom center;
     padding: 0px;
     color: rgb(113,25,18);
-    padding: 0px;
-}
-
-box.roove39 {
-    background-color: #252525;
-}
-
-box.d39 {
-    background-image: linear-gradient(#8ae7c9,#8ae7c9,#8ae7c9,#8ae7c9, #8ae7c9,#8ae7c9,#8ae7c9, #fbf7a7, #fbf7a7, #fbf7a7, #fbf7a7, #fbf7a7,#fbf7a7,#fbf7a7,#fbf7a7);
-}
-
-box.bar39 {
-    background-color: #090909;
-}
-
-box.expo {
-    background-color: rgb(30,0,105);
-}
-
-box.expo2024 {
-    background-color: rgb(30,0,105);
-}
-
-box.mirai {
-    background-color: #000000;
-}
-
-box.thunderbolt {
-    background-color: #000000;
-}
-
-box.kodo {
-    background-color: #000000;
-}
-
-box.digistars {
     background-color: #364153;
+    padding: 0px;
 }
 
 #days {

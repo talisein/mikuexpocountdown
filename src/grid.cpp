@@ -1,3 +1,4 @@
+#include <iostream>
 #include "grid.h"
 #include "adwaita.h"
 
@@ -32,18 +33,17 @@ CountdownGrid::CountdownGrid(const Glib::RefPtr<const Miku::Event> &event) :
     attrs.insert(line_height);
     m_days->set_attributes(attrs);
 
-    auto context = get_style_context();
-    context->add_class(event->m_style_class);
-    context = get_style_context();
-    context->add_class(event->m_style_class);
+    add_css_class(event->m_style_class);
 
-    auto jsttime   = m_event->start_time;
-    auto localtime = date::make_zoned(date::current_zone(), jsttime);
+    auto event_localtime = m_event->start_time;
+    auto user_localtime  = date::make_zoned(date::current_zone(), event_localtime);
+    constexpr char date_format[] { "%A %d %B %Y %X %Z" };
+
     m_date->set_text(Glib::ustring::compose("%1\n%2",
-                                            date::format("%c %Z", localtime),
-                                            date::format("%c %Z", jsttime)));
+                                            date::format(date_format, user_localtime),
+                                            date::format(date_format, event_localtime)));
     update();
-    Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &CountdownGrid::update), 1);
+    update_timeout_connection = Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &CountdownGrid::update), 1);
 }
 
 bool
@@ -63,36 +63,27 @@ CountdownGrid::update()
         m_hours->set_label(date::format("%T", diff_secs - diff_days));
     } else {
         if (diff_secs > 0s) {
-            m_days->set_label("Soon");
+            auto concert_weekday = date::weekday(std::chrono::floor<std::chrono::days>(date::make_zoned(date::current_zone(), m_event->start_time).get_local_time()));
+            auto today_weekday = date::weekday(std::chrono::floor<std::chrono::days>(date::make_zoned(date::current_zone(), std::chrono::system_clock::now()).get_local_time()));
+            if (concert_weekday == today_weekday) {
+                m_days->set_label("Today");
+            } else {
+                m_days->set_label("Soon");
+            }
             m_hours->set_label(date::format("%T", diff_secs));
         } else {
             m_hours->hide();
             m_days->set_label("Miku time now!");
             auto secs_to_end = m_event->secs_to_expire();
             if (secs_to_end > 0s) {
-                Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &CountdownGrid::remove_me), secs_to_end.count());
+                Glib::signal_timeout().connect_seconds_once(sigc::mem_fun(m_signal_expired, &decltype(m_signal_expired)::emit),
+                                                            secs_to_end.count());
             } else {
-                remove_me();
+                m_signal_expired.emit();
             }
             return false;
         }
     }
 
     return true;
-}
-
-bool
-CountdownGrid::remove_me()
-{
-    auto stack_widget = dynamic_cast<Gtk::Widget*>(this->get_parent());
-    AdwViewStack *stack = ADW_VIEW_STACK(stack_widget);
-    if (stack) {
-//        auto visible_child = adw_view_stack_get_visible_child(stack);
-        adw_view_stack_remove (stack, static_cast<Gtk::Widget*>(this)->gobj());
-//        if (static_cast<Gtk::Widget*>(this)->gobj() == visible_child) {
-//            adw_view_stack_set_visible_child(stack, adw_view_stack_get_first_child(stack));
-//            stack->set_visible_child(*(stack->get_first_child()));
-//        }
-    }
-    return false;
 }
