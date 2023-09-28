@@ -42,6 +42,7 @@ CountdownWindow::CountdownWindow(const Glib::RefPtr<Gtk::Application>& app) :
         auto grid = Gtk::make_managed<CountdownGrid>(e);
         AdwTabPage *page = m_tab_view->append(*grid);
         adw_tab_page_set_title(page, e->name.c_str());
+        adw_tab_view_set_page_pinned(m_tab_view->gobj(), page, true);
         grid->signal_expired().connect(sigc::bind(sigc::mem_fun(*m_tab_view, &Adw::TabView::close_page),
                                                   page));
 
