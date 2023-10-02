@@ -16,7 +16,7 @@
 
   <launchable type="desktop-id">dance._39music.MikuExpoCountdown.desktop</launchable>
   <screenshots>
-    <screenshot type="default">
+    <screenshot type="default" xml:lang="en">
       <caption>Main Window</caption>
       <image>https://github.com/talisein/mikuexpocountdown/raw/main/screenshots/screenshot.png</image>
     </screenshot>
@@ -39,6 +39,16 @@
   </provides>
 
   <releases>
+    <release version="2.0" date="2023-10-02">
+      <description>
+        <p>
+          Miku Expo VR &amp; Miku Expo NA
+        </p>
+        <p>
+          libadwaita UI
+        </p>
+      </description>
+    </release>
     <release version="1.1" date="2022-06-05">
       <description>
         <p>
