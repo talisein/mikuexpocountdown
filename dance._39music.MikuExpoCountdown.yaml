@@ -9,7 +9,6 @@ modules:
   - name: mm-common
     cleanup: '/'
     buildsystem: meson
-    build-dir: true
     sources:
       - type: archive
         url: 'http://ftp.gnome.org/pub/GNOME/sources/mm-common/1.0/mm-common-1.0.5.tar.xz'
@@ -19,7 +18,6 @@ modules:
   - name: sigc++
     config-opts: ['-Dbuild-documentation=false','-Dbuild-examples=false']
     buildsystem: meson
-    build-dir: true
     sources:
       - type: archive
         url: 'https://download.gnome.org/sources/libsigc++/3.4/libsigc++-3.4.0.tar.xz'
@@ -27,7 +25,6 @@ modules:
   - name: glibmm
     config-opts: ['-Dbuild-documentation=false','-Dbuild-examples=false']
     buildsystem: meson
-    build-dir: true
     sources:
       - type: archive
         url: 'https://download.gnome.org/sources/glibmm/2.78/glibmm-2.78.0.tar.xz'
@@ -35,15 +32,13 @@ modules:
   - name: cairomm
     config-opts: ['-Dbuild-documentation=false','-Dbuild-examples=false']
     buildsystem: meson
-    build-dir: true
     sources:
       - type: archive
         url: 'https://www.cairographics.org/releases/cairomm-1.18.0.tar.xz'
-        sha1: 'c24fa0e127303964d948a79016cfe4438e791dfa'
+        sha1: 'b81255394e3ea8e8aa887276d22afa8985fc8daef60692eb2407d23049f03cfb'
   - name: pangomm
     config-opts: ['-Dbuild-documentation=false']
     buildsystem: meson
-    build-dir: true
     sources:
       - type: archive
         url: 'https://download.gnome.org/sources/pangomm/2.50/pangomm-2.50.1.tar.xz'
@@ -58,14 +53,12 @@ modules:
   - name: gtkmm
     config-opts: ['-Dbuild-documentation=false', '-Dbuild-demos=false', '-Dbuild-tests=false']
     buildsystem: meson
-    build-dir: true
     sources:
       - type: archive
         url: 'https://download.gnome.org/sources/gtkmm/4.10/gtkmm-4.10.0.tar.xz'
         sha256: 'e1b109771557ecc53cba915a80b6ede827ffdbd0049c62fdf8bd7fa79afcc6eb'
   - name: mikuexpo-countdown
     buildsystem: meson
-    build-dir: true
     config-opts: ['--wrap-mode=nodownload']
     sources:
       - type: git
