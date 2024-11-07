@@ -1,7 +1,7 @@
 app-id: dance._39music.MikuExpoCountdown
 collection-id: dance._39music.Apps
 runtime: org.gnome.Platform
-runtime-version: '45'
+runtime-version: '47'
 sdk: org.gnome.Sdk
 command: mikuexpo-countdown
 finish-args: ['--socket=wayland', '--device=dri', '--talk-name=org.gnome.Shell.SearchProvider2']
@@ -11,8 +11,8 @@ modules:
     buildsystem: meson
     sources:
       - type: archive
-        url: 'http://ftp.gnome.org/pub/GNOME/sources/mm-common/1.0/mm-common-1.0.5.tar.xz'
-        sha256: '705c6d29f4116a29bde4e36cfc1b046c92b6ef8c6dae4eaec85018747e6da5aa'
+        url: 'http://ftp.gnome.org/pub/GNOME/sources/mm-common/1.0/mm-common-1.0.6.tar.xz'
+        sha256: 'b55c46037dbcdabc5cee3b389ea11cc3910adb68ebe883e9477847aa660862e7'
     cleanup:
       - 'bin/mm-common-*'
   - name: sigc++
@@ -20,43 +20,43 @@ modules:
     buildsystem: meson
     sources:
       - type: archive
-        url: 'https://download.gnome.org/sources/libsigc++/3.4/libsigc++-3.4.0.tar.xz'
-        sha256: '02e2630ffb5ce93cd52c38423521dfe7063328863a6e96d41d765a6116b8707e'
+        url: 'https://download.gnome.org/sources/libsigc++/3.6/libsigc++-3.6.0.tar.xz'
+        sha256: 'c3d23b37dfd6e39f2e09f091b77b1541fbfa17c4f0b6bf5c89baef7229080e17'
   - name: glibmm
     config-opts: ['-Dbuild-documentation=false','-Dbuild-examples=false']
     buildsystem: meson
     sources:
       - type: archive
-        url: 'https://download.gnome.org/sources/glibmm/2.78/glibmm-2.78.0.tar.xz'
-        sha256: '5d2e872564996f02a06d8bbac3677e7c394af8b00dd1526aebd47af842a3ef50'
+        url: 'https://download.gnome.org/sources/glibmm/2.82/glibmm-2.82.0.tar.xz'
+        sha256: '38684cff317273615c67b8fa9806f16299d51e5506d9b909bae15b589fa99cb6'
   - name: cairomm
     config-opts: ['-Dbuild-documentation=false','-Dbuild-examples=false']
     buildsystem: meson
     sources:
       - type: archive
         url: 'https://www.cairographics.org/releases/cairomm-1.18.0.tar.xz'
-        sha1: 'b81255394e3ea8e8aa887276d22afa8985fc8daef60692eb2407d23049f03cfb'
+        sha256: 'b81255394e3ea8e8aa887276d22afa8985fc8daef60692eb2407d23049f03cfb'
   - name: pangomm
     config-opts: ['-Dbuild-documentation=false']
     buildsystem: meson
     sources:
       - type: archive
-        url: 'https://download.gnome.org/sources/pangomm/2.50/pangomm-2.50.1.tar.xz'
-        sha256: 'ccc9923413e408c2bff637df663248327d72822f11e394b423e1c5652b7d9214'
+        url: 'https://download.gnome.org/sources/pangomm/2.54/pangomm-2.54.0.tar.xz'
+        sha256: '4a5b1fd1b7c47a1af45277ea82b5abeaca8e08fb10a27daa6394cf88d74e7acf'
   - name: atkmm
     config-opts: ['-Dbuild-documentation=false']
     buildsystem: meson
     sources:
       - type: archive
-        url: 'https://download.gnome.org/sources/atkmm/2.36/atkmm-2.36.2.tar.xz'
-        sha256: '6f62dd99f746985e573605937577ccfc944368f606a71ca46342d70e1cdae079'
+        url: 'https://download.gnome.org/sources/atkmm/2.36/atkmm-2.36.3.tar.xz'
+        sha256: '6ec264eaa0c4de0adb7202c600170bde9a7fbe4d466bfbe940eaf7faaa6c5974'
   - name: gtkmm
     config-opts: ['-Dbuild-documentation=false', '-Dbuild-demos=false', '-Dbuild-tests=false']
     buildsystem: meson
     sources:
       - type: archive
-        url: 'https://download.gnome.org/sources/gtkmm/4.10/gtkmm-4.10.0.tar.xz'
-        sha256: 'e1b109771557ecc53cba915a80b6ede827ffdbd0049c62fdf8bd7fa79afcc6eb'
+        url: 'https://download.gnome.org/sources/gtkmm/4.16/gtkmm-4.16.0.tar.xz'
+        sha256: '3b23fd3abf8fb223b00e9983b6010af2db80e38c89ab6994b8b6230aa85d60f9'
   - name: mikuexpo-countdown
     buildsystem: meson
     config-opts: ['--wrap-mode=nodownload']
@@ -64,8 +64,6 @@ modules:
       - type: git
         url: 'https://github.com/talisein/mikuexpocountdown.git'
         branch: main
-        #        tag: 'v2.0'
-#        commit: '615df74b817d553119d6740df6f92a77e947f879'
       - type: file
         url: 'https://github.com/HowardHinnant/date/archive/v3.0.1.tar.gz'
         sha256: '7a390f200f0ccd207e8cff6757e04817c1a0aec3e327b006b7eb451c57ee3538'

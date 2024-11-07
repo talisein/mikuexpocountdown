@@ -36,12 +36,12 @@ CountdownGrid::CountdownGrid(const Glib::RefPtr<const Miku::Event> &event) :
     add_css_class(event->m_style_class);
 
     auto event_localtime = m_event->start_time;
-    auto user_localtime  = date::make_zoned(date::current_zone(), event_localtime);
-    constexpr char date_format[] { "%A %d %B %Y %X %Z" };
+    auto user_localtime  = std::chrono::zoned_time(std::chrono::current_zone(), event_localtime);
+    static constexpr char date_format[] { "{0:%A} {0:%d} {0:%B} {0:%Y} {0:%X} {0:%Z}" };
 
     m_date->set_text(Glib::ustring::compose("%1\n%2",
-                                            date::format(date_format, user_localtime),
-                                            date::format(date_format, event_localtime)));
+                                            std::format(date_format, user_localtime),
+                                            std::format(date_format, event_localtime)));
     update();
     update_timeout_connection = Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &CountdownGrid::update), 1);
 }
@@ -60,17 +60,17 @@ CountdownGrid::update()
         } else {
             m_days->set_label(Glib::ustring::compose("%1 day", diff_days.count()));
         }
-        m_hours->set_label(date::format("%T", diff_secs - diff_days));
+        m_hours->set_label(std::format("{0:%T}", diff_secs - diff_days));
     } else {
         if (diff_secs > 0s) {
-            auto concert_weekday = date::weekday(std::chrono::floor<std::chrono::days>(date::make_zoned(date::current_zone(), m_event->start_time).get_local_time()));
-            auto today_weekday = date::weekday(std::chrono::floor<std::chrono::days>(date::make_zoned(date::current_zone(), std::chrono::system_clock::now()).get_local_time()));
+            auto concert_weekday = std::chrono::weekday(std::chrono::floor<std::chrono::days>(std::chrono::zoned_time(std::chrono::current_zone(), m_event->start_time).get_local_time()));
+            auto today_weekday = std::chrono::weekday(std::chrono::floor<std::chrono::days>(std::chrono::zoned_time(std::chrono::current_zone(), std::chrono::system_clock::now()).get_local_time()));
             if (concert_weekday == today_weekday) {
                 m_days->set_label("Today");
             } else {
                 m_days->set_label("Soon");
             }
-            m_hours->set_label(date::format("%T", diff_secs));
+            m_hours->set_label(std::format("{0:%T}", diff_secs));
         } else {
             m_hours->hide();
             m_days->set_label("Miku time now!");

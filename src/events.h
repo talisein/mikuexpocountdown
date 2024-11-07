@@ -4,10 +4,7 @@
 #include <ranges>
 #include <glibmm.h>
 
-#if __cpp_lib_chrono < 201907
-#include "date/date.h"
-#include "date/tz.h"
-#endif
+using namespace std::chrono;
 
 namespace Miku
 {
@@ -56,12 +53,12 @@ namespace Miku
         Glib::ustring name;
         Glib::ustring m_style_class;
         Glib::ustring search_keys;
-        date::zoned_seconds start_time;
-        date::zoned_seconds end_time;
+        zoned_seconds start_time;
+        zoned_seconds end_time;
         std::chrono::minutes m_duration;
 
     private:
-        date::local_seconds m_local_time;
+        local_seconds m_local_time;
     };
 
     using events_view_t = std::ranges::ref_view<const std::vector<Glib::RefPtr<const Event>>>;
