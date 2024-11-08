@@ -22,7 +22,7 @@ CountdownWindow::CountdownWindow(const Glib::RefPtr<Gtk::Application>& app) :
     m_tab_view->property_selected_page().signal_changed().connect([window_title, tab_view = m_tab_view->gobj()]() {
         AdwTabPage *page = adw_tab_view_get_selected_page(tab_view);
         CountdownGrid *grid = static_cast<CountdownGrid*>(Glib::wrap(GTK_CENTER_BOX(adw_tab_page_get_child(page))));
-        auto s = Glib::ustring::compose("Miku Expo %1 Countdown", grid->m_event->name);
+        auto s = Glib::ustring::compose("%1 Countdown", grid->m_event->name);
         adw_window_title_set_title(window_title, s.c_str());
     });
 

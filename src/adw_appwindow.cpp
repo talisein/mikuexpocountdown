@@ -1,3 +1,4 @@
+#include <iostream>
 #include "adw_appwindow.h"
 
 namespace Adw {
@@ -34,32 +35,6 @@ namespace Adw {
     {
         return new ApplicationWindow((AdwApplicationWindow*)(o)); //top-level windows can not be manage()ed.
 
-    }
-
-    ApplicationWindow::ApplicationWindow(const Glib::RefPtr<Gtk::Application>& application)
-        :
-        // Mark this class as non-derived to allow C++ vfuncs to be skipped.
-        Glib::ObjectBase(nullptr),
-        Gtk::ApplicationWindow(Glib::ConstructParams(application_window_class_.init()))
-    {
-        // Don't set the "application" property in ConstructParams. It would result in
-        // an attempt to set two C++ wrappers on the GApplicationWindow C object,
-        // if "application" is not a plain Gtk::Application, but derived from it.
-        // Like so:
-        // - Glib::Object::Object(const Glib::ConstructParams& construct_params) calls
-        //   g_object_newv() to create a new GApplicationWindow.
-        // - In gtk+, gtk_application_add_window() is called. It emits the window_added
-        //   signal with the new GApplicationWindow as a parameter.
-        // - Application_signal_window_added_callback() calls Glib::wrap(GWindow*)
-        //   before *this has been set as the wrapper. Glib::wrap() then creates a
-        //   wrapper (not *this).
-        // - Glib::Object::Object() calls Glib::ObjectBase::initialize(), which calls
-        //   Glib::ObjectBase::_set_current_wrapper() to set *this as the C++ wrapper,
-        //   but by then another wrapper has already been set.
-        // https://bugzilla.gnome.org/show_bug.cgi?id=758813
-
-        if (application)
-            application->add_window(*this);
     }
 
     ApplicationWindow::ApplicationWindow(const Glib::ConstructParams& construct_params)
@@ -102,12 +77,37 @@ namespace Adw {
     }
 
 
+    ApplicationWindow::ApplicationWindow(const Glib::RefPtr<Gtk::Application>& application)
+        :
+        // Mark this class as non-derived to allow C++ vfuncs to be skipped.
+        Glib::ObjectBase(nullptr),
+        Gtk::ApplicationWindow(Glib::ConstructParams(application_window_class_.init())),
+        settings(Gio::Settings::create("dance._39music.MikuExpoCountdown.State"))
+    {
+        if (application)
+            application->add_window(*this);
+
+        bind_settings();
+    }
+
     ApplicationWindow::ApplicationWindow()
         :
         // Mark this class as non-derived to allow C++ vfuncs to be skipped.
         Glib::ObjectBase(nullptr),
-        Gtk::ApplicationWindow(Glib::ConstructParams(application_window_class_.init()))
+        Gtk::ApplicationWindow(Glib::ConstructParams(application_window_class_.init())),
+        settings(Gio::Settings::create("dance._39music.MikuExpoCountdown.State"))
     {
+        bind_settings();
+    }
+
+    void
+    ApplicationWindow::bind_settings()
+    {
+        if (!settings) return;
+        settings->bind("width", this, "default-width");
+        settings->bind("height", this, "default-height");
+        settings->bind("is-maximized", this, "maximized");
+        settings->bind("is-fullscreen", this, "fullscreened");
     }
 
     Gtk::Widget* ApplicationWindow::get_content() {

@@ -14,6 +14,14 @@
     padding: 10px;
 }
 
+#page.birthday {
+    background-image: url("resource:///dance/_39music/MikuExpoCountdown/miku_16th_birthday.jpg"), linear-gradient(#3589b5,#d2e3eb);
+    padding: 10px;
+    color: #f75189;
+    background-color: #252525;
+    padding: 10px;
+}
+
 #page.d39 {
     background-image: url("resource:///dance/_39music/MikuExpoCountdown/dimension39.png"), linear-gradient(#8ae7c9,#8ae7c9,#8ae7c9,#8ae7c9, #8ae7c9,#8ae7c9,#8ae7c9, #fbf7a7, #fbf7a7, #fbf7a7, #fbf7a7, #fbf7a7,#fbf7a7,#fbf7a7,#fbf7a7);
     padding: 10px;

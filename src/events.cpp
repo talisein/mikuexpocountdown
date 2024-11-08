@@ -30,7 +30,7 @@ namespace {
     static time_zone const * const MEXICO_CITY_TZ { locate_zone("America/Mexico_City") };
 
     const std::array raw_events {std::to_array<Miku::raw_event>({
-                {"Birthday"   , "Miku's Birthday",     "expovr",   local_days{August/31/2025},        24h, JST},
+                {"Miku's Birthday"   , "Miku's Birthday",     "birthday",   local_days{August/31/2025},        24h, JST},
             })};
 
 }

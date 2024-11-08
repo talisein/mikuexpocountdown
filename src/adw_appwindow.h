@@ -61,6 +61,9 @@ namespace Adw
         Gtk::Widget* get_content();
         void set_content(Gtk::Widget& content);
 
+    private:
+        Glib::RefPtr<Gio::Settings> settings;
+        void bind_settings();
     };
 }
 

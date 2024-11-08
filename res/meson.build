@@ -6,8 +6,17 @@ res = gnome.compile_resources('mikuexpocountdown-resources',
                               export : false,
                               c_name : 'mikuexpocountdown_resources')
 
+# GSettings
 
-
+schemas_dir = get_option('prefix') / get_option('datadir') / 'glib-2.0' / 'schemas'
+settings_schemas = [ 'dance._39music.MikuExpoCountdown.gschema.xml' ]
+install_data(settings_schemas, install_dir: schemas_dir)
+gnome.compile_schemas(depend_files: files(settings_schemas))
+gnome.post_install(glib_compile_schemas: true)
+test('validate-schema',
+  find_program('glib-compile-schemas'),
+  args: ['--strict', '--dry-run', meson.current_source_dir()],
+)
 # --- Desktop File ---
 desktop_file = files('dance._39music.MikuExpoCountdown.desktop')
 
