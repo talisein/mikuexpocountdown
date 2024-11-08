@@ -39,6 +39,16 @@
   </provides>
 
   <releases>
+    <release version="2.1.0" date="2024-11-08">
+      <description>
+        <p>
+          Miku Expo New Zealand &amp; Australia
+        </p>
+        <p>
+          Miku's next birthday will always be an event.
+        </p>
+      </description>
+    </release>
     <release version="2.0" date="2023-10-02">
       <description>
         <p>

@@ -94,6 +94,14 @@
     padding: 0px;
 }
 
+#page.nzaus {
+    background-image: url("resource:///dance/_39music/MikuExpoCountdown/nzaus.webp"), linear-gradient(#3589b5,#d2e3eb);
+    padding: 10px;
+    color: #f75189;
+    background-color: #252525;
+    padding: 10px;
+}
+
 #days {
     font-size: 200px;
     text-shadow: 2px 2px 10px #000;
