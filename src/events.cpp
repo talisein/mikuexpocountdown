@@ -39,38 +39,36 @@ namespace {
     const std::array raw_events {std::to_array<Miku::raw_event>({
                 {"Miku Expo Auckland"   , "Miku Expo Auckland New Zealand Australia",     "nzaus",   local_days{November/15/2024} + 12h + 6h, 2h, AUCKLANDT},
                 {"Miku Expo Brisbane"   , "Miku Expo Auckland New Zealand Australia",     "nzaus",   local_days{November/18/2024} + 12h + 7h, 2h, BRISBANET},
-                {"Miku Expo Sydney"     , "Miku Expo Auckland New Zealand Australia",     "nzaus",   local_days{November/18/2024} + 12h + 8h, 2h, SYDNEYT},
-                {"Miku Expo Melbourne"  , "Miku Expo Auckland New Zealand Australia",     "nzaus",   local_days{November/18/2024} + 12h + 7h, 2h, MELBOURNET},
-                {"Miku Expo Perth"      , "Miku Expo Auckland New Zealand Australia",     "nzaus",   local_days{November/18/2024} + 12h + 8h, 2h, PERTHT},
+                {"Miku Expo Sydney"     , "Miku Expo Auckland New Zealand Australia",     "nzaus",   local_days{November/20/2024} + 12h + 8h, 2h, SYDNEYT},
+                {"Miku Expo Melbourne"  , "Miku Expo Auckland New Zealand Australia",     "nzaus",   local_days{November/22/2024} + 12h + 7h, 2h, MELBOURNET},
+                {"Miku Expo Perth"      , "Miku Expo Auckland New Zealand Australia",     "nzaus",   local_days{November/26/2024} + 12h + 8h, 2h, PERTHT},
             })};
 
 }
 
 namespace Miku
 {
-    std::generator<Glib::RefPtr<Miku::Event>> event_gen() {
+    std::vector<Glib::RefPtr<const Miku::Event>> create_events() {
+        std::vector<Glib::RefPtr<const Miku::Event>> events;
+        events.reserve(raw_events.size() + 1);
         for (const raw_event& e : raw_events) {
-            co_yield Miku::Event::create(e);
+            events.push_back(Miku::Event::create(e));
         }
+
         auto this_year = std::chrono::year_month_day(std::chrono::year_month_day(std::chrono::floor<std::chrono::days>(std::chrono::system_clock::now())).year(), August, std::chrono::day(31));
         auto next_year = std::chrono::year_month_day(this_year.year() + std::chrono::years(1), August, std::chrono::day(31));
         raw_event next_birthday {"Miku's Birthday"   , "Miku's Birthday",     "birthday",
             std::chrono::floor<std::chrono::days>(std::chrono::system_clock::now()) < this_year ? local_days(this_year) : local_days(next_year),
             24h, JST};
-        co_yield Miku::Event::create(next_birthday);
+        events.push_back(Miku::Event::create(next_birthday));
+
+        return events;
     }
 
     events_view_t get_events()
     {
-        static std::vector<Glib::RefPtr<const Miku::Event>> events;
-        std::once_flag flag;
-        std::call_once(flag, [] {
-            events.reserve(raw_events.size() + 1);
-            for (auto e : event_gen()) {
-                events.push_back(e);
-            }
-        });
-        return std::ranges::views::all(std::as_const(events));
+        static const std::vector<Glib::RefPtr<const Miku::Event>> events { create_events() };
+        return std::ranges::views::all(events);
     }
 
     Event::Event(const raw_event &event) :
