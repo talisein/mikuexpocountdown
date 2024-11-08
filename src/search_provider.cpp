@@ -78,7 +78,7 @@ SearchProvider::GetResultMetas(const std::vector<Glib::ustring> & identifiers,
                 }
             }
             Glib::ustring display_date;
-            static constexpr char date_format[] { "%A %d %B %Y %X %Z" };
+            static constexpr char date_format[] { "{0:%A} {0:%d} {0:%B} {0:%Y} {0:%X} {0:%Z}" };
 
             if (diff_secs.count() <= 0) { // Event started
                 auto end_time = (*it)->end_time;
