@@ -1,3 +1,4 @@
+#include <iostream>
 #include "window.h"
 #include "adwaita.h"
 
@@ -9,7 +10,8 @@ CountdownWindow::CountdownWindow(const Glib::RefPtr<Gtk::Application>& app) :
     m_window_title (Glib::wrap(adw_window_title_new(nullptr, nullptr))),
     m_tab_button   (Glib::wrap(adw_tab_button_new())),
     m_tab_view     (Gtk::make_managed<Adw::TabView>()),
-    m_box          (Gtk::make_managed<Gtk::Box>(Gtk::Orientation::VERTICAL))
+    m_box          (Gtk::make_managed<Gtk::Box>(Gtk::Orientation::VERTICAL)),
+    m_settings(Gio::Settings::create("dance._39music.MikuExpoCountdown.State"))
 {
     AdwTabOverview *tab_overview = ADW_TAB_OVERVIEW (m_tab_overview->gobj());
     AdwHeaderBar   *header_bar   = ADW_HEADER_BAR   (m_header_bar->gobj());
@@ -48,4 +50,32 @@ CountdownWindow::CountdownWindow(const Glib::RefPtr<Gtk::Application>& app) :
 
     }
 
+    m_settings->bind("width", this, "default-width");
+    m_settings->bind("height", this, "default-height");
+    m_settings->bind("is-maximized", this, "maximized");
+    m_settings->bind("is-fullscreen", this, "fullscreened");
+    m_settings->bind<Glib::ustring, AdwTabPage*>("selected-page", m_tab_view, "selected-page", Gio::Settings::BindFlags::DEFAULT,
+                                                 sigc::mem_fun(*this, &CountdownWindow::map_from_name_to_page),
+                                                 sigc::mem_fun(*this, &CountdownWindow::map_from_page_to_name));
+}
+
+std::optional<AdwTabPage*>
+CountdownWindow::map_from_name_to_page(const Glib::ustring& name)
+{
+    GListModel* list = G_LIST_MODEL(adw_tab_view_get_pages(m_tab_view->gobj()));
+    const gsize list_size = g_list_model_get_n_items(list);
+    for (gsize i = 0; i < list_size; ++i) {
+        auto tab_page = ADW_TAB_PAGE(g_list_model_get_item(list, i));
+        auto title = Glib::convert_const_gchar_ptr_to_ustring(adw_tab_page_get_title(tab_page));
+        if (title == name)
+            return tab_page;
+    }
+
+    return std::nullopt;
+}
+
+std::optional<Glib::ustring>
+CountdownWindow::map_from_page_to_name(AdwTabPage* page)
+{
+    return Glib::convert_const_gchar_ptr_to_ustring(adw_tab_page_get_title(page));
 }

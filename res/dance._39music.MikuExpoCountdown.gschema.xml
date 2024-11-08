@@ -14,5 +14,8 @@
     <key name="is-fullscreen" type="b">
       <default>false</default>
     </key>
+    <key name="selected-page" type="s">
+      <default>"Miku's Birthday"</default>
+    </key>
   </schema>
 </schemalist>

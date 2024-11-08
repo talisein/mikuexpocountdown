@@ -20,4 +20,7 @@ private:
     Gtk::Widget *m_tab_button;
     Adw::TabView *m_tab_view;
     Gtk::Box *m_box;
+    Glib::RefPtr<Gio::Settings> m_settings;
+    std::optional<AdwTabPage*> map_from_name_to_page(const Glib::ustring& name);
+    std::optional<Glib::ustring> map_from_page_to_name(AdwTabPage* page);
 };

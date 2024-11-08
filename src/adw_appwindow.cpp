@@ -81,33 +81,18 @@ namespace Adw {
         :
         // Mark this class as non-derived to allow C++ vfuncs to be skipped.
         Glib::ObjectBase(nullptr),
-        Gtk::ApplicationWindow(Glib::ConstructParams(application_window_class_.init())),
-        settings(Gio::Settings::create("dance._39music.MikuExpoCountdown.State"))
+        Gtk::ApplicationWindow(Glib::ConstructParams(application_window_class_.init()))
     {
         if (application)
             application->add_window(*this);
-
-        bind_settings();
     }
 
     ApplicationWindow::ApplicationWindow()
         :
         // Mark this class as non-derived to allow C++ vfuncs to be skipped.
         Glib::ObjectBase(nullptr),
-        Gtk::ApplicationWindow(Glib::ConstructParams(application_window_class_.init())),
-        settings(Gio::Settings::create("dance._39music.MikuExpoCountdown.State"))
+        Gtk::ApplicationWindow(Glib::ConstructParams(application_window_class_.init()))
     {
-        bind_settings();
-    }
-
-    void
-    ApplicationWindow::bind_settings()
-    {
-        if (!settings) return;
-        settings->bind("width", this, "default-width");
-        settings->bind("height", this, "default-height");
-        settings->bind("is-maximized", this, "maximized");
-        settings->bind("is-fullscreen", this, "fullscreened");
     }
 
     Gtk::Widget* ApplicationWindow::get_content() {
