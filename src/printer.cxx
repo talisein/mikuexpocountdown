@@ -5,17 +5,17 @@
 #include <ranges>
 #include <experimental/iterator>
 #include <string_view>
-#include "date/date.h"
-#include "date/tz.h"
+
+using namespace std::chrono;
 
 namespace {
-    using namespace date;
     using namespace std::chrono_literals;
+    static time_zone const * const JST { locate_zone("Asia/Tokyo") };
 
     struct event {
         std::string_view name;
         std::string_view short_name;
-        date::local_seconds date;
+        std::chrono::local_seconds date;
         std::chrono::minutes duration;
         bool main_event;
     };
@@ -44,19 +44,19 @@ namespace {
         {"CLOSE", 7h},
     }};
 
-    const std::array<const date::time_zone*, 5> zones = {
-//            date::locate_zone("Asia/Riyadh"),
-//            date::locate_zone("Asia/Kolkata"),
-//            date::locate_zone("Asia/Taipei"),
-//            date::locate_zone("Australia/Sydney"),
-//            date::locate_zone("Australia/Perth"),
-            date::locate_zone("America/Los_Angeles"),
-//            date::locate_zone("America/Denver"),
-//            date::locate_zone("America/Chicago"),
-            date::locate_zone("America/New_York"),
-            date::locate_zone("Europe/London"),
-            date::locate_zone("Europe/Paris"),
-            date::locate_zone("Asia/Tokyo")
+    const std::array<const std::chrono::time_zone*, 5> zones = {
+//            locate_zone("Asia/Riyadh"),
+//            locate_zone("Asia/Kolkata"),
+//            locate_zone("Asia/Taipei"),
+//            locate_zone("Australia/Sydney"),
+//            locate_zone("Australia/Perth"),
+            locate_zone("America/Los_Angeles"),
+//            locate_zone("America/Denver"),
+//            locate_zone("America/Chicago"),
+            locate_zone("America/New_York"),
+            locate_zone("Europe/London"),
+            locate_zone("Europe/Paris"),
+            locate_zone("Asia/Tokyo")
     };
 
     std::string
@@ -93,9 +93,10 @@ namespace {
     gcal_link(const event& event)
     {
         std::stringstream ss;
-        auto gcal_formatter = [](auto x){return date::format("%Y%m%dT%H%M00Z", x);};
-        const auto jp_time { date::make_zoned("Asia/Tokyo", event.date) };
-        const date::sys_seconds sys_time { jp_time.get_sys_time() };
+        using namespace std::string_view_literals;
+        auto gcal_formatter = [](const auto& x){return std::format("{0:%Y}{0:%m}{0:%d}T{0:%H}{0:%M}00Z", x);};
+        const auto jp_time { zoned_time(JST, event.date) };
+        const sys_seconds sys_time { jp_time.get_sys_time() };
         ss << "https://calendar.google.com/calendar/u/0/r/eventedit?text="
                << url_encode(event.name)
                << "&dates="
@@ -116,7 +117,7 @@ namespace {
         return ss.str();
     }
 
-    std::string
+    [[maybe_unused]] std::string
     bold_main_event(const event& event)
     {
         if (!event.main_event)
@@ -128,7 +129,7 @@ namespace {
     }
 
     std::string
-    discord_timestamp(const date::sys_seconds sys_time)
+    discord_timestamp(const sys_seconds sys_time)
     {
         std::stringstream ss;
         ss << "<t:"
@@ -138,7 +139,7 @@ namespace {
     }
 
     std::string
-    discord_timestamp_relative(const date::sys_seconds sys_time)
+    discord_timestamp_relative(const sys_seconds sys_time)
     {
         std::stringstream ss;
         ss << "<t:"
@@ -147,7 +148,7 @@ namespace {
         return ss.str();
     }
 
-    std::string
+    [[maybe_unused]] std::string
     center(const std::string_view s, std::string::difference_type width)
     {
         auto remaining = width - s.size();
@@ -168,17 +169,17 @@ namespace {
 
 int main() {
     auto joiner = std::experimental::make_ostream_joiner(std::cout, "|");
-    auto radio_formatter = [](auto x){return date::format("%A %I:%M&nbsp;%p", x);};
-    auto bold_radio_formatter = [](auto x){return date::format("_%A_ %I:%M&nbsp;%p", x);};
-    auto highlight_radio_formatter = [](auto x){return date::format("**%A %I:%M&nbsp;%p**", x);};
-    auto highlight_bold_radio_formatter = [](auto x){return date::format("**_%A_ %I:%M&nbsp;%p**", x);};
+    auto radio_formatter = [](auto x){return std::format("{0:%A} {0:%I}:{0:%M}&nbsp;{0:%p}", x);};
+    auto bold_radio_formatter = [](auto x){return std::format("_{0:%A}_ {0:%I}:{0:%M}&nbsp;{0:%p}", x);};
+    auto highlight_radio_formatter = [](auto x){return std::format("**{0:%A} {0:%I}:{0:%M}&nbsp;{0:%p}**", x);};
+    auto highlight_bold_radio_formatter = [](auto x){return std::format("**_{0:%A}_ {0:%I}:{0:%M}&nbsp;{0:%p}**", x);};
 //    auto radio_formatter = [](auto x){return date::format("%A %b&nbsp;%d, %I:%M&nbsp;%p", x);};
 //    auto bold_radio_formatter = [](auto x){return date::format("**%A** %b&nbsp;%d, %I:%M&nbsp;%p", x);};
 //    auto radio_formatter = [](auto x){return date::format("%I:%M&nbsp;%p", x);};
 
         joiner = "|Event";
         for (auto zone : zones) {
-            joiner = zone->get_info(date::make_zoned("Asia/Tokyo", events[0].date).get_sys_time()).abbrev;
+            joiner = zone->get_info(zoned_time(JST, events[0].date).get_sys_time()).abbrev;
         }
         joiner = "\n";
 
@@ -194,24 +195,24 @@ int main() {
         joiner = "\n";
 
     for (const auto & event : events) {
-         const auto jp_time { date::make_zoned("Asia/Tokyo", event.date) };
-         const date::sys_seconds sys_time { jp_time.get_sys_time() };
+         const auto jp_time { zoned_time(JST, event.date) };
+         const sys_seconds sys_time { jp_time.get_sys_time() };
 
 //         joiner = bold_main_event(event);//gcal_linked_name(event);
          joiner = gcal_linked_name(event);
         for (auto zone : zones) {
-            auto zone_time = date::make_zoned(zone, sys_time);
+            auto zone_time = zoned_time(zone, sys_time);
             if (event.main_event) {
-                if (date::weekday(floor<days>(zone_time.get_local_time())) != date::weekday(floor<days>(jp_time.get_local_time()))) {
-                    joiner = highlight_bold_radio_formatter(date::make_zoned(zone, sys_time));
+                if (std::chrono::weekday(floor<days>(zone_time.get_local_time())) != std::chrono::weekday(floor<days>(jp_time.get_local_time()))) {
+                    joiner = highlight_bold_radio_formatter(zoned_time(zone, sys_time));
                 } else {
-                    joiner = highlight_radio_formatter(date::make_zoned(zone, sys_time));
+                    joiner = highlight_radio_formatter(zoned_time(zone, sys_time));
                 }
             } else {
-                if (date::weekday(floor<days>(zone_time.get_local_time())) != date::weekday(floor<days>(jp_time.get_local_time()))) {
-                    joiner = bold_radio_formatter(date::make_zoned(zone, sys_time));
+                if (std::chrono::weekday(floor<days>(zone_time.get_local_time())) != std::chrono::weekday(floor<days>(jp_time.get_local_time()))) {
+                    joiner = bold_radio_formatter(zoned_time(zone, sys_time));
                 } else {
-                    joiner = radio_formatter(date::make_zoned(zone, sys_time));
+                    joiner = radio_formatter(zoned_time(zone, sys_time));
                 }
             }
         }
@@ -221,8 +222,8 @@ int main() {
     std::cout << "\n\n";
 
     for (const auto & event : events) {
-        const auto jp_time { date::make_zoned("Asia/Tokyo", event.date) };
-        const date::sys_seconds sys_time { jp_time.get_sys_time() };
+        const auto jp_time { zoned_time(JST, event.date) };
+        const std::chrono::sys_seconds sys_time { jp_time.get_sys_time() };
         joiner = event.short_name;
         joiner = discord_timestamp(sys_time);
         joiner = discord_timestamp_relative(sys_time);
@@ -232,7 +233,7 @@ int main() {
 
     joiner = "DJ";
     for (auto zone : zones) {
-        const auto sys_time { date::make_zoned("Asia/Tokyo", events[0].date).get_sys_time() };
+        const auto sys_time { zoned_time(JST, events[0].date).get_sys_time() };
         joiner = zone->get_info(sys_time).abbrev;
     }
     joiner = "\n";
@@ -248,11 +249,11 @@ int main() {
 
     for (auto offset : offsets) {
         joiner = offset.DJ;
-        const auto jp_time { date::make_zoned("Asia/Tokyo", events[0].date + offset.offset) };
+        const auto jp_time { zoned_time(JST, events[0].date + offset.offset) };
         const auto sys_time { jp_time.get_sys_time() };
         for (auto zone : zones) {
-            const auto zone_time { date::make_zoned(zone, sys_time) };
-            if (date::weekday(floor<days>(zone_time.get_local_time())) != date::weekday(floor<days>(jp_time.get_local_time()))) {
+            const auto zone_time { zoned_time(zone, sys_time) };
+            if (std::chrono::weekday(floor<days>(zone_time.get_local_time())) != std::chrono::weekday(floor<days>(jp_time.get_local_time()))) {
                 joiner = bold_radio_formatter(zone_time);
             } else {
                 joiner = radio_formatter(zone_time);

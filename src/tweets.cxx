@@ -4,26 +4,23 @@
 #include <array>
 #include <ranges>
 #include <experimental/iterator>
-#include "date/date.h"
-#include "date/tz.h"
 
 namespace {
-    using namespace date;
     using namespace std::chrono_literals;
 
     struct event {
         std::string_view name;
-        date::local_seconds date;
+        std::chrono::local_seconds date;
         std::chrono::minutes duration;
     };
 
     constinit std::array<const event, 2> events {{
-            {"Miku Expo Rewind", local_days{June/5/2022} + 10h + 30min, 3h},
-            {"25 tweet", local_days{May/10/2022} + 18h + 30min, 6h},
+            {"Miku Expo Rewind", std::chrono::local_days{std::chrono::June/5/2022} + 10h + 30min, 3h},
+            {"25 tweet", std::chrono::local_days{std::chrono::May/10/2022} + 18h + 30min, 6h},
         }};
 
-    const date::time_zone* jst = date::locate_zone("Asia/Tokyo");
-    const date::time_zone* pst = date::locate_zone("America/Los_Angeles");
+    const std::chrono::time_zone* jst = std::chrono::locate_zone("Asia/Tokyo");
+    const std::chrono::time_zone* pst = std::chrono::locate_zone("America/Los_Angeles");
 
     constinit std::array<std::string_view, 24> songs = {
         "Ten Thousand Stars",
@@ -58,8 +55,8 @@ namespace {
 int main()
 {
 
-    const auto showtime { date::make_zoned(jst, events[0].date) };
-    const auto tweettime { date::make_zoned(pst, events[1].date) };
+    const auto showtime { std::chrono::zoned_time(jst, events[0].date) };
+    const auto tweettime { std::chrono::zoned_time(pst, events[1].date) };
 
     auto span = showtime.get_sys_time() - tweettime.get_sys_time() - 24h;
 
@@ -78,19 +75,21 @@ int main()
         auto hours = std::chrono::floor<std::chrono::hours>(pure_dur - dur);
         auto min = std::chrono::round<std::chrono::minutes>(pure_dur - dur - hours);
 
-        std::cout << date::make_zoned(pst, tt) << ": " << remaining << " songs and ";
-        date::operator<<(std::cout, std::chrono::floor<std::chrono::days>(pure_dur));
-        std::cout << " days (";
-        date::operator<<(std::cout, dur);
-        std::cout << " ";
-        date::operator<<(std::cout, hours);
-        std::cout << " ";
-        date::operator<<(std::cout, min);
-        std::cout <<") remaining. This song is " << *song++ << std::endl;
+        std::cout << std::chrono::zoned_time(pst, tt) << ": " << remaining << " songs and "
+                  << std::chrono::floor<std::chrono::days>(pure_dur)
+                  << " days ("
+                  << dur
+                  << " "
+                  << hours
+                  << " "
+                  << min
+                  << ") remaining. This song is "
+                  << *song++
+                  << std::endl;
     }
 
-    date::operator<<(std::cout, std::chrono::floor<std::chrono::minutes>(intertweet_duration - 23h));
-    std::cout << " min between tweets.\n";
+    std::cout << std::chrono::floor<std::chrono::minutes>(intertweet_duration - 23h)
+              << " min between tweets.\n";
 
     return 0;
 }

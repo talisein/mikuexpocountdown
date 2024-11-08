@@ -14,10 +14,5 @@ adw_dep = dependency('libadwaita-1', version: '>=1.3.0')
 
 is_not_windows = host_machine.system() != 'windows'
 
-date_dep = dependency('date',
-                      fallback: ['hinnant-date', 'tz_dep'],
-                      default_options: ['use_system_tzdb=@0@'.format(is_not_windows),
-                                        'default_library=static'])
-
 subdir('res')
 subdir('src')
