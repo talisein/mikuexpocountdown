@@ -39,4 +39,5 @@ protected:
 
 private:
     SearchProvider search;
+    sigc::scoped_connection search_provider_activate_connection;
 };
