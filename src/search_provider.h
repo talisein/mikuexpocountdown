@@ -29,4 +29,7 @@ class SearchProvider : public org::gnome::Shell::SearchProvider2Stub
     LaunchSearch(const std::vector<Glib::ustring> & terms,
                  guint32 timestamp,
                  MethodInvocation &invocation) override final;
+
+public:
+    sigc::signal<void(Glib::ustring)> signal_activate;
 };

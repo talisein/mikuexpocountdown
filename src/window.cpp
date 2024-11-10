@@ -1,4 +1,5 @@
 #include <iostream>
+#include "application.h"
 #include "window.h"
 #include "adwaita.h"
 
@@ -57,6 +58,11 @@ CountdownWindow::CountdownWindow(const Glib::RefPtr<Gtk::Application>& app) :
     m_settings->bind<Glib::ustring, AdwTabPage*>("selected-page", m_tab_view, "selected-page", Gio::Settings::BindFlags::DEFAULT,
                                                  sigc::mem_fun(*this, &CountdownWindow::map_from_name_to_page),
                                                  sigc::mem_fun(*this, &CountdownWindow::map_from_page_to_name));
+
+
+    if (auto miku_app = std::dynamic_pointer_cast<MikuApplication>(app); miku_app) {
+        search_provider_activate_connection = miku_app->get_search_provider().signal_activate.connect(sigc::mem_fun(*this, &CountdownWindow::activate_page));
+    }
 }
 
 std::optional<AdwTabPage*>
@@ -78,4 +84,13 @@ std::optional<Glib::ustring>
 CountdownWindow::map_from_page_to_name(AdwTabPage* page)
 {
     return Glib::convert_const_gchar_ptr_to_ustring(adw_tab_page_get_title(page));
+}
+
+void
+CountdownWindow::activate_page(Glib::ustring identifier)
+{
+    auto page = map_from_name_to_page(identifier);
+    if (page.has_value()) {
+        m_tab_view->set_selected_page(page.value());
+    }
 }

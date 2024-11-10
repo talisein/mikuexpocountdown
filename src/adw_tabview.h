@@ -59,6 +59,7 @@ namespace Adw
         AdwTabPage* append(Gtk::Widget& child) { return adw_tab_view_append(gobj(), child.gobj()); }
         void close_page(AdwTabPage* page) { adw_tab_view_close_page(gobj(), page); }
         Glib::PropertyProxy< AdwTabPage* > property_selected_page() { return  Glib::PropertyProxy< AdwTabPage* >(this, "selected-page"); };
+        void set_selected_page(AdwTabPage* page) { adw_tab_view_set_selected_page(gobj(), page); }
     };
 }
 

@@ -106,6 +106,7 @@ SearchProvider::ActivateResult(const Glib::ustring & identifier,
                                guint32 timestamp,
                                MethodInvocation &invocation)
 {
+    signal_activate.emit(identifier);
     invocation.ret();
 }
 

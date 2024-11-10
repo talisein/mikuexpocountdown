@@ -11,7 +11,7 @@
 class CountdownWindow : public Adw::ApplicationWindow
 {
 public:
-    CountdownWindow(const Glib::RefPtr<Gtk::Application>& app);
+    explicit CountdownWindow(const Glib::RefPtr<Gtk::Application>& app);
 
 private:
     Gtk::Widget *m_tab_overview;
@@ -23,4 +23,7 @@ private:
     Glib::RefPtr<Gio::Settings> m_settings;
     std::optional<AdwTabPage*> map_from_name_to_page(const Glib::ustring& name);
     std::optional<Glib::ustring> map_from_page_to_name(AdwTabPage* page);
+    sigc::scoped_connection search_provider_activate_connection;
+
+    void activate_page(Glib::ustring identifier);
 };
