@@ -39,5 +39,10 @@ protected:
 
 private:
     SearchProvider search;
+
+    void search_activation(const Glib::ustring& name);
+    void on_activate();
+
     sigc::scoped_connection search_provider_activate_connection;
+    sigc::scoped_connection signal_activate_connection;
 };
