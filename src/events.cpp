@@ -37,10 +37,10 @@ namespace {
     static time_zone const * const PERTHT { locate_zone("Australia/Perth") };
 
     const std::array raw_events {std::to_array<Miku::raw_event>({
-                {"Miku Expo Auckland",  "Hatsune Miku Expo Auckland New Zealand Australia",  "nzaus", local_days{November/15/2024} + 18h, 2h, AUCKLANDT},
-                {"Miku Expo Brisbane",  "Hatsune Miku Expo Brisbane New Zealand Australia",  "nzaus", local_days{November/18/2024} + 19h, 2h, BRISBANET},
+                {"Miku Expo Auckland",  "Hatsune Miku Expo Auckland New Zealand Australia",  "nzaus", local_days{November/15/2024} + 20h, 2h, AUCKLANDT},
+                {"Miku Expo Brisbane",  "Hatsune Miku Expo Brisbane New Zealand Australia",  "nzaus", local_days{November/18/2024} + 20h, 2h, BRISBANET},
                 {"Miku Expo Sydney",    "Hatsune Miku Expo Sydney New Zealand Australia",    "nzaus", local_days{November/20/2024} + 20h, 2h, SYDNEYT},
-                {"Miku Expo Melbourne", "Hatsune Miku Expo Melbourne New Zealand Australia", "nzaus", local_days{November/22/2024} + 19h, 2h, MELBOURNET},
+                {"Miku Expo Melbourne", "Hatsune Miku Expo Melbourne New Zealand Australia", "nzaus", local_days{November/22/2024} + 20h, 2h, MELBOURNET},
                 {"Miku Expo Perth",     "Hatsune Miku Expo Perth New Zealand Australia",     "nzaus", local_days{November/26/2024} + 20h, 2h, PERTHT},
             })};
 
