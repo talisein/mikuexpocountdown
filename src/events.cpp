@@ -37,11 +37,14 @@ namespace {
     static time_zone const * const PERTHT { locate_zone("Australia/Perth") };
 
     const std::array raw_events {std::to_array<Miku::raw_event>({
-                {"Miku Expo Auckland",  "Hatsune Miku Expo Auckland New Zealand Australia",  "nzaus", local_days{November/15/2024} + 20h, 2h, AUCKLANDT},
-                {"Miku Expo Brisbane",  "Hatsune Miku Expo Brisbane New Zealand Australia",  "nzaus", local_days{November/18/2024} + 20h, 2h, BRISBANET},
-                {"Miku Expo Sydney",    "Hatsune Miku Expo Sydney New Zealand Australia",    "nzaus", local_days{November/20/2024} + 20h, 2h, SYDNEYT},
-                {"Miku Expo Melbourne", "Hatsune Miku Expo Melbourne New Zealand Australia", "nzaus", local_days{November/22/2024} + 20h, 2h, MELBOURNET},
-                {"Miku Expo Perth",     "Hatsune Miku Expo Perth New Zealand Australia",     "nzaus", local_days{November/26/2024} + 20h, 2h, PERTHT},
+                {"Blooming Osaka",  "Hatsune Miku Japan Tour Blooming Osaka",  "blooming", local_days{April/19/2025} + 13h, 2h, JST},
+                {"Blooming Aichi",  "Hatsune Miku Japan Tour Blooming Aichi Nagoya",  "blooming", local_days{April/26/2025} + 13h, 2h, JST},
+                {"Blooming Fukuoka",  "Hatsune Miku Japan Tour Blooming Fukuoka",  "blooming", local_days{April/29/2025} + 13h, 2h, JST},
+                {"Blooming Tokyo Day 1",  "Hatsune Miku Japan Tour Blooming Tokyo",  "blooming", local_days{May/2/2025} + 13h, 2h, JST},
+                {"Blooming Tokyo Day 2",  "Hatsune Miku Japan Tour Blooming Tokyo",  "blooming", local_days{May/3/2025} + 13h, 2h, JST},
+                {"Blooming Kagawa",  "Hatsune Miku Japan Tour Blooming Kagawa",  "blooming", local_days{May/6/2025} + 13h, 2h, JST},
+                {"Blooming Hokkaido",  "Hatsune Miku Japan Tour Blooming Hokkaido Sapporo",  "blooming", local_days{May/17/2025} + 18h, 2h, JST},
+                {"Blooming Okinawa",  "Hatsune Miku Japan Tour Blooming Okinawa Naha",  "blooming", local_days{May/31/2025} + 13h, 2h, JST},
             })};
 
 }

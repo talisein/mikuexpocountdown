@@ -102,6 +102,14 @@
     padding: 10px;
 }
 
+#page.blooming {
+    background-image: url("resource:///dance/_39music/MikuExpoCountdown/blooming.webp"), url("resource:///dance/_39music/MikuExpoCountdown/blooming2.webp"), url("resource:///dance/_39music/MikuExpoCountdown/blooming3.webp"), linear-gradient(#0096b6, #0096b6);
+    padding: 10px;
+    color: #e34942;
+    background-color: #252525;
+    padding: 10px;
+}
+
 #days {
     font-size: 200px;
     text-shadow: 2px 2px 10px #000;

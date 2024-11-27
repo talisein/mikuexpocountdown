@@ -17,6 +17,9 @@
     <file>kodo_2023.png</file>
     <file>miku_16th_birthday.jpg</file>
     <file>nzaus.webp</file>
+    <file>blooming.webp</file>
+    <file>blooming2.webp</file>
+    <file>blooming3.webp</file>
     <file preprocess="xml-stripblanks" compressed="true">bg.svg</file>
     <file>digistars_august_2021.png</file>
   </gresource>
