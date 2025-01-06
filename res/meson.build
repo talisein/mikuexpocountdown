@@ -69,3 +69,11 @@ install_data('dance._39music.MikuExpoCountdown.SearchProvider.service.systemd',
 install_data('search-provider.ini',
              install_dir: get_option('datadir') / 'gnome-shell' / 'search-providers',
              rename: 'dance._39music.MikuExpoCountdown.search-provider.ini')
+
+# IANA tzdata file until gcc bug is fixed in flatpak gcc
+bundled_iana_dir = get_option('datadir') / 'mikuexpo-countdown'
+if get_option('bundle_iana_tzdata')
+  install_data('tzdata-2024a.zi',
+               install_dir: bundled_iana_dir,
+               rename: 'tzdata.zi')
+endif
