@@ -39,6 +39,16 @@
   </provides>
 
   <releases>
+    <release version="2.1.4" date="2025-05-16">
+      <description>
+        <p>
+          Magical Mirai 2025
+        </p>
+        <p>
+          GNOME SDK 48
+        </p>
+      </description>
+    </release>
     <release version="2.1.0" date="2024-11-08">
       <description>
         <p>
