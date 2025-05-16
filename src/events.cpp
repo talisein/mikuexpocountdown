@@ -73,14 +73,11 @@ namespace {
     } TZ {};
 
     const std::array raw_events {std::to_array<Miku::raw_event>({
-                {"Blooming Osaka",  "Hatsune Miku Japan Tour Blooming Osaka",  "blooming", local_days{April/19/2025} + 13h, 2h, TZ.JST},
-                {"Blooming Aichi",  "Hatsune Miku Japan Tour Blooming Aichi Nagoya",  "blooming", local_days{April/26/2025} + 13h, 2h, TZ.JST},
-                {"Blooming Fukuoka",  "Hatsune Miku Japan Tour Blooming Fukuoka",  "blooming", local_days{April/29/2025} + 13h, 2h, TZ.JST},
-                {"Blooming Tokyo Day 1",  "Hatsune Miku Japan Tour Blooming Tokyo",  "blooming", local_days{May/2/2025} + 13h, 2h, TZ.JST},
-                {"Blooming Tokyo Day 2",  "Hatsune Miku Japan Tour Blooming Tokyo",  "blooming", local_days{May/3/2025} + 13h, 2h, TZ.JST},
-                {"Blooming Kagawa",  "Hatsune Miku Japan Tour Blooming Kagawa",  "blooming", local_days{May/6/2025} + 13h, 2h, TZ.JST},
                 {"Blooming Hokkaido",  "Hatsune Miku Japan Tour Blooming Hokkaido Sapporo",  "blooming", local_days{May/17/2025} + 18h, 2h, TZ.JST},
                 {"Blooming Okinawa",  "Hatsune Miku Japan Tour Blooming Okinawa Naha",  "blooming", local_days{May/31/2025} + 13h, 2h, TZ.JST},
+                {"Magical Mirai Sendai",  "Hatsune Miku Magical Mirai Sendai",  "mirai2025", local_days{August/1/2025} + 13h, 24h + 24h + 7h, TZ.JST},
+                {"Magical Mirai Osaka",  "Hatsune Miku Magical Mirai Osaka",  "mirai2025", local_days{August/9/2025} + 13h, 24h + 24h + 7h, TZ.JST},
+                {"Magical Mirai Tokyo",  "Hatsune Miku Magical Mirai Tokyo",  "mirai2025", local_days{August/29/2025} + 13h, 24h + 24h + 7h, TZ.JST},
             })};
 
 }

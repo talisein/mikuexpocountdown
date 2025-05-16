@@ -61,6 +61,15 @@
     padding: 10px;
 }
 
+#page.mirai2025 {
+    background-image: url("resource:///dance/_39music/MikuExpoCountdown/mirai2025_miku.webp"), url("resource:///dance/_39music/MikuExpoCountdown/mirai2025_bg.webp");
+    padding: 10px;
+    color: rgb(255,255,255);
+    background-color: rgb(5,23,92);
+    background-repeat: no-repeat;
+    padding: 10px;
+}
+
 #page.mirai {
     background-image: url("resource:///dance/_39music/MikuExpoCountdown/mirai_2023.png");
     padding: 10px;
