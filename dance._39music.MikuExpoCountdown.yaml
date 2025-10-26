@@ -59,7 +59,7 @@ modules:
         sha256: 'daad9bf9b70f90975f91781fc7a656c923a91374261f576c883cd3aebd59c833'
   - name: mikuexpo-countdown
     buildsystem: meson
-    config-opts: ['--wrap-mode=nodownload', '-Dbundle_iana_tzdata=true']
+    config-opts: ['--wrap-mode=nodownload']
     sources:
       - type: git
         url: 'https://github.com/talisein/mikuexpocountdown.git'

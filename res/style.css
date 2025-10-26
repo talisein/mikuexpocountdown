@@ -73,21 +73,21 @@
 #page.expoasia2025 {
     background-image: url("resource:///dance/_39music/MikuExpoCountdown/expoasia2025_hero.png"), url("resource:///dance/_39music/MikuExpoCountdown/expoasia2025_bg.jpg");
     padding: 10px;
-    color: rgb(255,255,255);
-    background-color: rgb(5,23,92);
+    color: #002141;
+    background-color: #4386d4;
     background-repeat: no-repeat;
     padding: 10px;
-
+    text-shadow: 2px 2px 4px #fefefe;
 }
 
 #page.expona2026 {
     background-image: url("resource:///dance/_39music/MikuExpoCountdown/expona2026_hero.webp"), url("resource:///dance/_39music/MikuExpoCountdown/expona2026_bg.webp");
     padding: 10px;
-    color: rgb(255,255,255);
-    background-color: rgb(5,23,92);
+    color: #ffffff;
+    background-color: #ffffb5;
     background-repeat: no-repeat;
     padding: 10px;
-
+    text-shadow: 2px 2px 4px #e62f80;
 }
 
 #page.mirai {
@@ -142,6 +142,14 @@
 #days {
     font-size: 200px;
     text-shadow: 2px 2px 10px #000;
+}
+
+#days.expona2026 {
+    text-shadow: 2px 2px 10px #e62f80;
+}
+
+#days.expoasia2025 {
+    text-shadow: 2px 2px 10px #fefefe;
 }
 
 #hours {

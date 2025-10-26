@@ -39,6 +39,19 @@
   </provides>
 
   <releases>
+    <release version="2.1.5" date="2025-10-26">
+      <description>
+        <p>
+          Miku Expo Asia 2025
+        </p>
+        <p>
+          Miku Expo NA 2026
+        </p>
+        <p>
+          GNOME SDK 49
+        </p>
+      </description>
+    </release>
     <release version="2.1.4" date="2025-05-16">
       <description>
         <p>

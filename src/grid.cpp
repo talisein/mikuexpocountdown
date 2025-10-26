@@ -11,6 +11,7 @@ CountdownGrid::CountdownGrid(const Glib::RefPtr<const Miku::Event> &event) :
     m_date(Gtk::make_managed<Gtk::Label>()),
     m_bottom_box(Gtk::make_managed<Gtk::CenterBox>())
 {
+    add_css_class(event->m_style_class);
     set_orientation(Gtk::Orientation::VERTICAL);
     set_name("page");
     m_days->set_name("days");
@@ -33,7 +34,7 @@ CountdownGrid::CountdownGrid(const Glib::RefPtr<const Miku::Event> &event) :
     attrs.insert(line_height);
     m_days->set_attributes(attrs);
 
-    add_css_class(event->m_style_class);
+    m_days->add_css_class(event->m_style_class);
 
     auto event_localtime = m_event->start_time;
     auto user_localtime  = std::chrono::zoned_time(std::chrono::current_zone(), event_localtime);
