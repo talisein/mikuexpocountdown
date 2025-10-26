@@ -24,5 +24,9 @@
     <file>mirai2025_miku.webp</file>
     <file preprocess="xml-stripblanks" compressed="true">bg.svg</file>
     <file>digistars_august_2021.png</file>
+    <file>expoasia2025_hero.png</file>
+    <file>expoasia2025_bg.jpg</file>
+    <file>expona2026_hero.webp</file>
+    <file>expona2026_bg.webp</file>
   </gresource>
 </gresources>

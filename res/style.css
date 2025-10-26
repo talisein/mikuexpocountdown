@@ -70,6 +70,26 @@
     padding: 10px;
 }
 
+#page.expoasia2025 {
+    background-image: url("resource:///dance/_39music/MikuExpoCountdown/expoasia2025_hero.png"), url("resource:///dance/_39music/MikuExpoCountdown/expoasia2025_bg.jpg");
+    padding: 10px;
+    color: rgb(255,255,255);
+    background-color: rgb(5,23,92);
+    background-repeat: no-repeat;
+    padding: 10px;
+
+}
+
+#page.expona2026 {
+    background-image: url("resource:///dance/_39music/MikuExpoCountdown/expona2026_hero.webp"), url("resource:///dance/_39music/MikuExpoCountdown/expona2026_bg.webp");
+    padding: 10px;
+    color: rgb(255,255,255);
+    background-color: rgb(5,23,92);
+    background-repeat: no-repeat;
+    padding: 10px;
+
+}
+
 #page.mirai {
     background-image: url("resource:///dance/_39music/MikuExpoCountdown/mirai_2023.png");
     padding: 10px;
