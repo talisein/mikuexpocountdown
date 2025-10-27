@@ -112,12 +112,12 @@ namespace {
                 {"Miku Expo Glendale AZ",  "Hatsune Miku Miku Expo NA North America Glendale Arizona",  "expona2026", local_days{April/28/2026} + 20h, 3h, TZ.ARIZONAT},
                 {"Miku Expo Grand Praire TX",  "Hatsune Miku Miku Expo NA North America Grand Praire Texas",  "expona2026", local_days{April/30/2026} + 20h, 3h, TZ.CST},
                 {"Miku Expo Cedar Park TX",  "Hatsune Miku Miku Expo NA North America Cedar Park Texas",  "expona2026", local_days{May/1/2026} + 20h, 3h, TZ.CST},
-                {"Miku Expo Duluth GA",  "Hatsune Miku Miku Expo NA North America Duluth Georgia",  "expona2026", local_days{May/3/2026} + 20h, 3h, TZ.EST},
+                {"Miku Expo Duluth GA",  "Hatsune Miku Miku Expo NA North America Duluth Georgia",  "expona2026", local_days{May/3/2026} + 19h, 3h, TZ.EST},
                 {"Miku Expo Washington DC",  "Hatsune Miku Miku Expo NA North America Washington DC",  "expona2026", local_days{May/5/2026} + 20h, 3h, TZ.EST},
                 {"Miku Expo Newark NJ",  "Hatsune Miku Miku Expo NA North America Newark New Jersey",  "expona2026", local_days{May/7/2026} + 20h, 3h, TZ.EST},
                 {"Miku Expo Boston",  "Hatsune Miku Miku Expo NA North America Boston",  "expona2026", local_days{May/10/2026} + 20h, 3h, TZ.EST},
                 {"Miku Expo Hamilton ON",  "Hatsune Miku Miku Expo NA North America Hamilton Ontario Canada",  "expona2026", local_days{May/13/2026} + 20h, 3h, TZ.TORONTO_TZ},
-                {"Miku Expo Mexico City",  "Hatsune Miku Miku Expo NA North America Mexico City",  "expona2026", local_days{May/19/2026} + 20h, 3h, TZ.MEXICO_CITY_TZ},
+                {"Miku Expo Mexico City",  "Hatsune Miku Miku Expo NA North America Mexico City",  "expona2026", local_days{May/19/2026} + 21h, 3h, TZ.MEXICO_CITY_TZ},
             })};
 
 }
