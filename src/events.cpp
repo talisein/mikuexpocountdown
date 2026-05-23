@@ -60,6 +60,12 @@ namespace {
                 SEOULT = locate_zone("Asia/Seoul");
                 CHICAGOT = locate_zone("America/Chicago");
                 ARIZONAT = locate_zone("US/Arizona");
+                LONDON_TZ = locate_zone("Europe/London");
+                BRUSSELS_TZ = locate_zone("Europe/Brussels");
+                AMSTERDAM_TZ = locate_zone("Europe/Amsterdam");
+                BERLIN_TZ = locate_zone("Europe/Berlin");
+                PARIS_TZ = locate_zone("Europe/Paris");
+                MADRID_TZ = locate_zone("Europe/Madrid");
             } catch (std::runtime_error &e) {
                 std::cerr << "Failed to load required timezones. This is likely due to an incompatibility between the latest tzdb 20204b and GCC 14s stdlib, see bug 116657.\nSpecific error: " << e.what() << "\nTerminating, because the purpose of this program is to translate timezones.\nYou can rebuild this program with the 'bundle_iana_tzdata' option to get a working version based on the 2024a dataset.\n";
                 exit(1);
@@ -92,6 +98,12 @@ namespace {
         time_zone const * SEOULT;
         time_zone const * CHICAGOT;
         time_zone const * ARIZONAT;
+        time_zone const * LONDON_TZ;
+        time_zone const * BRUSSELS_TZ;
+        time_zone const * AMSTERDAM_TZ;
+        time_zone const * BERLIN_TZ;
+        time_zone const * PARIS_TZ;
+        time_zone const * MADRID_TZ;
     } TZ {};
 
     const std::array raw_events {std::to_array<Miku::raw_event>({
@@ -118,6 +130,16 @@ namespace {
                 {"Miku Expo Boston",  "Hatsune Miku Miku Expo NA North America Boston",  "expona2026", local_days{May/10/2026} + 20h, 3h, TZ.EST},
                 {"Miku Expo Hamilton ON",  "Hatsune Miku Miku Expo NA North America Hamilton Ontario Canada",  "expona2026", local_days{May/13/2026} + 20h, 3h, TZ.TORONTO_TZ},
                 {"Miku Expo Mexico City",  "Hatsune Miku Miku Expo NA North America Mexico City",  "expona2026", local_days{May/19/2026} + 21h, 3h, TZ.MEXICO_CITY_TZ},
+                {"Magical Mirai 2026 Hamamatsu",  "Hatsune Miku Magical Mirai 2026 Hamamatsu Japan",  "mm2026", local_days{July/24/2026} + 12h, 55h + 30min, TZ.JST},
+                {"Magical Mirai 2026 Osaka",       "Hatsune Miku Magical Mirai 2026 Osaka Japan",       "mm2026", local_days{August/14/2026} + 12h, 55h + 30min, TZ.JST},
+                {"Magical Mirai 2026 Tokyo",       "Hatsune Miku Magical Mirai 2026 Tokyo Japan",       "mm2026", local_days{August/28/2026} + 12h, 55h + 30min, TZ.JST},
+                {"Miku Expo London",      "Hatsune Miku Miku Expo Europe London UK",                  "expoeu2026", local_days{November/12/2026} + 20h, 3h, TZ.LONDON_TZ},
+                {"Miku Expo Brussels",    "Hatsune Miku Miku Expo Europe Brussels Belgium",            "expoeu2026", local_days{November/14/2026} + 20h, 3h, TZ.BRUSSELS_TZ},
+                {"Miku Expo Amsterdam",   "Hatsune Miku Miku Expo Europe Amsterdam Netherlands",       "expoeu2026", local_days{November/15/2026} + 20h, 3h, TZ.AMSTERDAM_TZ},
+                {"Miku Expo Berlin",      "Hatsune Miku Miku Expo Europe Berlin Germany",              "expoeu2026", local_days{November/17/2026} + 20h, 3h, TZ.BERLIN_TZ},
+                {"Miku Expo Dusseldorf",  "Hatsune Miku Miku Expo Europe Dusseldorf Germany",          "expoeu2026", local_days{November/20/2026} + 20h, 3h, TZ.BERLIN_TZ},
+                {"Miku Expo Paris",       "Hatsune Miku Miku Expo Europe Paris France",                "expoeu2026", local_days{November/22/2026} + 20h, 3h, TZ.PARIS_TZ},
+                {"Miku Expo Madrid",      "Hatsune Miku Miku Expo Europe Madrid Spain",                "expoeu2026", local_days{November/25/2026} + 20h, 3h, TZ.MADRID_TZ},
             })};
 
 }

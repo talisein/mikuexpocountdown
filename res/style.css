@@ -90,11 +90,31 @@
     text-shadow: 2px 2px 4px #e62f80;
 }
 
+#page.expoeu2026 {
+    background-image: url("resource:///dance/_39music/MikuExpoCountdown/expoeu2026_hero.webp"), url("resource:///dance/_39music/MikuExpoCountdown/expoeu2026_bg.webp");
+    padding: 10px;
+    color: #e7d7c4;
+    background-color: #674d36;
+    background-repeat: no-repeat;
+    padding: 10px;
+    text-shadow: 2px 2px 4px #674d36;
+}
+
 #page.mirai {
     background-image: url("resource:///dance/_39music/MikuExpoCountdown/mirai_2023.png");
     padding: 10px;
     color: #00c8bb;
     background-color: #000000;
+    padding: 10px;
+}
+
+#page.mm2026 {
+    background-image: url("resource:///dance/_39music/MikuExpoCountdown/mirai2026_miku.webp");
+    background-size: auto 100%;
+    padding: 10px;
+    color: #3293c2;
+    background-color: #ffffff;
+    background-repeat: no-repeat;
     padding: 10px;
 }
 
@@ -150,6 +170,15 @@
 
 #days.expoasia2025 {
     text-shadow: 2px 2px 10px #fefefe;
+}
+
+#page.mirai2025 {
+    background-image: url("resource:///dance/_39music/MikuExpoCountdown/mirai2025_miku.webp"), url("resource:///dance/_39music/MikuExpoCountdown/mirai2025_bg.webp");
+    padding: 10px;
+    color: rgb(255,255,255);
+    background-color: rgb(5,23,92);
+    background-repeat: no-repeat;
+    padding: 10px;
 }
 
 #hours {
