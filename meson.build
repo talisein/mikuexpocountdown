@@ -1,6 +1,6 @@
 project('mikuexpocountdown', ['c', 'cpp'],
         license : 'GPLv3+',
-        version : '2.1.6',
+        version : '2.2.0',
         default_options : ['c_std=c17',
                            'cpp_std=c++23',
                            'buildtype=release'])

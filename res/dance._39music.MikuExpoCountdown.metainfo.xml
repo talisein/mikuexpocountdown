@@ -39,13 +39,16 @@
   </provides>
 
   <releases>
-    <release version="2.1.6" date="2026-05-22">
+    <release version="2.2.0" date="2026-05-22">
       <description>
         <p>
           Magical Mirai 2026
         </p>
         <p>
           Miku Expo Europe 2026
+        </p>
+        <p>
+          GNOME SDK 50
         </p>
       </description>
     </release>
