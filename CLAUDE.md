@@ -56,6 +56,50 @@ All custom GObject subclasses use the `PEEL_SIMPLE_CLASS` macro and `PEEL_CLASS_
 
 Smart pointer types: `peel::RefPtr<T>` (ref-counted), `peel::UniquePtr<T>` (owned), `peel::SignalConnection` for signal lifetimes.
 
+#### GObject properties
+
+Declare each property in the class body with `PEEL_PROPERTY(type, c_name, "gobject-name")` — this generates a static `prop_c_name()` method returning `peel::Property<type>`. Supported types map directly to GObject param specs: `const char*` → `G_TYPE_STRING`, `int64_t` → `G_TYPE_INT64`, `bool`, `int`, `unsigned`, `double`, GObject-derived pointers, etc. (`peel::String` is interchangeable with `const char*`.)
+
+Wire up the read/write logic with a private `define_properties` static template — peel detects it automatically and installs the param specs and `get_property`/`set_property` vfuncs at class-init time, so `Class::init()` needs no changes:
+
+```cpp
+template<typename F>
+static void define_properties(F &f) {
+    f.prop(prop_name(), (const char*)nullptr).get(&MyClass::name);
+    f.prop(prop_count(), 0, INT_MAX, 0).get(&MyClass::get_count).set(&MyClass::set_count);
+}
+```
+
+The getter method can return any type implicitly convertible to the property type (e.g. `const peel::String&` works as a getter for a `const char*` property via `operator const char*()`). Emit `notify(prop_foo())` after mutating a property so bindings and watchers update.
+
+Read a property from outside: `obj->get_property(MyClass::prop_name())` returns the `OwnedType` for that property type (`peel::String` for `const char*`, `peel::RefPtr<T>` for GObject types, the value type itself for scalars).
+
+#### Property bindings
+
+```cpp
+#include <peel/GObject/BindingFlags.h>
+
+peel::GObject::Object::bind_property(
+    source, SourceClass::prop_foo(),
+    target, TargetClass::prop_bar(),
+    peel::GObject::BindingFlags::SYNC_CREATE);  // or DEFAULT, BIDIRECTIONAL, etc.
+```
+
+`SYNC_CREATE` fires immediately to sync the target, then keeps it in sync. The binding lifetime is managed automatically — it is invalidated when either source or target is finalized, so it rarely needs to be stored explicitly.
+
+A transform lambda can be supplied as a fifth argument. Peel detects the right overload: if the lambda takes the source property's `UnownedType` and returns something assignable to the target property, it is called with the unpacked value:
+
+```cpp
+peel::GObject::Object::bind_property(
+    tab_view, peel::Adw::TabView::prop_selected_page(),
+    window_title, peel::Adw::WindowTitle::prop_title(),
+    peel::GObject::BindingFlags::SYNC_CREATE,
+    [](peel::Adw::TabPage *page) -> peel::String {
+        if (!page) return {};
+        return format_to_peel("{} Countdown", page->get_child()->cast<MyWidget>()->name());
+    });
+```
+
 ### Event data (events.cpp)
 
 All concert events are hardcoded as `raw_event` structs in a `std::array` in `events.cpp`. Each entry has a name, search terms, style class, `std::chrono::local_seconds` time, duration, and `std::chrono::time_zone*`. Timezone pointers are resolved at startup into a static `tz_class` struct.
