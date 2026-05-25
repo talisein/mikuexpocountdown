@@ -36,7 +36,7 @@ void CountdownWindow::init(Class *) {
             if (!page) return {};
             auto *child = page->get_child()->cast<CountdownGrid>();
             if (!child) return {};
-            return format_to_peel("{} Countdown", child->event_name());
+            return format_to_peel("{} Countdown", child->get_property(CountdownGrid::prop_event_name()));
         });
 
     m.header_bar->pack_end(std::move(tabbutton_fp));

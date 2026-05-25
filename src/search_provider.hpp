@@ -16,14 +16,11 @@ class SearchProvider final : public peel::Gio::DBusInterfaceSkeleton
     peel::Gio::DBusInterface::VTable  *vfunc_get_vtable();
 
 public:
-    static peel::Signal<SearchProvider, void(const char *)> s_activate;
+    static peel::Signal<SearchProvider, void(const char *)> signal_activate;
 
     static peel::RefPtr<SearchProvider> create() {
         return peel::GObject::Object::create<SearchProvider>();
     }
 
-    template<typename H>
-    peel::SignalConnection::Token connect_activate(H &&h) {
-        return s_activate.connect(this, peel::GLib::Quark{}, std::forward<H>(h));
-    }
+    PEEL_SIGNAL_CONNECT_METHOD(activate, signal_activate);
 };

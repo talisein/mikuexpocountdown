@@ -12,11 +12,11 @@
 
 PEEL_CLASS_IMPL(CountdownGrid, "MikuCountdownGrid", peel::Gtk::Box)
 
-peel::Signal<CountdownGrid, void()> CountdownGrid::s_signal_expired;
+peel::Signal<CountdownGrid, void()> CountdownGrid::signal_expired;
 
 void CountdownGrid::Class::init() {
     override_vfunc_dispose<CountdownGrid>();
-    s_signal_expired = peel::Signal<CountdownGrid, void()>::create("expired");
+    signal_expired = peel::Signal<CountdownGrid, void()>::create("expired");
 }
 
 void CountdownGrid::init(Class *) {
@@ -33,6 +33,7 @@ void CountdownGrid::vfunc_dispose() {
 
 void CountdownGrid::setup(const peel::RefPtr<Miku::Event> &event) {
     m.event = event;
+    notify(prop_event_name());
 
     auto days_fp  = peel::Gtk::Label::create("");    m.days       = days_fp;
     auto hours_fp = peel::Gtk::Label::create("");    m.hours      = hours_fp;
@@ -108,10 +109,10 @@ bool CountdownGrid::update() {
             auto secs_to_end = m.event->secs_to_expire();
             if (secs_to_end > 0s) {
                 peel::GLib::timeout_add_seconds_once(secs_to_end.count(), [this]() {
-                    s_signal_expired.emit(this);
+                    signal_expired.emit(this);
                 });
             } else {
-                s_signal_expired.emit(this);
+                signal_expired.emit(this);
             }
             return false;
         }

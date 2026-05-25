@@ -20,14 +20,21 @@ class CountdownGrid final : public peel::Gtk::Box
         unsigned             update_timeout_id = 0;
     } m;
 
-    static peel::Signal<CountdownGrid, void()> s_signal_expired;
+    static peel::Signal<CountdownGrid, void()> signal_expired;
 
     void init(Class *);
     void vfunc_dispose();
 
     bool update();
 
+    template<typename F>
+    static void define_properties(F &f) {
+        f.prop(prop_event_name(), (const char*)nullptr).get(&CountdownGrid::event_name);
+    }
+
 public:
+    PEEL_PROPERTY(const char*, event_name, "event-name")
+
     void setup(const peel::RefPtr<Miku::Event> &event);
 
     static CountdownGrid *create(const peel::RefPtr<Miku::Event> &event) {
@@ -38,8 +45,5 @@ public:
 
     peel::String event_name() const { return m.event->get_property(Miku::Event::prop_name()); }
 
-    template<typename H>
-    peel::SignalConnection::Token connect_expired(H &&h) {
-        return s_signal_expired.connect(this, peel::GLib::Quark{}, std::forward<H>(h));
-    }
+    PEEL_SIGNAL_CONNECT_METHOD(expired, signal_expired);
 };

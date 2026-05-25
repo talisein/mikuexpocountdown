@@ -10,13 +10,13 @@
 
 PEEL_CLASS_IMPL(SearchProvider, "MikuSearchProvider", peel::Gio::DBusInterfaceSkeleton)
 
-peel::Signal<SearchProvider, void(const char *)> SearchProvider::s_activate;
+peel::Signal<SearchProvider, void(const char *)> SearchProvider::signal_activate;
 
 void SearchProvider::Class::init() {
     override_vfunc_dispose<SearchProvider>();
     override_vfunc_get_info<SearchProvider>();
     override_vfunc_get_vtable<SearchProvider>();
-    s_activate = peel::Signal<SearchProvider, void(const char *)>::create("activate");
+    signal_activate = peel::Signal<SearchProvider, void(const char *)>::create("activate");
 }
 
 void SearchProvider::vfunc_dispose() {
@@ -191,7 +191,7 @@ peel::Gio::DBusInterface::VTable *SearchProvider::vfunc_get_vtable() {
             } else if (strcmp(method_name, "ActivateResult") == 0) {
                 auto id_var = peel_params->get_child_value(0);
                 const char *identifier = id_var->get<const char*>();
-                s_activate.emit(self, identifier);
+                signal_activate.emit(self, identifier);
                 return_empty(inv);
 
             } else if (strcmp(method_name, "LaunchSearch") == 0) {
