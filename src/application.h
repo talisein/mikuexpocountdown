@@ -1,48 +1,39 @@
 #pragma once
-#include <gtkmm.h>
+#include <peel/class.h>
+#include <peel/Adw/Application.h>
+#include <peel/Gio/Application.h>
+#include <peel/Gio/ApplicationFlags.h>
+#include <peel/Gio/DBusConnection.h>
+#include <peel/UniquePtr.h>
+#include <peel/GLib/Error.h>
 #include "search_provider.h"
-#include "adw_application.h"
 
-class MikuApplication final : public Adw::Application
+class MikuApplication final : public peel::Adw::Application
 {
+    friend class peel::Gio::Application;
+    PEEL_SIMPLE_CLASS(MikuApplication, peel::Adw::Application);
+
+    struct Members {
+        peel::RefPtr<SearchProvider>  search;
+        peel::SignalConnection        search_provider_activate_connection;
+    } *m = nullptr;
+
+    void init(Class *);
+    void vfunc_dispose();
+
+    void vfunc_activate();
+    bool vfunc_dbus_register(peel::Gio::DBusConnection *, const char *,
+                             peel::UniquePtr<peel::GLib::Error> *);
+    void vfunc_dbus_unregister(peel::Gio::DBusConnection *, const char *);
+
+    void search_activation(SearchProvider *, const char *name);
+
 public:
-    MikuApplication(const Glib::ustring &application_id);
+    SearchProvider &get_search_provider() { return *m->search; }
 
-    virtual ~MikuApplication() override final = default;
-
-    template<typename... Args>
-    static Glib::RefPtr<MikuApplication>
-    create(Args&&... args)
-    {
-        return std::make_shared<MikuApplication>(std::forward<Args&&...>(args...));
+    static peel::RefPtr<MikuApplication> create() {
+        return peel::GObject::Object::create<MikuApplication>(
+            prop_application_id(), "dance._39music.MikuExpoCountdown",
+            prop_flags(), peel::Gio::Application::Flags::DEFAULT_FLAGS);
     }
-
-
-    SearchProvider& get_search_provider() { return search; };
-
-protected:
-
-    virtual bool
-    dbus_register_vfunc (const Glib::RefPtr<Gio::DBus::Connection> &connection, const Glib::ustring &object_path) override final
-    {
-        auto res = Gtk::Application::dbus_register_vfunc(connection, object_path);
-        search.register_object(connection, "/dance/_39music/MikuExpoCountdown/SearchProvider");
-        return res;
-    }
-
-    virtual void
-    dbus_unregister_vfunc (const Glib::RefPtr<Gio::DBus::Connection> &connection, const Glib::ustring &object_path) override final
-    {
-        search.unregister_object();
-        Gtk::Application::dbus_unregister_vfunc(connection, object_path);
-    }
-
-private:
-    SearchProvider search;
-
-    void search_activation(const Glib::ustring& name);
-    void on_activate();
-
-    sigc::scoped_connection search_provider_activate_connection;
-    sigc::scoped_connection signal_activate_connection;
 };

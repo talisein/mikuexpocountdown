@@ -3,6 +3,7 @@
 #include <ranges>
 #include <mutex>
 #include "events.h"
+#include "util.hpp"
 #include "config.h"
 
 namespace Miku {
@@ -146,11 +147,36 @@ namespace {
 
 namespace Miku
 {
-    std::vector<Glib::RefPtr<const Miku::Event>> create_events() {
-        std::vector<Glib::RefPtr<const Miku::Event>> events;
+    PEEL_CLASS_IMPL(Event, "MikuEvent", peel::GObject::Object)
+
+    void Event::Class::init() {
+        override_vfunc_dispose<Event>();
+    }
+
+    void Event::vfunc_dispose() {
+        parent_vfunc_dispose<Event>();
+    }
+
+    peel::RefPtr<Event> Event::create(const raw_event &event) {
+        auto e = peel::GObject::Object::create<Event>();
+        e->m = new Members;
+        e->m->name        = copy_to_peel_string(event.name);
+        e->m->m_style_class = copy_to_peel_string(event.style_class);
+        auto search_terms_str = std::string(event.search_terms.begin(), event.search_terms.end());
+        // casefold the search keys once at creation time
+        auto casefolded = peel::GLib::utf8_casefold(search_terms_str.c_str(), -1);
+        e->m->search_keys = std::move(casefolded);
+        e->m->start_time  = zoned_seconds(event.tz, event.time);
+        e->m->end_time    = zoned_seconds(event.tz, event.time + event.duration);
+        e->m->m_duration  = event.duration;
+        return e;
+    }
+
+    std::vector<peel::RefPtr<Event>> create_events() {
+        std::vector<peel::RefPtr<Event>> events;
         events.reserve(raw_events.size() + 1);
         for (const raw_event& e : raw_events) {
-            events.push_back(Miku::Event::create(e));
+            events.push_back(Event::create(e));
         }
 
         auto this_year = std::chrono::year_month_day(std::chrono::year_month_day(std::chrono::floor<std::chrono::days>(std::chrono::system_clock::now())).year(), August, std::chrono::day(31));
@@ -158,26 +184,14 @@ namespace Miku
         raw_event next_birthday {"Miku's Birthday"   , "Hatsune Miku Birthday",     "birthday",
             std::chrono::floor<std::chrono::days>(std::chrono::system_clock::now()) < this_year ? local_days(this_year) : local_days(next_year),
             24h, TZ.JST};
-        events.push_back(Miku::Event::create(next_birthday));
+        events.push_back(Event::create(next_birthday));
 
         return events;
     }
 
     events_view_t get_events()
     {
-        static const std::vector<Glib::RefPtr<const Miku::Event>> events { create_events() };
+        static const std::vector<peel::RefPtr<Event>> events { create_events() };
         return std::ranges::views::all(events);
-    }
-
-    Event::Event(const raw_event &event) :
-        Glib::ObjectBase("event"),
-        name(event.name.begin(), event.name.end()),
-        m_style_class(event.style_class.begin(), event.style_class.end()),
-        search_keys(Glib::ustring(event.search_terms.begin(), event.search_terms.end()).casefold()),
-        start_time(event.tz, event.time),
-        end_time(event.tz, event.time + event.duration),
-        m_duration(event.duration),
-        m_local_time(event.time)
-    {
     }
 }

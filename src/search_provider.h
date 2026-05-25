@@ -1,35 +1,29 @@
 #pragma once
-#include <vector>
-#include <gtkmm.h>
-#include "searchprovider_stub.h"
+#include <peel/class.h>
+#include <peel/signal.h>
+#include <peel/Gio/DBusInterfaceSkeleton.h>
+#include <peel/Gio/DBusMethodInvocation.h>
+#include "events.h"
 
-class SearchProvider : public org::gnome::Shell::SearchProvider2Stub
+class SearchProvider final : public peel::Gio::DBusInterfaceSkeleton
 {
-    virtual void
-    GetInitialResultSet(const std::vector<Glib::ustring> & terms,
-                        MethodInvocation &invocation) override final;
+    friend class peel::Gio::DBusInterfaceSkeleton;
+    PEEL_SIMPLE_CLASS(SearchProvider, peel::Gio::DBusInterfaceSkeleton);
 
-
-    virtual void
-    GetSubsearchResultSet(const std::vector<Glib::ustring> & previous_results,
-                          const std::vector<Glib::ustring> & terms,
-                          MethodInvocation &invocation) override final;
-
-    virtual void
-    GetResultMetas(const std::vector<Glib::ustring> & identifiers,
-                   MethodInvocation &invocation) override final;
-
-    virtual void
-    ActivateResult(const Glib::ustring & identifier,
-                   const std::vector<Glib::ustring> & terms,
-                   guint32 timestamp,
-                   MethodInvocation &invocation) override final;
-
-    virtual void
-    LaunchSearch(const std::vector<Glib::ustring> & terms,
-                 guint32 timestamp,
-                 MethodInvocation &invocation) override final;
+    void init(Class *) {}
+    void vfunc_dispose();
+    peel::Gio::DBusInterface::Info    *vfunc_get_info();
+    peel::Gio::DBusInterface::VTable  *vfunc_get_vtable();
 
 public:
-    sigc::signal<void(Glib::ustring)> signal_activate;
+    static peel::Signal<SearchProvider, void(const char *)> s_activate;
+
+    static peel::RefPtr<SearchProvider> create() {
+        return peel::GObject::Object::create<SearchProvider>();
+    }
+
+    template<typename H>
+    peel::SignalConnection::Token connect_activate(H &&h) {
+        return s_activate.connect(this, peel::GLib::Quark{}, std::forward<H>(h));
+    }
 };

@@ -1,86 +1,118 @@
-#include <iostream>
+#include <chrono>
+#include <format>
+#include <pango/pango.h>
+#include <peel/GLib/functions.h>
+#include <peel/Pango/AttrList.h>
+#include <peel/Gtk/Align.h>
+#include <peel/Gtk/Justification.h>
+#include <peel/Gtk/Orientable.h>
+#include <peel/Gtk/Orientation.h>
 #include "grid.h"
-#include "adwaita.h"
+#include "util.hpp"
 
-CountdownGrid::CountdownGrid(const Glib::RefPtr<const Miku::Event> &event) :
-    Glib::ObjectBase("CountdownGrid"),
-    Gtk::CenterBox(),
-    m_event(event),
-    m_days(Gtk::make_managed<Gtk::Label>()),
-    m_hours(Gtk::make_managed<Gtk::Label>()),
-    m_date(Gtk::make_managed<Gtk::Label>()),
-    m_bottom_box(Gtk::make_managed<Gtk::CenterBox>())
-{
-    add_css_class(event->m_style_class);
-    set_orientation(Gtk::Orientation::VERTICAL);
-    set_name("page");
-    m_days->set_name("days");
-    m_hours->set_name("hours");
-    m_date->set_name("date");
-    set_center_widget(*m_days);
-    set_end_widget(*m_bottom_box);
-    m_bottom_box->set_valign(Gtk::Align::FILL);
-    m_bottom_box->set_vexpand(true);
-    m_bottom_box->set_orientation(Gtk::Orientation::VERTICAL);
-    m_bottom_box->set_center_widget(*m_hours);
-    m_bottom_box->set_end_widget(*m_date);
-    m_date->set_valign(Gtk::Align::END);
+PEEL_CLASS_IMPL(CountdownGrid, "MikuCountdownGrid", peel::Gtk::Box)
 
-    m_days->set_max_width_chars(8); // '999 days'
-    m_days->set_wrap(true);
-    m_days->set_justify(Gtk::Justification::CENTER);
-    auto attrs = Pango::AttrList();
-    auto line_height = Pango::Attribute::create_attr_line_height(0.6);
-    attrs.insert(line_height);
-    m_days->set_attributes(attrs);
+peel::Signal<CountdownGrid, void()> CountdownGrid::s_signal_expired;
 
-    m_days->add_css_class(event->m_style_class);
-
-    auto event_localtime = m_event->start_time;
-    auto user_localtime  = std::chrono::zoned_time(std::chrono::current_zone(), event_localtime);
-    static constexpr char date_format[] { "{0:%A} {0:%d} {0:%B} {0:%Y} {0:%X} {0:%Z}" };
-
-    m_date->set_text(Glib::ustring::compose("%1\n%2",
-                                            std::format(date_format, user_localtime),
-                                            std::format(date_format, event_localtime)));
-    update();
-    update_timeout_connection = Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &CountdownGrid::update), 1);
+void CountdownGrid::Class::init() {
+    override_vfunc_dispose<CountdownGrid>();
+    s_signal_expired = peel::Signal<CountdownGrid, void()>::create("expired");
 }
 
-bool
-CountdownGrid::update()
-{
+void CountdownGrid::init(Class *) {
+    m = new Members;
+}
+
+void CountdownGrid::vfunc_dispose() {
+    if (m && m->m_update_timeout_id) {
+        peel::GLib::Source::remove(m->m_update_timeout_id);
+        m->m_update_timeout_id = 0;
+    }
+    parent_vfunc_dispose<CountdownGrid>();
+}
+
+void CountdownGrid::setup(const peel::RefPtr<Miku::Event> &event) {
+    m->m_event = event;
+
+    auto days_fp  = peel::Gtk::Label::create("");    m->m_days       = days_fp;
+    auto hours_fp = peel::Gtk::Label::create("");    m->m_hours      = hours_fp;
+    auto date_fp  = peel::Gtk::Label::create("");    m->m_date       = date_fp;
+    auto box_fp   = peel::Gtk::CenterBox::create();  m->m_bottom_box = box_fp;
+
+    add_css_class(event->style_class());
+    cast<peel::Gtk::Orientable>()->set_orientation(peel::Gtk::Orientation::VERTICAL);
+    set_name("page");
+
+    m->m_days->set_name("days");
+    m->m_days->add_css_class(event->style_class());
+    m->m_days->set_max_width_chars(8);
+    m->m_days->set_wrap(true);
+    m->m_days->set_justify(peel::Gtk::Justification::CENTER);
+    m->m_days->set_vexpand(true);
+    m->m_days->set_valign(peel::Gtk::Align::CENTER);
+
+    auto *attrs = pango_attr_list_new();
+    pango_attr_list_insert(attrs, pango_attr_line_height_new(0.6));
+    m->m_days->set_attributes(reinterpret_cast<peel::Pango::AttrList *>(attrs));
+    pango_attr_list_unref(attrs);
+
+    m->m_hours->set_name("hours");
+    m->m_date->set_name("date");
+    m->m_date->set_valign(peel::Gtk::Align::END);
+
+    m->m_bottom_box->set_valign(peel::Gtk::Align::FILL);
+    m->m_bottom_box->set_vexpand(true);
+    m->m_bottom_box->cast<peel::Gtk::Orientable>()->set_orientation(peel::Gtk::Orientation::VERTICAL);
+    m->m_bottom_box->set_center_widget(std::move(hours_fp));
+    m->m_bottom_box->set_end_widget(std::move(date_fp));
+
+    append(std::move(days_fp));
+    append(std::move(box_fp));
+
+    auto event_localtime = m->m_event->start_time();
+    auto user_localtime  = std::chrono::zoned_time(std::chrono::current_zone(), event_localtime);
+    static constexpr char date_format[] { "{0:%A} {0:%d} {0:%B} {0:%Y} {0:%X} {0:%Z}" };
+    m->m_date->set_text(format_to_peel("{}\n{}",
+        std::format(date_format, user_localtime),
+        std::format(date_format, event_localtime)));
+
+    update();
+    m->m_update_timeout_id = peel::GLib::timeout_add_seconds(1, [this]() -> bool {
+        return update();
+    });
+}
+
+bool CountdownGrid::update() {
     using namespace std::chrono_literals;
-    auto diff_secs = m_event->secs_to_live();
-    auto diff_days = floor<std::chrono::days>(diff_secs);
+    auto diff_secs = m->m_event->secs_to_live();
+    auto diff_days = std::chrono::floor<std::chrono::days>(diff_secs);
 
     if (diff_days > 0s) {
-        m_hours->show();
-        if (diff_days.count() > 1) {
-            m_days->set_label(Glib::ustring::compose("%1 days", diff_days.count()));
-        } else {
-            m_days->set_label(Glib::ustring::compose("%1 day", diff_days.count()));
-        }
-        m_hours->set_label(std::format("{0:%T}", diff_secs - diff_days));
+        m->m_hours->set_visible(true);
+        if (diff_days.count() > 1)
+            m->m_days->set_label(format_to_peel("{} days", diff_days.count()));
+        else
+            m->m_days->set_label(format_to_peel("{} day", diff_days.count()));
+        m->m_hours->set_label(format_to_peel("{:%T}", diff_secs - diff_days));
     } else {
         if (diff_secs > 0s) {
-            auto concert_weekday = std::chrono::weekday(std::chrono::floor<std::chrono::days>(std::chrono::zoned_time(std::chrono::current_zone(), m_event->start_time).get_local_time()));
+            auto concert_weekday = std::chrono::weekday(std::chrono::floor<std::chrono::days>(std::chrono::zoned_time(std::chrono::current_zone(), m->m_event->start_time()).get_local_time()));
             auto today_weekday = std::chrono::weekday(std::chrono::floor<std::chrono::days>(std::chrono::zoned_time(std::chrono::current_zone(), std::chrono::system_clock::now()).get_local_time()));
-            if (concert_weekday == today_weekday) {
-                m_days->set_label("Today");
-            } else {
-                m_days->set_label("Soon");
-            }
-            m_hours->set_label(std::format("{0:%T}", diff_secs));
+            if (concert_weekday == today_weekday)
+                m->m_days->set_label("Today");
+            else
+                m->m_days->set_label("Soon");
+            m->m_hours->set_label(format_to_peel("{:%T}", diff_secs));
         } else {
-            m_hours->hide();
-            m_days->set_label("Miku time now!");
-            auto secs_to_end = m_event->secs_to_expire();
+            m->m_hours->set_visible(false);
+            m->m_days->set_label("Miku time now!");
+            auto secs_to_end = m->m_event->secs_to_expire();
             if (secs_to_end > 0s) {
-                Glib::signal_timeout().connect_seconds_once(sigc::mem_fun(m_signal_expired, &decltype(m_signal_expired)::emit),
-                                                            secs_to_end.count());
+                peel::GLib::timeout_add_seconds_once(secs_to_end.count(), [this]() {
+                    s_signal_expired.emit(this);
+                });
             } else {
-                m_signal_expired.emit();
+                s_signal_expired.emit(this);
             }
             return false;
         }
