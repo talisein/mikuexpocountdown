@@ -1,9 +1,4 @@
-#include <version>
 #include <chrono>
-#if __cpp_lib_chrono < 201907
-#include "date/date.h"
-#include "date/tz.h"
-#endif
 #include "application.hpp"
 
 int main(int argc, char *argv[]) {
