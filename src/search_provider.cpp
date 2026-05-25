@@ -3,8 +3,8 @@
 #include <format>
 #include <peel/Gio/DBusNodeInfo.h>
 #include <peel/GLib/VariantBuilder.h>
-#include "search_provider.h"
-#include "events.h"
+#include "search_provider.hpp"
+#include "events.hpp"
 #include "util.hpp"
 #include "variant_utils.hpp"
 

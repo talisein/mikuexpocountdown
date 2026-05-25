@@ -4,7 +4,7 @@
 #include <peel/Gio/SettingsBindFlags.h>
 #include <peel/GLib/Variant.h>
 #include <peel/GObject/Object.h>
-#include "window.h"
+#include "window.hpp"
 #include "util.hpp"
 
 PEEL_CLASS_IMPL(CountdownWindow, "MikuCountdownWindow", peel::Adw::ApplicationWindow)

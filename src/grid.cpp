@@ -7,7 +7,7 @@
 #include <peel/Gtk/Justification.h>
 #include <peel/Gtk/Orientable.h>
 #include <peel/Gtk/Orientation.h>
-#include "grid.h"
+#include "grid.hpp"
 #include "util.hpp"
 
 PEEL_CLASS_IMPL(CountdownGrid, "MikuCountdownGrid", peel::Gtk::Box)

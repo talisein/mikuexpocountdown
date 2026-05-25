@@ -1,5 +1,5 @@
-#include "application.h"
-#include "window.h"
+#include "application.hpp"
+#include "window.hpp"
 
 PEEL_CLASS_IMPL(MikuApplication, "MikuApplication", peel::Adw::Application)
 

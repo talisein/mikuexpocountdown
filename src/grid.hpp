@@ -5,7 +5,7 @@
 #include <peel/Gtk/Label.h>
 #include <peel/Gtk/CenterBox.h>
 #include <peel/GLib/Quark.h>
-#include "events.h"
+#include "events.hpp"
 
 class CountdownGrid final : public peel::Gtk::Box
 {

@@ -6,7 +6,7 @@
 #include <peel/Gio/DBusConnection.h>
 #include <peel/UniquePtr.h>
 #include <peel/GLib/Error.h>
-#include "search_provider.h"
+#include "search_provider.hpp"
 
 class MikuApplication final : public peel::Adw::Application
 {

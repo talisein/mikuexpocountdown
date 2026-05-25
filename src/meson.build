@@ -1,4 +1,4 @@
-src = ['main.cxx', 'application.cpp', 'events.cpp', 'search_provider.cpp', 'grid.cpp', 'window.cpp']
+src = ['main.cpp', 'application.cpp', 'events.cpp', 'search_provider.cpp', 'grid.cpp', 'window.cpp']
 
 conf_data = configuration_data()
 conf_data.set10('is_tzdata_bundled', get_option('bundle_iana_tzdata'))
@@ -19,12 +19,12 @@ test_variant_exe = executable('test-variant-utils', 'test_variant_utils.cpp',
                  cpp_args: ['-D_GNU_SOURCE'])
 test('variant-utils', test_variant_exe)
 
-printer_exe = executable('mikuexpo-printer', 'printer.cxx',
+printer_exe = executable('mikuexpo-printer', 'printer.cpp',
                  install : false,
                  cpp_args : ['-D_GNU_SOURCE', '-DG_ENABLE_DEBUG=true']
                  )
 
-printer_exe = executable('mikuexpo-tweets', 'tweets.cxx',
+printer_exe = executable('mikuexpo-tweets', 'tweets.cpp',
                  install : false,
                  cpp_args : ['-D_GNU_SOURCE', '-DG_ENABLE_DEBUG=true']
                  )

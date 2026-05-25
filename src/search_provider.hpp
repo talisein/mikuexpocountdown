@@ -3,7 +3,7 @@
 #include <peel/signal.h>
 #include <peel/Gio/DBusInterfaceSkeleton.h>
 #include <peel/Gio/DBusMethodInvocation.h>
-#include "events.h"
+#include "events.hpp"
 
 class SearchProvider final : public peel::Gio::DBusInterfaceSkeleton
 {

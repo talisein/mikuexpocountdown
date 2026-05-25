@@ -4,7 +4,7 @@
 #include "date/date.h"
 #include "date/tz.h"
 #endif
-#include "application.h"
+#include "application.hpp"
 
 int main(int argc, char *argv[]) {
     auto app = MikuApplication::create();

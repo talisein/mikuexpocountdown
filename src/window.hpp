@@ -11,9 +11,9 @@
 #include <peel/Adw/Application.h>
 #include <peel/Gtk/Box.h>
 #include <peel/Gio/Settings.h>
-#include "grid.h"
-#include "events.h"
-#include "search_provider.h"
+#include "grid.hpp"
+#include "events.hpp"
+#include "search_provider.hpp"
 
 class CountdownWindow final : public peel::Adw::ApplicationWindow
 {

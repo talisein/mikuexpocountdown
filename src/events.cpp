@@ -2,7 +2,7 @@
 #include <iostream>
 #include <ranges>
 #include <mutex>
-#include "events.h"
+#include "events.hpp"
 #include "util.hpp"
 #include "config.h"
 
