@@ -31,8 +31,33 @@ namespace Miku
         void init(Class *);
         void vfunc_dispose();
 
+        int64_t get_start_time_unix() const {
+            return static_cast<int64_t>(m.start_time.get_sys_time().time_since_epoch().count());
+        }
+        int64_t get_end_time_unix() const {
+            return static_cast<int64_t>(m.end_time.get_sys_time().time_since_epoch().count());
+        }
+        const char* get_timezone_name() const {
+            return m.start_time.get_time_zone()->name().data();
+        }
+
+        template<typename F>
+        static void define_properties(F &f) {
+            f.prop(prop_name(),          (const char*)nullptr).get(&Event::name);
+            f.prop(prop_style_class(),   (const char*)nullptr).get(&Event::style_class);
+            f.prop(prop_start_time(),    G_MININT64, G_MAXINT64, int64_t(0)).get(&Event::get_start_time_unix);
+            f.prop(prop_end_time(),      G_MININT64, G_MAXINT64, int64_t(0)).get(&Event::get_end_time_unix);
+            f.prop(prop_timezone_name(), (const char*)nullptr).get(&Event::get_timezone_name);
+        }
+
     public:
         static peel::RefPtr<Event> create(const raw_event &event);
+
+        PEEL_PROPERTY(const char*, name,          "name")
+        PEEL_PROPERTY(const char*, style_class,   "style-class")
+        PEEL_PROPERTY(int64_t,     start_time,    "start-time")
+        PEEL_PROPERTY(int64_t,     end_time,      "end-time")
+        PEEL_PROPERTY(const char*, timezone_name, "timezone-name")
 
         const peel::String& name() const       { return m.name; }
         const peel::String& style_class() const { return m.style_class; }

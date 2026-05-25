@@ -27,7 +27,6 @@ class CountdownWindow final : public peel::Adw::ApplicationWindow
         peel::Adw::TabView      *tab_view     = nullptr;
         peel::Gtk::Box          *box          = nullptr;
         peel::RefPtr<peel::Gio::Settings> settings;
-        peel::SignalConnection notify_selected_page_connection;
         peel::SignalConnection search_provider_activate_connection;
         std::vector<peel::SignalConnection> expired_connections;
     } m;

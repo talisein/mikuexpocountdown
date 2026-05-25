@@ -36,7 +36,7 @@ public:
         return std::move(g).release_floating_ptr();
     }
 
-    const char *event_name() const { return m.event->name(); }
+    peel::String event_name() const { return m.event->get_property(Miku::Event::prop_name()); }
 
     template<typename H>
     peel::SignalConnection::Token connect_expired(H &&h) {

@@ -19,6 +19,12 @@ test_variant_exe = executable('test-variant-utils', 'test_variant_utils.cpp',
                  cpp_args: ['-D_GNU_SOURCE'])
 test('variant-utils', test_variant_exe)
 
+test_event_props_exe = executable('test-event-properties',
+                 ['test_event_properties.cpp', 'events.cpp'], conf,
+                 dependencies: [adw_dep, peel_dep, peel_gtk_dep],
+                 cpp_args: ['-D_GNU_SOURCE'])
+test('event-properties', test_event_props_exe)
+
 printer_exe = executable('mikuexpo-printer', 'printer.cpp',
                  install : false,
                  cpp_args : ['-D_GNU_SOURCE', '-DG_ENABLE_DEBUG=true']

@@ -4,6 +4,7 @@
 #include <peel/Gio/SettingsBindFlags.h>
 #include <peel/GLib/Variant.h>
 #include <peel/GObject/Object.h>
+#include <peel/GObject/BindingFlags.h>
 #include "window.hpp"
 #include "util.hpp"
 
@@ -27,15 +28,16 @@ void CountdownWindow::init(Class *) {
 
     m.header_bar->set_title_widget(std::move(title_fp));
 
-    m.notify_selected_page_connection = peel::SignalConnection(
-        m.tab_view->connect_notify(
-            peel::Adw::TabView::prop_selected_page(),
-            [this](peel::GObject::Object *, peel::GObject::ParamSpec *) {
-                auto *page = m.tab_view->get_selected_page();
-                if (!page) return;
-                auto *child = page->get_child()->cast<CountdownGrid>();
-                m.window_title->set_title(format_to_peel("{} Countdown", child->event_name()));
-            }));
+    peel::GObject::Object::bind_property(
+        m.tab_view,    peel::Adw::TabView::prop_selected_page(),
+        m.window_title, peel::Adw::WindowTitle::prop_title(),
+        peel::GObject::BindingFlags::SYNC_CREATE,
+        [](peel::Adw::TabPage *page) -> peel::String {
+            if (!page) return {};
+            auto *child = page->get_child()->cast<CountdownGrid>();
+            if (!child) return {};
+            return format_to_peel("{} Countdown", child->event_name());
+        });
 
     m.header_bar->pack_end(std::move(tabbutton_fp));
     m.tab_button->set_view(m.tab_view);
@@ -55,7 +57,10 @@ void CountdownWindow::init(Class *) {
     for (const auto &e : Miku::get_events() | views::filter(&Miku::Event::is_unexpired)) {
         auto *grid = CountdownGrid::create(e);
         auto *page = m.tab_view->append_pinned(peel::FloatPtr<peel::Gtk::Widget>(grid));
-        page->set_title(e->name());
+        peel::GObject::Object::bind_property(
+            e, Miku::Event::prop_name(),
+            page, peel::Adw::TabPage::prop_title(),
+            peel::GObject::BindingFlags::SYNC_CREATE);
         m.expired_connections.emplace_back(grid->connect_expired([this, page](CountdownGrid *) {
             m.tab_view->close_page(page);
         }));
@@ -79,7 +84,6 @@ void CountdownWindow::init(Class *) {
 }
 
 void CountdownWindow::vfunc_dispose() {
-    m.notify_selected_page_connection.disconnect();
     m.search_provider_activate_connection.disconnect();
     m.expired_connections.clear();
     if (m.settings) {
