@@ -21,24 +21,23 @@ namespace Miku
 
         struct Members {
             peel::String name;
-            peel::String m_style_class;
+            peel::String style_class;
             peel::String search_keys;
             zoned_seconds start_time;
             zoned_seconds end_time;
-            std::chrono::minutes m_duration;
-        } *m = nullptr;
+            std::chrono::minutes duration;
+        } m;
 
-        void init(Class *) {}
+        void init(Class *);
         void vfunc_dispose();
-        ~Event() { delete m; }
 
     public:
         static peel::RefPtr<Event> create(const raw_event &event);
 
-        const peel::String& name() const       { return m->name; }
-        const peel::String& style_class() const { return m->m_style_class; }
-        const zoned_seconds& start_time() const { return m->start_time; }
-        const zoned_seconds& end_time() const   { return m->end_time; }
+        const peel::String& name() const       { return m.name; }
+        const peel::String& style_class() const { return m.style_class; }
+        const zoned_seconds& start_time() const { return m.start_time; }
+        const zoned_seconds& end_time() const   { return m.end_time; }
 
         bool is_live() const {
             using namespace std::chrono_literals;
@@ -53,19 +52,19 @@ namespace Miku
         bool is_unexpired() const { return !is_expired(); }
 
         std::chrono::seconds secs_to_live() const {
-            return floor<std::chrono::seconds>(m->start_time.get_sys_time()
+            return floor<std::chrono::seconds>(m.start_time.get_sys_time()
                                                - std::chrono::system_clock::now());
         }
 
         std::chrono::seconds secs_to_expire() const {
-            return secs_to_live() + m->m_duration;
+            return secs_to_live() + m.duration;
         }
 
         bool match_search(const std::vector<peel::String> &terms) const {
             using namespace std::ranges;
             const auto match_keys = [this](const peel::String &term) -> bool {
                 auto cf = peel::GLib::utf8_casefold(term, -1);
-                return to_sview(m->search_keys).find(to_sview(cf)) != std::string_view::npos;
+                return to_sview(m.search_keys).find(to_sview(cf)) != std::string_view::npos;
             };
             return std::ranges::all_of(terms, match_keys);
         }

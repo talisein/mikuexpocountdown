@@ -12,19 +12,18 @@ class CountdownGrid final : public peel::Gtk::Box
     PEEL_SIMPLE_CLASS(CountdownGrid, peel::Gtk::Box);
 
     struct Members {
-        peel::RefPtr<Miku::Event> m_event;
-        peel::Gtk::Label    *m_days      = nullptr;
-        peel::Gtk::Label    *m_hours     = nullptr;
-        peel::Gtk::Label    *m_date      = nullptr;
-        peel::Gtk::CenterBox *m_bottom_box = nullptr;
-        unsigned             m_update_timeout_id = 0;
-    } *m = nullptr;
+        peel::RefPtr<Miku::Event> event;
+        peel::Gtk::Label    *days      = nullptr;
+        peel::Gtk::Label    *hours     = nullptr;
+        peel::Gtk::Label    *date      = nullptr;
+        peel::Gtk::CenterBox *bottom_box = nullptr;
+        unsigned             update_timeout_id = 0;
+    } m;
 
     static peel::Signal<CountdownGrid, void()> s_signal_expired;
 
     void init(Class *);
     void vfunc_dispose();
-    ~CountdownGrid() { delete m; }
 
     bool update();
 
@@ -37,7 +36,7 @@ public:
         return std::move(g).release_floating_ptr();
     }
 
-    const char *event_name() const { return m->m_event->name(); }
+    const char *event_name() const { return m.event->name(); }
 
     template<typename H>
     peel::SignalConnection::Token connect_expired(H &&h) {

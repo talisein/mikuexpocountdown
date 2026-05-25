@@ -16,7 +16,7 @@ class MikuApplication final : public peel::Adw::Application
     struct Members {
         peel::RefPtr<SearchProvider>  search;
         peel::SignalConnection        search_provider_activate_connection;
-    } *m = nullptr;
+    } m;
 
     void init(Class *);
     void vfunc_dispose();
@@ -29,7 +29,7 @@ class MikuApplication final : public peel::Adw::Application
     void search_activation(SearchProvider *, const char *name);
 
 public:
-    SearchProvider &get_search_provider() { return *m->search; }
+    SearchProvider &get_search_provider() { return *m.search; }
 
     static peel::RefPtr<MikuApplication> create() {
         return peel::GObject::Object::create<MikuApplication>(

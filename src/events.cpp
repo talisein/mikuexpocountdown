@@ -153,22 +153,25 @@ namespace Miku
         override_vfunc_dispose<Event>();
     }
 
+    void Event::init(Class *) {
+        new (&m) Members;
+    }
+
     void Event::vfunc_dispose() {
         parent_vfunc_dispose<Event>();
     }
 
     peel::RefPtr<Event> Event::create(const raw_event &event) {
         auto e = peel::GObject::Object::create<Event>();
-        e->m = new Members;
-        e->m->name        = copy_to_peel_string(event.name);
-        e->m->m_style_class = copy_to_peel_string(event.style_class);
+        e->m.name        = copy_to_peel_string(event.name);
+        e->m.style_class = copy_to_peel_string(event.style_class);
         auto search_terms_str = std::string(event.search_terms.begin(), event.search_terms.end());
         // casefold the search keys once at creation time
         auto casefolded = peel::GLib::utf8_casefold(search_terms_str.c_str(), -1);
-        e->m->search_keys = std::move(casefolded);
-        e->m->start_time  = zoned_seconds(event.tz, event.time);
-        e->m->end_time    = zoned_seconds(event.tz, event.time + event.duration);
-        e->m->m_duration  = event.duration;
+        e->m.search_keys = std::move(casefolded);
+        e->m.start_time  = zoned_seconds(event.tz, event.time);
+        e->m.end_time    = zoned_seconds(event.tz, event.time + event.duration);
+        e->m.duration  = event.duration;
         return e;
     }
 

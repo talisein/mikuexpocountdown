@@ -20,21 +20,20 @@ class CountdownWindow final : public peel::Adw::ApplicationWindow
     PEEL_SIMPLE_CLASS(CountdownWindow, peel::Adw::ApplicationWindow);
 
     struct Members {
-        peel::Adw::TabOverview  *m_tab_overview = nullptr;
-        peel::Adw::HeaderBar    *m_header_bar   = nullptr;
-        peel::Adw::WindowTitle  *m_window_title = nullptr;
-        peel::Adw::TabButton    *m_tab_button   = nullptr;
-        peel::Adw::TabView      *m_tab_view     = nullptr;
-        peel::Gtk::Box          *m_box          = nullptr;
-        peel::RefPtr<peel::Gio::Settings> m_settings;
+        peel::Adw::TabOverview  *tab_overview = nullptr;
+        peel::Adw::HeaderBar    *header_bar   = nullptr;
+        peel::Adw::WindowTitle  *window_title = nullptr;
+        peel::Adw::TabButton    *tab_button   = nullptr;
+        peel::Adw::TabView      *tab_view     = nullptr;
+        peel::Gtk::Box          *box          = nullptr;
+        peel::RefPtr<peel::Gio::Settings> settings;
         peel::SignalConnection notify_selected_page_connection;
         peel::SignalConnection search_provider_activate_connection;
         std::vector<peel::SignalConnection> expired_connections;
-    } *m = nullptr;
+    } m;
 
     void init(Class *);
     void vfunc_dispose();
-    ~CountdownWindow() { delete m; }
 
     peel::Adw::TabPage *map_from_name_to_page(const char *name);
     const char         *map_from_page_to_name(peel::Adw::TabPage *page);

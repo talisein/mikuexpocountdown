@@ -14,63 +14,63 @@ void CountdownWindow::Class::init() {
 }
 
 void CountdownWindow::init(Class *) {
-    m = new Members;
+    new (&m) Members;
 
-    auto overview_fp    = peel::Adw::TabOverview::create();  m->m_tab_overview = overview_fp;
-    auto hbar_fp        = peel::Adw::HeaderBar::create();     m->m_header_bar   = hbar_fp;
-    auto title_fp       = peel::Adw::WindowTitle::create("", ""); m->m_window_title = title_fp;
-    auto tabbutton_fp   = peel::Adw::TabButton::create();     m->m_tab_button   = tabbutton_fp;
-    auto tabview_fp     = peel::Adw::TabView::create();       m->m_tab_view     = tabview_fp;
-    auto box_fp         = peel::Gtk::Box::create(peel::Gtk::Orientation::VERTICAL, 0); m->m_box = box_fp;
+    auto overview_fp    = peel::Adw::TabOverview::create();  m.tab_overview = overview_fp;
+    auto hbar_fp        = peel::Adw::HeaderBar::create();     m.header_bar   = hbar_fp;
+    auto title_fp       = peel::Adw::WindowTitle::create("", ""); m.window_title = title_fp;
+    auto tabbutton_fp   = peel::Adw::TabButton::create();     m.tab_button   = tabbutton_fp;
+    auto tabview_fp     = peel::Adw::TabView::create();       m.tab_view     = tabview_fp;
+    auto box_fp         = peel::Gtk::Box::create(peel::Gtk::Orientation::VERTICAL, 0); m.box = box_fp;
 
     set_name("mainwin");
 
-    m->m_header_bar->set_title_widget(std::move(title_fp));
+    m.header_bar->set_title_widget(std::move(title_fp));
 
-    m->notify_selected_page_connection = peel::SignalConnection(
-        m->m_tab_view->connect_notify(
+    m.notify_selected_page_connection = peel::SignalConnection(
+        m.tab_view->connect_notify(
             peel::Adw::TabView::prop_selected_page(),
             [this](peel::GObject::Object *, peel::GObject::ParamSpec *) {
-                auto *page = m->m_tab_view->get_selected_page();
+                auto *page = m.tab_view->get_selected_page();
                 if (!page) return;
                 auto *child = page->get_child()->cast<CountdownGrid>();
-                m->m_window_title->set_title(format_to_peel("{} Countdown", child->event_name()));
+                m.window_title->set_title(format_to_peel("{} Countdown", child->event_name()));
             }));
 
-    m->m_header_bar->pack_end(std::move(tabbutton_fp));
-    m->m_tab_button->set_view(m->m_tab_view);
-    m->m_tab_button->set_action_name("overview.open");
+    m.header_bar->pack_end(std::move(tabbutton_fp));
+    m.tab_button->set_view(m.tab_view);
+    m.tab_button->set_action_name("overview.open");
 
-    m->m_box->append(std::move(hbar_fp));
-    m->m_box->append(std::move(tabview_fp));
+    m.box->append(std::move(hbar_fp));
+    m.box->append(std::move(tabview_fp));
 
-    m->m_tab_overview->set_child(std::move(box_fp));
-    m->m_tab_overview->set_view(m->m_tab_view);
-    m->m_tab_view->set_hexpand(true);
-    m->m_tab_view->set_vexpand(true);
+    m.tab_overview->set_child(std::move(box_fp));
+    m.tab_overview->set_view(m.tab_view);
+    m.tab_view->set_hexpand(true);
+    m.tab_view->set_vexpand(true);
 
     set_content(std::move(overview_fp));
 
     using namespace std::ranges;
     for (const auto &e : Miku::get_events() | views::filter(&Miku::Event::is_unexpired)) {
         auto *grid = CountdownGrid::create(e);
-        auto *page = m->m_tab_view->append_pinned(peel::FloatPtr<peel::Gtk::Widget>(grid));
+        auto *page = m.tab_view->append_pinned(peel::FloatPtr<peel::Gtk::Widget>(grid));
         page->set_title(e->name());
-        m->expired_connections.emplace_back(grid->connect_expired([this, page](CountdownGrid *) {
-            m->m_tab_view->close_page(page);
+        m.expired_connections.emplace_back(grid->connect_expired([this, page](CountdownGrid *) {
+            m.tab_view->close_page(page);
         }));
     }
 
-    m->m_settings = peel::Gio::Settings::create("dance._39music.MikuExpoCountdown.State");
-    m->m_settings->bind("width",         this, "default-width",  peel::Gio::Settings::BindFlags::DEFAULT);
-    m->m_settings->bind("height",        this, "default-height", peel::Gio::Settings::BindFlags::DEFAULT);
-    m->m_settings->bind("is-maximized",  this, "maximized",      peel::Gio::Settings::BindFlags::DEFAULT);
-    m->m_settings->bind("is-fullscreen", this, "fullscreened",   peel::Gio::Settings::BindFlags::DEFAULT);
+    m.settings = peel::Gio::Settings::create("dance._39music.MikuExpoCountdown.State");
+    m.settings->bind("width",         this, "default-width",  peel::Gio::Settings::BindFlags::DEFAULT);
+    m.settings->bind("height",        this, "default-height", peel::Gio::Settings::BindFlags::DEFAULT);
+    m.settings->bind("is-maximized",  this, "maximized",      peel::Gio::Settings::BindFlags::DEFAULT);
+    m.settings->bind("is-fullscreen", this, "fullscreened",   peel::Gio::Settings::BindFlags::DEFAULT);
 
     g_settings_bind_with_mapping(
-        reinterpret_cast<GSettings *>(static_cast<peel::Gio::Settings *>(m->m_settings)),
+        reinterpret_cast<GSettings *>(static_cast<peel::Gio::Settings *>(m.settings)),
         "selected-page",
-        reinterpret_cast<GObject *>(m->m_tab_view),
+        reinterpret_cast<GObject *>(m.tab_view),
         "selected-page",
         G_SETTINGS_BIND_DEFAULT,
         &CountdownWindow::settings_get_selected_page,
@@ -79,22 +79,20 @@ void CountdownWindow::init(Class *) {
 }
 
 void CountdownWindow::vfunc_dispose() {
-    if (m) {
-        m->notify_selected_page_connection.disconnect();
-        m->search_provider_activate_connection.disconnect();
-        m->expired_connections.clear();
-        if (m->m_settings) {
-            peel::Gio::Settings::unbind(this, "selected-page");
-            m->m_settings = nullptr;
-        }
+    m.notify_selected_page_connection.disconnect();
+    m.search_provider_activate_connection.disconnect();
+    m.expired_connections.clear();
+    if (m.settings) {
+        peel::Gio::Settings::unbind(this, "selected-page");
+        m.settings = nullptr;
     }
     parent_vfunc_dispose<CountdownWindow>();
 }
 
 peel::Adw::TabPage *CountdownWindow::map_from_name_to_page(const char *name) {
-    const int n = m->m_tab_view->get_n_pages();
+    const int n = m.tab_view->get_n_pages();
     for (int i = 0; i < n; ++i) {
-        auto *page = m->m_tab_view->get_nth_page(i);
+        auto *page = m.tab_view->get_nth_page(i);
         if (std::string_view(page->get_title()) == std::string_view(name))
             return page;
     }
@@ -127,11 +125,11 @@ GVariant *CountdownWindow::settings_set_selected_page(const GValue *value, const
 void CountdownWindow::activate_page(const char *identifier) {
     auto *page = map_from_name_to_page(identifier);
     if (page)
-        m->m_tab_view->set_selected_page(page);
+        m.tab_view->set_selected_page(page);
 }
 
 void CountdownWindow::connect_search_provider(SearchProvider &sp) {
-    m->search_provider_activate_connection = peel::SignalConnection(
+    m.search_provider_activate_connection = peel::SignalConnection(
         sp.connect_activate([this](SearchProvider *, const char *name) {
             activate_page(name);
         }));
