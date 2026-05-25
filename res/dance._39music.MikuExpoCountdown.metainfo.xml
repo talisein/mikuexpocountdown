@@ -39,6 +39,13 @@
   </provides>
 
   <releases>
+    <release version="3.0.0" date="2026-05-25">
+      <description>
+        <p>
+          Rewritten internals using peel, a lightweight GObject C++ binding.
+        </p>
+      </description>
+    </release>
     <release version="2.2.0" date="2026-05-22">
       <description>
         <p>
