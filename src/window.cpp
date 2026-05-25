@@ -2,6 +2,8 @@
 #include <format>
 #include <peel/Gtk/Orientation.h>
 #include <peel/Gio/SettingsBindFlags.h>
+#include <peel/GLib/Variant.h>
+#include <peel/GObject/Object.h>
 #include "window.h"
 #include "util.hpp"
 
@@ -105,10 +107,10 @@ const char *CountdownWindow::map_from_page_to_name(peel::Adw::TabPage *page) {
 
 gboolean CountdownWindow::settings_get_selected_page(GValue *value, GVariant *variant, gpointer user_data) {
     auto *self = static_cast<CountdownWindow *>(user_data);
-    const char *name = g_variant_get_string(variant, nullptr);
+    const char *name = reinterpret_cast<peel::GLib::Variant*>(variant)->get<const char*>();
     auto *page = self->map_from_name_to_page(name);
     if (page) {
-        g_value_set_object(value, reinterpret_cast<GObject *>(page));
+        peel::GObject::Value::Traits<peel::Adw::TabPage>::set(value, page);
         return TRUE;
     }
     return FALSE;
@@ -116,9 +118,10 @@ gboolean CountdownWindow::settings_get_selected_page(GValue *value, GVariant *va
 
 GVariant *CountdownWindow::settings_set_selected_page(const GValue *value, const GVariantType *, gpointer user_data) {
     auto *self = static_cast<CountdownWindow *>(user_data);
-    auto *page = reinterpret_cast<peel::Adw::TabPage *>(g_value_get_object(value));
+    auto *page = peel::GObject::Value::Traits<peel::Adw::TabPage>::get(value);
     const char *name = self->map_from_page_to_name(page);
-    return name ? g_variant_new_string(name) : nullptr;
+    return name ? reinterpret_cast<GVariant*>(
+        peel::GLib::Variant::create<const char*>(name).release_floating_ptr()) : nullptr;
 }
 
 void CountdownWindow::activate_page(const char *identifier) {

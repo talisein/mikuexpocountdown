@@ -14,6 +14,11 @@ exe = executable('mikuexpo-countdown', src, res, conf,
                  cpp_args : ['-D_GNU_SOURCE', '-DG_ENABLE_DEBUG=true']
                 )
 
+test_variant_exe = executable('test-variant-utils', 'test_variant_utils.cpp',
+                 dependencies: [adw_dep, peel_dep, peel_gtk_dep],
+                 cpp_args: ['-D_GNU_SOURCE'])
+test('variant-utils', test_variant_exe)
+
 printer_exe = executable('mikuexpo-printer', 'printer.cxx',
                  install : false,
                  cpp_args : ['-D_GNU_SOURCE', '-DG_ENABLE_DEBUG=true']

@@ -1,8 +1,8 @@
 #include <chrono>
 #include <format>
-#include <pango/pango.h>
 #include <peel/GLib/functions.h>
 #include <peel/Pango/AttrList.h>
+#include <peel/Pango/functions.h>
 #include <peel/Gtk/Align.h>
 #include <peel/Gtk/Justification.h>
 #include <peel/Gtk/Orientable.h>
@@ -51,10 +51,9 @@ void CountdownGrid::setup(const peel::RefPtr<Miku::Event> &event) {
     m->m_days->set_vexpand(true);
     m->m_days->set_valign(peel::Gtk::Align::CENTER);
 
-    auto *attrs = pango_attr_list_new();
-    pango_attr_list_insert(attrs, pango_attr_line_height_new(0.6));
-    m->m_days->set_attributes(reinterpret_cast<peel::Pango::AttrList *>(attrs));
-    pango_attr_list_unref(attrs);
+    auto attrs = peel::Pango::AttrList::create();
+    attrs->insert(peel::Pango::attr_line_height_new(0.6));
+    m->m_days->set_attributes(attrs);
 
     m->m_hours->set_name("hours");
     m->m_date->set_name("date");

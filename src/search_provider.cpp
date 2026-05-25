@@ -1,10 +1,12 @@
-#include <iostream>
 #include <ranges>
 #include <sstream>
 #include <format>
+#include <peel/Gio/DBusNodeInfo.h>
+#include <peel/GLib/VariantBuilder.h>
 #include "search_provider.h"
 #include "events.h"
 #include "util.hpp"
+#include "variant_utils.hpp"
 
 PEEL_CLASS_IMPL(SearchProvider, "MikuSearchProvider", peel::Gio::DBusInterfaceSkeleton)
 
@@ -55,41 +57,48 @@ static const char interfaceXml0[] = R"XML_DELIMITER(<!DOCTYPE node PUBLIC
 )XML_DELIMITER";
 
 peel::Gio::DBusInterface::Info *SearchProvider::vfunc_get_info() {
-    static GDBusNodeInfo *node = g_dbus_node_info_new_for_xml(interfaceXml0, nullptr);
-    return reinterpret_cast<peel::Gio::DBusInterface::Info *>(
-        g_dbus_node_info_lookup_interface(node, "org.gnome.Shell.SearchProvider2"));
+    static auto node = peel::Gio::DBusNodeInfo::create_for_xml(interfaceXml0, nullptr);
+    return node->lookup_interface("org.gnome.Shell.SearchProvider2");
 }
 
 namespace {
 
-std::vector<peel::String> parse_string_array(GVariant *as_var) {
+std::vector<peel::String> parse_string_array(peel::GLib::Variant *as_var) {
     std::vector<peel::String> result;
-    GVariantIter *iter;
-    g_variant_get(as_var, "as", &iter);
-    const char *s;
-    while (g_variant_iter_loop(iter, "s", &s))
-        result.push_back(copy_to_peel_string(std::string_view{s}));
-    g_variant_iter_free(iter);
+    for (size_t i = 0, n = as_var->n_children(); i < n; ++i)
+        result.push_back(variant_to_peel_string(as_var->get_child_value(i)));
     return result;
 }
 
-GVariant *build_search_results(const std::vector<peel::String> &terms) {
+peel::FloatPtr<peel::GLib::Variant> build_search_results(const std::vector<peel::String> &terms) {
     using namespace std::ranges;
-    GVariantBuilder builder;
-    g_variant_builder_init(&builder, G_VARIANT_TYPE("as"));
+    auto builder = peel::GLib::Variant::Builder::create(
+        reinterpret_cast<const peel::GLib::Variant::Type*>(G_VARIANT_TYPE("as")));
     for (const auto &e : Miku::get_events()
                          | views::filter(&Miku::Event::is_unexpired)
                          | views::filter([&terms](const auto &ev) { return ev->match_search(terms); }))
-        g_variant_builder_add(&builder, "s", (const char *)e->name());
-    return g_variant_new("(@as)", g_variant_builder_end(&builder));
+        builder->add("s", (const char *)e->name());
+    return peel::FloatPtr<peel::GLib::Variant>(
+        reinterpret_cast<peel::GLib::Variant*>(
+            g_variant_new("(@as)", reinterpret_cast<GVariant*>(
+                builder->end().release_floating_ptr()))));
 }
 
-void return_as(GDBusMethodInvocation *inv, GVariant *as_result) {
-    g_dbus_method_invocation_return_value(inv, as_result);
+void return_as(GDBusMethodInvocation *inv, peel::FloatPtr<peel::GLib::Variant> result) {
+    g_dbus_method_invocation_return_value(inv,
+        reinterpret_cast<GVariant*>(std::move(result).release_floating_ptr()));
 }
 
 void return_empty(GDBusMethodInvocation *inv) {
     g_dbus_method_invocation_return_value(inv, g_variant_new_tuple(nullptr, 0));
+}
+
+// Builds a {sv} dict entry where the value is a "s" string wrapped in a "v" variant.
+peel::FloatPtr<peel::GLib::Variant> make_sv_entry(const char *key, const char *val) {
+    return peel::GLib::Variant::create_dict_entry(
+        peel::GLib::Variant::create<const char*>(key),
+        peel::GLib::Variant::create<peel::GLib::Variant>(
+            peel::GLib::Variant::create<const char*>(val)));
 }
 
 }
@@ -100,26 +109,22 @@ peel::Gio::DBusInterface::VTable *SearchProvider::vfunc_get_vtable() {
             const char *method_name, GVariant *params,
             GDBusMethodInvocation *inv, void *user_data) {
             auto *self = static_cast<SearchProvider *>(user_data);
+            auto *peel_params = reinterpret_cast<peel::GLib::Variant*>(params);
 
             if (strcmp(method_name, "GetInitialResultSet") == 0) {
-                GVariant *as_var = g_variant_get_child_value(params, 0);
-                auto terms = parse_string_array(as_var);
-                g_variant_unref(as_var);
-                return_as(inv, build_search_results(terms));
+                auto as_var = peel_params->get_child_value(0);
+                return_as(inv, build_search_results(parse_string_array(as_var)));
 
             } else if (strcmp(method_name, "GetSubsearchResultSet") == 0) {
-                GVariant *as_var = g_variant_get_child_value(params, 1);
-                auto terms = parse_string_array(as_var);
-                g_variant_unref(as_var);
-                return_as(inv, build_search_results(terms));
+                auto as_var = peel_params->get_child_value(1);
+                return_as(inv, build_search_results(parse_string_array(as_var)));
 
             } else if (strcmp(method_name, "GetResultMetas") == 0) {
-                GVariant *as_var = g_variant_get_child_value(params, 0);
+                auto as_var = peel_params->get_child_value(0);
                 auto identifiers = parse_string_array(as_var);
-                g_variant_unref(as_var);
 
-                GVariantBuilder outer;
-                g_variant_builder_init(&outer, G_VARIANT_TYPE("aa{sv}"));
+                auto outer = peel::GLib::Variant::Builder::create(
+                    reinterpret_cast<const peel::GLib::Variant::Type*>(G_VARIANT_TYPE("aa{sv}")));
                 static constexpr char date_format[] { "{0:%A} {0:%d} {0:%B} {0:%Y} {0:%X} {0:%Z}" };
 
                 for (const auto &id : identifiers) {
@@ -171,20 +176,21 @@ peel::Gio::DBusInterface::VTable *SearchProvider::vfunc_get_vtable() {
                     }
                     auto description = format_to_peel("{} — {}", ss.str(), display_date);
 
-                    GVariantBuilder dict;
-                    g_variant_builder_init(&dict, G_VARIANT_TYPE("a{sv}"));
-                    g_variant_builder_add(&dict, "{sv}", "id",          g_variant_new_string((const char *)id));
-                    g_variant_builder_add(&dict, "{sv}", "name",        g_variant_new_string((const char *)ev->name()));
-                    g_variant_builder_add(&dict, "{sv}", "gicon",       g_variant_new_string("dance._39music.MikuExpoCountdown"));
-                    g_variant_builder_add(&dict, "{sv}", "description", g_variant_new_string(description));
-                    g_variant_builder_add_value(&outer, g_variant_builder_end(&dict));
+                    auto dict = peel::GLib::Variant::Builder::create(
+                        reinterpret_cast<const peel::GLib::Variant::Type*>(G_VARIANT_TYPE("a{sv}")));
+                    dict->add_value(make_sv_entry("id",          (const char*)id));
+                    dict->add_value(make_sv_entry("name",        (const char*)ev->name()));
+                    dict->add_value(make_sv_entry("gicon",       "dance._39music.MikuExpoCountdown"));
+                    dict->add_value(make_sv_entry("description", (const char*)description));
+                    outer->add_value(dict->end());
                 }
                 g_dbus_method_invocation_return_value(inv,
-                    g_variant_new("(@aa{sv})", g_variant_builder_end(&outer)));
+                    g_variant_new("(@aa{sv})", reinterpret_cast<GVariant*>(
+                        outer->end().release_floating_ptr())));
 
             } else if (strcmp(method_name, "ActivateResult") == 0) {
-                const char *identifier;
-                g_variant_get_child(params, 0, "&s", &identifier);
+                auto id_var = peel_params->get_child_value(0);
+                const char *identifier = id_var->get<const char*>();
                 s_activate.emit(self, identifier);
                 return_empty(inv);
 
