@@ -1,6 +1,5 @@
 #include <ranges>
 #include <format>
-#include <peel/Gtk/Orientation.h>
 #include <peel/Gio/SettingsBindFlags.h>
 #include <peel/GLib/Variant.h>
 #include <peel/GObject/Object.h>
@@ -12,21 +11,18 @@ PEEL_CLASS_IMPL(CountdownWindow, "MikuCountdownWindow", peel::Adw::ApplicationWi
 
 void CountdownWindow::Class::init() {
     override_vfunc_dispose<CountdownWindow>();
+    set_template_from_resource("/dance/_39music/MikuExpoCountdown/miku-countdown-window.ui");
+    PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownWindow, m.tab_overview, "tab-overview");
+    PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownWindow, m.header_bar,   "header-bar");
+    PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownWindow, m.window_title, "window-title");
+    PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownWindow, m.tab_button,   "tab-button");
+    PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownWindow, m.tab_view,     "tab-view");
+    PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownWindow, m.box,          "box");
 }
 
 void CountdownWindow::init(Class *) {
     new (&m) Members;
-
-    auto overview_fp    = peel::Adw::TabOverview::create();  m.tab_overview = overview_fp;
-    auto hbar_fp        = peel::Adw::HeaderBar::create();     m.header_bar   = hbar_fp;
-    auto title_fp       = peel::Adw::WindowTitle::create("", ""); m.window_title = title_fp;
-    auto tabbutton_fp   = peel::Adw::TabButton::create();     m.tab_button   = tabbutton_fp;
-    auto tabview_fp     = peel::Adw::TabView::create();       m.tab_view     = tabview_fp;
-    auto box_fp         = peel::Gtk::Box::create(peel::Gtk::Orientation::VERTICAL, 0); m.box = box_fp;
-
-    set_name("mainwin");
-
-    m.header_bar->set_title_widget(std::move(title_fp));
+    init_template();
 
     peel::GObject::Object::bind_property(
         m.tab_view,    peel::Adw::TabView::prop_selected_page(),
@@ -38,20 +34,6 @@ void CountdownWindow::init(Class *) {
             if (!child) return {};
             return format_to_peel("{} Countdown", child->get_property(CountdownGrid::prop_event_name()));
         });
-
-    m.header_bar->pack_end(std::move(tabbutton_fp));
-    m.tab_button->set_view(m.tab_view);
-    m.tab_button->set_action_name("overview.open");
-
-    m.box->append(std::move(hbar_fp));
-    m.box->append(std::move(tabview_fp));
-
-    m.tab_overview->set_child(std::move(box_fp));
-    m.tab_overview->set_view(m.tab_view);
-    m.tab_view->set_hexpand(true);
-    m.tab_view->set_vexpand(true);
-
-    set_content(std::move(overview_fp));
 
     using namespace std::ranges;
     for (const auto &e : Miku::get_events() | views::filter(&Miku::Event::is_unexpired)) {
@@ -90,6 +72,7 @@ void CountdownWindow::vfunc_dispose() {
         peel::Gio::Settings::unbind(this, "selected-page");
         m.settings = nullptr;
     }
+    dispose_template(peel::GObject::Type::of<CountdownWindow>());
     parent_vfunc_dispose<CountdownWindow>();
 }
 

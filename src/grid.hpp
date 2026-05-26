@@ -1,6 +1,7 @@
 #pragma once
 #include <peel/class.h>
 #include <peel/signal.h>
+#include <peel/widget-template.h>
 #include <peel/Gtk/Box.h>
 #include <peel/Gtk/Label.h>
 #include <peel/Gtk/CenterBox.h>

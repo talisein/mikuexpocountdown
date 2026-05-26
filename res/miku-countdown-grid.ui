@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <template class="MikuCountdownGrid" parent="GtkBox">
+    <property name="name">page</property>
+    <property name="orientation">vertical</property>
+    <child>
+      <object class="GtkLabel" id="days">
+        <property name="name">days</property>
+        <property name="max-width-chars">8</property>
+        <property name="wrap">True</property>
+        <property name="justify">center</property>
+        <property name="vexpand">True</property>
+        <property name="valign">center</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkCenterBox" id="bottom-box">
+        <property name="orientation">vertical</property>
+        <property name="valign">fill</property>
+        <property name="vexpand">True</property>
+        <child type="center">
+          <object class="GtkLabel" id="hours">
+            <property name="name">hours</property>
+          </object>
+        </child>
+        <child type="end">
+          <object class="GtkLabel" id="date">
+            <property name="name">date</property>
+            <property name="valign">end</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <peel/class.h>
+#include <peel/widget-template.h>
 #include <peel/Adw/ApplicationWindow.h>
 #include <peel/Adw/TabView.h>
 #include <peel/Adw/TabPage.h>
