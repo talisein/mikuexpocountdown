@@ -115,9 +115,68 @@ All concert events are hardcoded as `raw_event` structs in a `std::array` in `ev
 - `CountdownGrid` (`grid.cpp`) — one per event tab; subclasses `peel::Gtk::Box`; drives a per-second GLib timeout to update labels; emits `signal_expired` when its event passes, causing the window to remove the tab
 - `SearchProvider` (`search_provider.cpp`) — subclasses `peel::Gio::DBusInterfaceSkeleton`; implements the GNOME Shell SearchProvider2 D-Bus interface; emits `s_activate(name)` when the user clicks a search result, which routes to `CountdownWindow::activate_page()`
 
+### GTK Builder .ui templates
+
+Widget classes use GTK Builder `.ui` files (in `res/`) for their static widget trees. The pattern mirrors the GObject class pattern:
+
+**Header** — add `#include <peel/widget-template.h>`.
+
+**`.ui` file** — use a `<template>` element whose `class` matches the GType name string from `PEEL_CLASS_IMPL` and whose `parent` is the GTK class name:
+
+```xml
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="libadwaita" version="1.0"/>
+  <template class="MikuCountdownGrid" parent="GtkBox">
+    <property name="orientation">vertical</property>
+    <child>
+      <object class="GtkLabel" id="days">
+        <property name="vexpand">True</property>
+      </object>
+    </child>
+  </template>
+</interface>
+```
+
+Give each widget that needs to be accessed from C++ an `id`. Object cross-references by id work regardless of declaration order — GTK Builder resolves them after parsing the full file, so an object can reference another that is defined deeper in the tree (e.g. `AdwTabOverview`'s `view` property pointing to an `AdwTabView` nested inside its own `child`).
+
+Child types (`type="end"`, `type="center"`, etc.) work for containers that support them: `AdwHeaderBar` uses `type="start"`/`type="end"` for packing, `GtkCenterBox` uses `type="center"`/`type="end"`.
+
+**`Class::init()`** — call `set_template_from_resource` then `PEEL_WIDGET_TEMPLATE_BIND_CHILD` for each id that needs a C++ pointer. The resource path is `/dance/_39music/MikuExpoCountdown/<filename>`:
+
+```cpp
+set_template_from_resource("/dance/_39music/MikuExpoCountdown/miku-countdown-grid.ui");
+PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownGrid, m.days,       "days");
+PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownGrid, m.bottom_box, "bottom-box");
+```
+
+**`init(Class *)`** — call `init_template()` after `new (&m) Members`:
+
+```cpp
+void CountdownGrid::init(Class *) {
+    new (&m) Members;
+    init_template();
+}
+```
+
+**`vfunc_dispose()`** — call `dispose_template(peel::GObject::Type::of<T>())` after any manual cleanup but before `parent_vfunc_dispose`:
+
+```cpp
+dispose_template(peel::GObject::Type::of<CountdownGrid>());
+parent_vfunc_dispose<CountdownGrid>();
+```
+
+**`res/mikuexpocountdown.gresource.xml`** — register the file with `preprocess="xml-stripblanks"`:
+
+```xml
+<file preprocess="xml-stripblanks">miku-countdown-grid.ui</file>
+```
+
+What goes in the `.ui` vs C++: static structure, widget properties, and inter-widget references (view/child linkage) go in the `.ui`. Dynamic setup that depends on runtime data — adding CSS classes per event, setting label text, property bindings with transform lambdas — stays in C++.
+
 ### Resources
 
-`res/mikuexpocountdown.gresource.xml` bundles all images and `style.css` into the binary as a GResource. Each event tour has a `style_class` string (e.g., `"expoasia2025"`, `"expona2026"`, `"expoeu2026"`, `"mm2026"`) that maps to CSS rules in `res/style.css` for per-tour background and hero images.
+`res/mikuexpocountdown.gresource.xml` bundles all images, `style.css`, and `.ui` template files into the binary as a GResource. Each event tour has a `style_class` string (e.g., `"expoasia2025"`, `"expona2026"`, `"expoeu2026"`, `"mm2026"`) that maps to CSS rules in `res/style.css` for per-tour background and hero images.
 
 ### Utility headers
 

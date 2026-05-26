@@ -5,12 +5,8 @@
 #include <peel/Adw/ApplicationWindow.h>
 #include <peel/Adw/TabView.h>
 #include <peel/Adw/TabPage.h>
-#include <peel/Adw/TabOverview.h>
-#include <peel/Adw/HeaderBar.h>
 #include <peel/Adw/WindowTitle.h>
-#include <peel/Adw/TabButton.h>
 #include <peel/Adw/Application.h>
-#include <peel/Gtk/Box.h>
 #include <peel/Gio/Settings.h>
 #include "grid.hpp"
 #include "events.hpp"
@@ -21,12 +17,8 @@ class CountdownWindow final : public peel::Adw::ApplicationWindow
     PEEL_SIMPLE_CLASS(CountdownWindow, peel::Adw::ApplicationWindow);
 
     struct Members {
-        peel::Adw::TabOverview  *tab_overview = nullptr;
-        peel::Adw::HeaderBar    *header_bar   = nullptr;
         peel::Adw::WindowTitle  *window_title = nullptr;
-        peel::Adw::TabButton    *tab_button   = nullptr;
         peel::Adw::TabView      *tab_view     = nullptr;
-        peel::Gtk::Box          *box          = nullptr;
         peel::RefPtr<peel::Gio::Settings> settings;
         peel::SignalConnection search_provider_activate_connection;
         std::vector<peel::SignalConnection> expired_connections;

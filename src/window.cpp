@@ -12,12 +12,8 @@ PEEL_CLASS_IMPL(CountdownWindow, "MikuCountdownWindow", peel::Adw::ApplicationWi
 void CountdownWindow::Class::init() {
     override_vfunc_dispose<CountdownWindow>();
     set_template_from_resource("/dance/_39music/MikuExpoCountdown/miku-countdown-window.ui");
-    PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownWindow, m.tab_overview, "tab-overview");
-    PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownWindow, m.header_bar,   "header-bar");
     PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownWindow, m.window_title, "window-title");
-    PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownWindow, m.tab_button,   "tab-button");
     PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownWindow, m.tab_view,     "tab-view");
-    PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownWindow, m.box,          "box");
 }
 
 void CountdownWindow::init(Class *) {

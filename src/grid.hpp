@@ -4,8 +4,6 @@
 #include <peel/widget-template.h>
 #include <peel/Gtk/Box.h>
 #include <peel/Gtk/Label.h>
-#include <peel/Gtk/CenterBox.h>
-#include <peel/GLib/Quark.h>
 #include "events.hpp"
 
 class CountdownGrid final : public peel::Gtk::Box
@@ -17,7 +15,6 @@ class CountdownGrid final : public peel::Gtk::Box
         peel::Gtk::Label    *days      = nullptr;
         peel::Gtk::Label    *hours     = nullptr;
         peel::Gtk::Label    *date      = nullptr;
-        peel::Gtk::CenterBox *bottom_box = nullptr;
         unsigned             update_timeout_id = 0;
     } m;
 

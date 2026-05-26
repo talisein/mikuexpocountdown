@@ -14,10 +14,9 @@ void CountdownGrid::Class::init() {
     override_vfunc_dispose<CountdownGrid>();
     signal_expired = peel::Signal<CountdownGrid, void()>::create("expired");
     set_template_from_resource("/dance/_39music/MikuExpoCountdown/miku-countdown-grid.ui");
-    PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownGrid, m.days,       "days");
-    PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownGrid, m.hours,      "hours");
-    PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownGrid, m.date,       "date");
-    PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownGrid, m.bottom_box, "bottom-box");
+    PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownGrid, m.days,  "days");
+    PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownGrid, m.hours, "hours");
+    PEEL_WIDGET_TEMPLATE_BIND_CHILD(CountdownGrid, m.date,  "date");
 }
 
 void CountdownGrid::init(Class *) {
