@@ -1,0 +1,25 @@
+<!--
+    Windows Sandbox: a clean Windows with nothing installed. build-msvc is
+    mapped read-only at C:\miku, so it holds the .msi and the stage, and
+    running C:\miku\stage\bin\mikuexpo-countdown.exe directly also checks
+    that the app never writes next to itself. C:\logs is writable and syncs
+    back to meiko. See README.md. Open with:
+
+        start build-aux\windows\mikuexpocountdown-test.wsb
+-->
+<Configuration>
+  <MappedFolders>
+    <MappedFolder>
+      <HostFolder>C:\dev\mikuexpocountdown\build-msvc</HostFolder>
+      <SandboxFolder>C:\miku</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <!-- Writable, for logs: the AsusMiku folder Syncthing shares with meiko. -->
+    <MappedFolder>
+      <HostFolder>C:\Users\agpot\Desktop\Meiko\logs</HostFolder>
+      <SandboxFolder>C:\logs</SandboxFolder>
+      <ReadOnly>false</ReadOnly>
+    </MappedFolder>
+  </MappedFolders>
+  <Networking>Disable</Networking>
+</Configuration>

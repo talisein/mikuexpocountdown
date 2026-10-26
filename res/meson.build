@@ -6,11 +6,19 @@ res = gnome.compile_resources('mikuexpocountdown-resources',
                               export : false,
                               c_name : 'mikuexpocountdown_resources')
 
+# Windows takes the app icon from an icon resource in the .exe; see the .rc.
+windows_res = []
+if not is_not_windows
+  windows_res = import('windows').compile_resources('mikuexpo-countdown.rc',
+    depend_files : 'dance._39music.MikuExpoCountdown.ico',
+    include_directories : include_directories('.'))
+endif
+
 # GSettings
 
 schemas_dir = get_option('prefix') / get_option('datadir') / 'glib-2.0' / 'schemas'
 settings_schemas = [ 'dance._39music.MikuExpoCountdown.gschema.xml' ]
-install_data(settings_schemas, install_dir: schemas_dir)
+install_data(settings_schemas, install_dir: schemas_dir, install_tag: 'runtime')
 gnome.compile_schemas(depend_files: files(settings_schemas))
 gnome.post_install(glib_compile_schemas: true)
 test('validate-schema',
@@ -27,12 +35,15 @@ if desktop_utils.found()
     args: [desktop_file])
 endif
 
+if is_not_windows
 install_data(desktop_file,
              install_dir: get_option('datadir') / 'applications')
+endif
 
 # --- Icon ---
 install_data('dance._39music.MikuExpoCountdown.svg',
-             install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'scalable' / 'apps')
+             install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'scalable' / 'apps',
+             install_tag: 'runtime')
 
 # --- Appstream ---
 metainfo_file = files('dance._39music.MikuExpoCountdown.metainfo.xml')
@@ -48,6 +59,9 @@ if ascli_exe.found()
   )
 endif
 
+# The rest is GNOME desktop integration: the metainfo, the D-Bus activation
+# and the Shell search provider mean nothing on Windows.
+if is_not_windows
 install_data(metainfo_file,
              install_dir: get_option('datadir') / 'metainfo')
 
@@ -69,6 +83,7 @@ install_data('dance._39music.MikuExpoCountdown.SearchProvider.service.systemd',
 install_data('search-provider.ini',
              install_dir: get_option('datadir') / 'gnome-shell' / 'search-providers',
              rename: 'dance._39music.MikuExpoCountdown.search-provider.ini')
+endif
 
 # IANA tzdata file until gcc bug is fixed in flatpak gcc
 bundled_iana_dir = get_option('datadir') / 'mikuexpo-countdown'

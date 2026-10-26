@@ -1,6 +1,8 @@
 [wrap-git]
 url=https://gitlab.gnome.org/bugaevc/peel.git
-revision=HEAD
+# Pinned to the commit the flatpak manifest builds, so the Windows build
+# (which takes peel from this wrap) gets the same peel. Bump them together.
+revision=f3b3b300e0f83013553b54125e23b8e53f555dba
 depth=1
 
 [provide]

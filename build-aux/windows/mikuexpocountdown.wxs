@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    A per-user .msi around build-msvc\stage\. make-msi.ps1 passes
+    -d Version=, -d StageDir= and -d IconFile=. No custom actions: nothing
+    runs at install time (README.md).
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <!-- The UpgradeCode never changes: it is how a new version finds the old
+       one to replace. -->
+  <Package Name="Miku Expo Countdown"
+           Manufacturer="talisein"
+           Version="$(var.Version)"
+           UpgradeCode="D5181285-5E04-4AC3-A1B2-68B566D5765C"
+           Scope="perUser"
+           Language="1033">
+
+    <!-- Same-version upgrades too, so a rebuilt .msi replaces the installed
+         one instead of installing beside it. -->
+    <MajorUpgrade AllowSameVersionUpgrades="yes"
+                  DowngradeErrorMessage="A newer version of Miku Expo Countdown is already installed." />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <Icon Id="AppIcon.ico" SourceFile="$(var.IconFile)" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon.ico" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/talisein/mikuexpocountdown" />
+    <Property Id="ARPNOMODIFY" Value="1" />
+
+    <!-- %LOCALAPPDATA%\Programs, where per-user apps go. -->
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="LocalPrograms" Name="Programs">
+        <Directory Id="INSTALLFOLDER" Name="Miku Expo Countdown" />
+      </Directory>
+    </StandardDirectory>
+
+    <!-- The whole stage, subdirectories and all. -->
+    <ComponentGroup Id="StageFiles" Directory="INSTALLFOLDER">
+      <Files Include="$(var.StageDir)\**" />
+    </ComponentGroup>
+
+    <!-- The AppUserModelID matches the one the app sets on itself when it is
+         not packaged, so its taskbar button groups with this shortcut. -->
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Component Id="StartMenuShortcut" Guid="85A53D7B-4EFA-4771-A579-8E802E29F0F0">
+        <Shortcut Id="AppShortcut"
+                  Name="Miku Expo Countdown"
+                  Description="Countdown the days and hours to Miku Expo"
+                  Target="[INSTALLFOLDER]bin\mikuexpo-countdown.exe"
+                  WorkingDirectory="INSTALLFOLDER">
+          <ShortcutProperty Key="System.AppUserModel.ID" Value="dance._39music.MikuExpoCountdown" />
+        </Shortcut>
+        <!-- A per-user shortcut needs an HKCU key path (ICE43). -->
+        <RegistryValue Root="HKCU" Key="Software\talisein\Miku Expo Countdown"
+                       Name="StartMenuShortcut" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </StandardDirectory>
+
+    <Feature Id="Main">
+      <ComponentGroupRef Id="StageFiles" />
+      <ComponentRef Id="StartMenuShortcut" />
+    </Feature>
+  </Package>
+</Wix>
