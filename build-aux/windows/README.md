@@ -59,16 +59,25 @@ exe-relative `share\`, and the schemas and icons seem to vanish.
 
 **Windows Sandbox, a genuinely clean machine.** Run
 `start build-aux\windows\mikuexpocountdown-test.wsb`. The sandbox has no
-network, because the app needs none. Inside it:
+network, because the app needs none.
+
+The build is unsigned, so **Smart App Control blocks it wherever SAC is
+on**: Code Integrity event 3077 for `mikuexpo-countdown.exe` under the
+`VerifiedAndReputableDesktop` policy. It is off on AsusMiku itself
+(`HKLM\SYSTEM\CurrentControlSet\Control\CI\Policy`,
+`VerifiedAndReputablePolicyState` = 0), but since late October 2026 a new
+sandbox starts with it on. First turn it off inside the sandbox: Windows
+Security → App & browser control → Smart App Control settings → Off. That
+cannot be undone, which does not matter in a sandbox. Any other Windows 11
+machine with SAC on blocks the build the same way until it is code-signed.
+
+Then, inside the sandbox:
 
 1. Copy the stage out of the mapping and run it:
 
        robocopy C:\miku\stage C:\stage /MIR
        C:\stage\bin\mikuexpo-countdown.exe
 
-   Not straight from `C:\miku`: Smart App Control in the sandbox blocks
-   unsigned programs run from the mapped host folder, while the same files
-   copied in, or installed by the .msi, run.
 2. Install `C:\miku\mikuexpo-countdown-<version>-x64.msi`. There should be
    no UAC prompt. Launch it from the Start menu, then check:
    - the backgrounds and character art show (WebP and PNG/JPEG);
