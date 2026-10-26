@@ -1,0 +1,150 @@
+name: Build and publish flatpak
+
+# A push to main builds the flatpak and runs the test suite inside it: basic
+# CI, nothing leaves the runner. Running the workflow by hand
+# (workflow_dispatch) does the same build and then publishes it to the
+# `stable` repo on flatpak.39music.dance. The publish steps are gated on the
+# event name, so a push can never publish, and every publish is a fresh build
+# of the commit it names.
+#
+# This is the HOWTO automated: flatpak-builder --repo,
+# then flat-manager-client create / push / commit / publish.
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# No cancel-in-progress: a publish cut off between create and publish leaves
+# a half-made build on the server.
+concurrency:
+  group: flatpak-${{ github.ref }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  flatpak:
+    runs-on: meiko
+    # Podman-in-podman. meiko's job containers are privileged and share the
+    # /var/lib/containers volume, so the ~2 GB SDK image is pulled once and
+    # reused, and the nested --privileged run below can give flatpak-builder's
+    # bubblewrap the namespaces it needs.
+    container:
+      image: quay.io/podman/stable:latest
+
+    env:
+      # flatpak-builder plus the GNOME 50 SDK, preinstalled. The runtime must
+      # match runtime-version in the manifest.
+      SDK_IMAGE: ghcr.io/flathub-infra/flatpak-github-actions:gnome-50
+      # THE SAME DIGEST THE SERVER RUNS (mksystem/39music/containers/
+      # flat-manager.container). Client and server are one codebase with an
+      # API between them; bump the two together.
+      FM_IMAGE: ghcr.io/flatpak/flat-manager:latest@sha256:ad440892bb872badb6c9f15c04d1a91a62512f674ea9bec91c1333ff401d297d
+      FM_URL: https://flatpak.39music.dance
+      FM_REPO: stable
+      MANIFEST: dance._39music.MikuExpoCountdown.yaml
+      # The job container is per-job, so /tmp dies with it; the Remove token
+      # step is belt and braces.
+
+    steps:
+      - name: Install tools
+        run: |
+          set -euo pipefail
+          # The runner mounts the host trust bundle read-only, so
+          # ca-certificates' %posttrans (update-ca-trust) fails and takes the
+          # whole transaction with it. Never upgrade it here.
+          printf 'excludepkgs=ca-certificates\n' >> /etc/dnf/dnf.conf
+          dnf -y install --setopt=install_weak_deps=0 git-core
+
+      - name: Checkout
+        run: |
+          set -euo pipefail
+          git clone --depth 1 --branch "${{ github.ref_name }}" \
+            "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@git.miku/${{ github.repository }}.git" .
+          git log -1 --format='building %H %s'
+
+      - name: Build and test
+        run: |
+          set -euo pipefail
+          # --default-branch=master: the Branch= in mikuexpo-countdown.flatpakref
+          # and flatpak-builder's default, which the hand-run HOWTO has always
+          # published, so existing installs keep updating.
+          # --disable-rofiles-fuse: no FUSE in a nested container.
+          # No --install-deps-from: the SDK image already carries the GNOME 50
+          # SDK and Platform, and letting flatpak update them in place fails
+          # with "Invalid cross-device link" on the nested overlay storage.
+          # The manifest's run-tests runs `meson test` after the build.
+          #
+          # The runner injects DOCKER_HOST (meiko's own podman) into every job
+          # container. Unset it so podman runs NESTED here: the -v paths below
+          # are this container's, and on meiko's podman they would name
+          # nothing.
+          unset DOCKER_HOST CONTAINER_HOST
+          podman run --rm --privileged --network host \
+            -v "$PWD":/src -w /src "$SDK_IMAGE" \
+            flatpak-builder --disable-rofiles-fuse --force-clean \
+              --default-branch=master \
+              --repo=repo build-dir "$MANIFEST"
+          podman run --rm -v "$PWD":/src -w /src "$SDK_IMAGE" ostree --repo=repo refs
+
+      - name: Publish
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          set -euo pipefail
+          unset DOCKER_HOST CONTAINER_HOST # nested podman, see Build and test
+          # Through a file, not --token: argv is visible to every process on
+          # the host. Mounted read-only into each client run.
+          umask 077
+          printf '%s' "${{ secrets.FLAT_MANAGER_TOKEN }}" > "/tmp/fm-token"
+          test -s "/tmp/fm-token" || { echo "::error::FLAT_MANAGER_TOKEN secret is empty or missing"; exit 1; }
+
+          fm() {
+            podman run --rm --network host \
+              -v "/tmp/fm-token":/run/fm-token:ro \
+              -v "$PWD/repo":/repo:ro \
+              "$FM_IMAGE" /usr/local/bin/flat-manager-client --token-file /run/fm-token "$@"
+          }
+
+          build_url=$(fm create "$FM_URL" "$FM_REPO")
+          echo "created build: $build_url"
+          # Recorded before the push, so the purge step can clean up after a
+          # push that fails partway.
+          echo "BUILD_URL=$build_url" >> "$GITHUB_ENV"
+
+          fm push --commit --publish --wait \
+            --build-log-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_number }}" \
+            "$build_url" /repo
+
+      - name: Purge failed build
+        if: failure() && env.BUILD_URL != ''
+        run: |
+          unset DOCKER_HOST CONTAINER_HOST
+          podman run --rm --network host \
+            -v "/tmp/fm-token":/run/fm-token:ro \
+            "$FM_IMAGE" /usr/local/bin/flat-manager-client --token-file /run/fm-token purge "$BUILD_URL"
+
+      - name: Remove token
+        if: always()
+        run: rm -f "/tmp/fm-token"
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            if [ "${{ github.event_name }}" = workflow_dispatch ]; then
+              echo "### Published dance._39music.MikuExpoCountdown//master"
+              echo
+              echo "Build: ${BUILD_URL:-none}"
+              echo
+              echo '```'
+              echo "flatpak install --user --from ${{ github.server_url }}/${{ github.repository }}/raw/branch/main/mikuexpo-countdown.flatpakref"
+              echo '```'
+            else
+              echo "### Built and tested; not published"
+              echo
+              echo "Run this workflow by hand to publish."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

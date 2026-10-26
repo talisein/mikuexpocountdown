@@ -14,9 +14,22 @@ modules:
         commit: f3b3b300e0f83013553b54125e23b8e53f555dba
   - name: mikuexpo-countdown
     buildsystem: meson
+    run-tests: true
     config-opts:
       - --wrap-mode=nodownload
     sources:
-      - type: git
-        url: 'https://github.com/talisein/mikuexpocountdown.git'
-        branch: main
+      # The working tree, so CI builds the commit it checked out.
+      - type: dir
+        path: .
+        skip:
+          - build
+          - build-dir
+          - countdown-repo
+          - repo
+          - .flatpak-builder
+          - .git
+          - .cache
+          - .claude
+          - tmp
+          - screenshots
+          - subprojects/peel
