@@ -141,6 +141,12 @@ namespace {
                 {"Miku Expo Dusseldorf",  "Hatsune Miku Miku Expo Europe Dusseldorf Germany",          "expoeu2026", local_days{November/20/2026} + 20h, 3h, TZ.BERLIN_TZ},
                 {"Miku Expo Paris",       "Hatsune Miku Miku Expo Europe Paris France",                "expoeu2026", local_days{November/22/2026} + 20h, 3h, TZ.PARIS_TZ},
                 {"Miku Expo Madrid",      "Hatsune Miku Miku Expo Europe Madrid Spain",                "expoeu2026", local_days{November/25/2026} + 20h, 3h, TZ.MADRID_TZ},
+                {"Snow Miku Fri Day",     "Hatsune Miku Snow Miku 2027 Sapporo Hokkaido Japan Friday Day Show",     "snowmiku2027", local_days{February/5/2027} + 13h, 2h, TZ.JST},
+                {"Snow Miku Fri Night",   "Hatsune Miku Snow Miku 2027 Sapporo Hokkaido Japan Friday Night Show",   "snowmiku2027", local_days{February/5/2027} + 17h, 2h, TZ.JST},
+                {"Snow Miku Sat Day",     "Hatsune Miku Snow Miku 2027 Sapporo Hokkaido Japan Saturday Day Show",   "snowmiku2027", local_days{February/6/2027} + 13h, 2h, TZ.JST},
+                {"Snow Miku Sat Night",   "Hatsune Miku Snow Miku 2027 Sapporo Hokkaido Japan Saturday Night Show", "snowmiku2027", local_days{February/6/2027} + 17h, 2h, TZ.JST},
+                {"Snow Miku Sun Day",     "Hatsune Miku Snow Miku 2027 Sapporo Hokkaido Japan Sunday Day Show",     "snowmiku2027", local_days{February/7/2027} + 13h, 2h, TZ.JST},
+                {"Snow Miku Sun Night",   "Hatsune Miku Snow Miku 2027 Sapporo Hokkaido Japan Sunday Night Show",   "snowmiku2027", local_days{February/7/2027} + 17h, 2h, TZ.JST},
             })};
 
 }

@@ -100,6 +100,17 @@
     text-shadow: 2px 2px 4px #674d36;
 }
 
+#page.snowmiku2027 {
+    background-image: url("resource:///dance/_39music/MikuExpoCountdown/snow-miku-2027-chara.webp"), url("resource:///dance/_39music/MikuExpoCountdown/snow-miku-2027-bg.webp");
+    padding: 10px;
+    color: #ffd6f0;
+    background-color: #1e1a4d;
+    background-repeat: no-repeat;
+    background-size: auto 100%, cover;
+    padding: 10px;
+    text-shadow: 2px 2px 4px #c040c0;
+}
+
 #page.mirai {
     background-image: url("resource:///dance/_39music/MikuExpoCountdown/mirai_2023.png");
     padding: 10px;
