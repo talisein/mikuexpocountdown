@@ -48,11 +48,27 @@ comes from `meson.build` and must be numeric `x.y.z`.
 
 ## Testing
 
-Run `start build-aux\windows\mikuexpocountdown-test.wsb`. The sandbox has no
+**Clean environment, on the build box.** This copies the stage somewhere
+unrelated and runs it with nothing from the build environment:
+
+    robocopy C:\dev\mikuexpocountdown\build-msvc\stage C:\tmp\miku-stage /MIR
+    cmd /c "set PATH=C:\Windows\System32;C:\Windows&& set XDG_DATA_DIRS=&& set GSETTINGS_SCHEMA_DIR=&& set GDK_PIXBUF_MODULE_FILE=&& set GTK_PATH=&& C:\tmp\miku-stage\bin\mikuexpo-countdown.exe"
+
+Clear `XDG_DATA_DIRS` in particular. When it is set, GLib drops the
+exe-relative `share\`, and the schemas and icons seem to vanish.
+
+**Windows Sandbox, a genuinely clean machine.** Run
+`start build-aux\windows\mikuexpocountdown-test.wsb`. The sandbox has no
 network, because the app needs none. Inside it:
 
-1. Run `C:\miku\stage\bin\mikuexpo-countdown.exe` straight from the
-   read-only mapping.
+1. Copy the stage out of the mapping and run it:
+
+       robocopy C:\miku\stage C:\stage /MIR
+       C:\stage\bin\mikuexpo-countdown.exe
+
+   Not straight from `C:\miku`: Smart App Control in the sandbox blocks
+   unsigned programs run from the mapped host folder, while the same files
+   copied in, or installed by the .msi, run.
 2. Install `C:\miku\mikuexpo-countdown-<version>-x64.msi`. There should be
    no UAC prompt. Launch it from the Start menu, then check:
    - the backgrounds and character art show (WebP and PNG/JPEG);
