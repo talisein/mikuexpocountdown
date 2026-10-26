@@ -1,6 +1,6 @@
 project('mikuexpocountdown', ['c', 'cpp'],
         license : 'GPLv3+',
-        version : '3.1.0',
+        version : '3.1.1',
         # MSVC has no c++23 option; c++latest is its newest.
         default_options : ['c_std=c17',
                            'cpp_std=c++23,c++latest',

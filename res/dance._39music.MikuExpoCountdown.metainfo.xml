@@ -39,6 +39,13 @@
   </provides>
 
   <releases>
+    <release version="3.1.1" date="2026-10-26">
+      <description>
+        <p>
+          Windows installer
+        </p>
+      </description>
+    </release>
     <release version="3.1.0" date="2026-10-26">
       <description>
         <p>
