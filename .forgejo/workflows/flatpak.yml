@@ -36,9 +36,9 @@ jobs:
       image: quay.io/podman/stable:latest
 
     env:
-      # flatpak-builder plus the GNOME 50 SDK, preinstalled. The runtime must
+      # flatpak-builder plus the GNOME 51 SDK, preinstalled. The runtime must
       # match runtime-version in the manifest.
-      SDK_IMAGE: ghcr.io/flathub-infra/flatpak-github-actions:gnome-50
+      SDK_IMAGE: ghcr.io/flathub-infra/flatpak-github-actions:gnome-51
       # THE SAME DIGEST THE SERVER RUNS (mksystem/39music/containers/
       # flat-manager.container). Client and server are one codebase with an
       # API between them; bump the two together.
@@ -73,7 +73,7 @@ jobs:
           # and flatpak-builder's default, which the hand-run HOWTO has always
           # published, so existing installs keep updating.
           # --disable-rofiles-fuse: no FUSE in a nested container.
-          # No --install-deps-from: the SDK image already carries the GNOME 50
+          # No --install-deps-from: the SDK image already carries the GNOME 51
           # SDK and Platform, and letting flatpak update them in place fails
           # with "Invalid cross-device link" on the nested overlay storage.
           # The manifest's run-tests runs `meson test` after the build.
