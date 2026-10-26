@@ -34,6 +34,11 @@ same commit as the flatpak manifest.
 
     C:\dev\gtkenv.cmd cd /d C:\dev\mikuexpocountdown && meson setup --native-file C:\dev\clang-cl-c.ini build-msvc
 
+Run only this project's tests. peel's subproject test is a shell script,
+which meson cannot start on Windows (FileNotFoundError):
+
+    meson test -C build-msvc --suite mikuexpocountdown
+
 ## Building
 
     C:\dev\gtkenv.cmd cd /d C:\dev\mikuexpocountdown && powershell -ExecutionPolicy Bypass -File build-aux\windows\make-msi.ps1
