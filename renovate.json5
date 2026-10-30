@@ -1,0 +1,48 @@
+{
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+
+  // ONLY THE GNOME RUNTIME. peel is pinned by commit in both the manifest and
+  // subprojects/peel.wrap and bumped by hand (see the wrap's comment), and
+  // FM_IMAGE must match the digest the server runs, so no built-in manager is
+  // enabled.
+  //
+  // THIS FILE ONLY TAKES EFFECT WHILE NO renovate.json EXISTS BESIDE IT. Do
+  // not merge an onboarding PR that adds one.
+  enabledManagers: ['custom.regex'],
+  dependencyDashboard: true,
+
+  customManagers: [
+    // THE GNOME RUNTIME, in two places that must move together: the
+    // manifest's runtime-version and the CI image that has that SDK
+    // preinstalled. Both are read against the image's gnome-NN tags, so a
+    // new runtime is only proposed once the CI image for it exists.
+    {
+      customType: 'regex',
+      managerFilePatterns: ['/^dance\\._39music\\.MikuExpoCountdown\\.yaml$/'],
+      matchStrings: ["\\nruntime-version:\\s*'(?<currentValue>[0-9]+)'"],
+      depNameTemplate: 'gnome-runtime',
+      packageNameTemplate: 'ghcr.io/flathub-infra/flatpak-github-actions',
+      datasourceTemplate: 'docker',
+      extractVersionTemplate: '^gnome-(?<version>[0-9]+)$',
+      versioningTemplate: 'loose',
+    },
+    {
+      customType: 'regex',
+      managerFilePatterns: ['/^\\.forgejo/workflows/flatpak\\.yml$/'],
+      matchStrings: ['SDK_IMAGE:\\s*ghcr\\.io/flathub-infra/flatpak-github-actions:gnome-(?<currentValue>[0-9]+)\\s'],
+      depNameTemplate: 'gnome-runtime',
+      packageNameTemplate: 'ghcr.io/flathub-infra/flatpak-github-actions',
+      datasourceTemplate: 'docker',
+      extractVersionTemplate: '^gnome-(?<version>[0-9]+)$',
+      versioningTemplate: 'loose',
+    },
+  ],
+
+  packageRules: [
+    {
+      description: 'One PR moves the manifest runtime and the CI SDK image together.',
+      matchDepNames: ['gnome-runtime'],
+      groupName: 'GNOME runtime',
+    },
+  ],
+}
